@@ -18,7 +18,7 @@
       --bg-surface: rgba(16, 20, 28, 0.78);
       --bg-surface-solid: #11161F;
       --bg-subtle: rgba(28, 35, 46, 0.76);
-      --bg-input: rgba(9, 13, 19, 0.85);
+      --bg-input: rgba(9, 13, 19, 0.88);
       --bg-code: rgba(8, 10, 15, 0.95);
       --text-primary: #F8FAFC;
       --text-secondary: #CBD5E1;
@@ -26,9 +26,9 @@
       --border-soft: rgba(255, 255, 255, 0.12);
       --border-hover: rgba(56, 189, 248, 0.48);
       --grid-line: rgba(255, 255, 255, 0.035);
-      --accent-main: #10B981;       /* Emerald Green */
+      --accent-main: #10B981;
       --accent-main-soft: rgba(16, 185, 129, 0.16);
-      --accent-cyan: #38BDF8;       /* Sky Blue (Senada kaos foto latar) */
+      --accent-cyan: #38BDF8;
       --accent-cyan-soft: rgba(56, 189, 248, 0.18);
       --accent-warm: #F59E0B;
       --accent-warm-soft: rgba(245, 158, 11, 0.16);
@@ -260,7 +260,7 @@
     }
 
     /* ==========================================================================
-       4. TOP NAVBAR SESUAI SCREENSHOT + TOMBOL LOGIN & REGISTER DI DEKAT ☀️ 🔔
+       4. TOP NAVBAR (TOMBOL LOGIN & REGISTER DI DEKAT ☀️ & 🔔)
        ========================================================================== */
     .navbar {
       position: sticky;
@@ -331,7 +331,6 @@
       font-weight: 600;
     }
 
-    /* Cluster Kontrol Kanan Atas (Persis Seperti Screenshot + Login/Register) */
     .nav-controls {
       display: flex;
       flex-direction: column;
@@ -402,7 +401,6 @@
       box-shadow: 0 0 0 2px var(--bg-surface-solid);
     }
 
-    /* Tombol Login & Register di Sebelah ☀️ dan 🔔 (Gaya JERE-API) */
     .header-auth-group {
       display: inline-flex;
       align-items: center;
@@ -449,12 +447,11 @@
       opacity: 0.95;
     }
 
-    /* Badge Profil Saat User Sudah Login di Header */
     .btn-header-profile {
       display: none;
       align-items: center;
       gap: 8px;
-      background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(56, 189, 248, 0.2));
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.22), rgba(56, 189, 248, 0.22));
       border: 1px solid var(--accent-main);
       color: var(--text-primary);
       padding: 5px 13px 5px 7px;
@@ -480,13 +477,13 @@
     }
 
     /* ==========================================================================
-       5. MODAL / POPUP LOGIN, REGISTER & PROFIL BERANIMASI (LATAR FOTO CEWEK)
+       5. MODAL LOGIN, REGISTER & PROFIL BERANIMASI (LATAR FOTO CEWEK)
        ========================================================================== */
     .auth-modal-backdrop {
       position: fixed;
       inset: 0;
       z-index: 8000;
-      background: rgba(5, 8, 12, 0.76);
+      background: rgba(5, 8, 12, 0.78);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       display: flex;
@@ -520,7 +517,6 @@
       transform: translateY(0) scale(1);
     }
 
-    /* Header Visual Modal dengan Latar Foto Cewek Pelabuhan */
     .modal-hero-banner {
       position: relative;
       height: 148px;
@@ -615,14 +611,12 @@
       color: #CBD5E1;
     }
 
-    /* Body Modal */
     .modal-body-content {
       position: relative;
       padding: 18px 22px 24px;
       background: var(--bg-surface-solid);
     }
 
-    /* Tirai Animasi Loading saat Request Login / Register ke Backend */
     .auth-loading-curtain {
       position: absolute;
       inset: 0;
@@ -681,7 +675,6 @@
       to { transform: rotate(-360deg); }
     }
 
-    /* Sliding Pill Tab Login vs Register */
     .auth-mode-tabs {
       position: relative;
       display: grid;
@@ -870,7 +863,30 @@
     }
 
     /* ==========================================================================
-       6. KONTEN UTAMA DOCS (JERE-API + NEXRAY + VELIXS + LIVE PLAYGROUND)
+       6. KARTU RINGKASAN AKUN AKTIF DI HALAMAN UTAMA (MUNCUL SAAT SUDAH LOGIN)
+       ========================================================================== */
+    .active-session-bar {
+      display: none;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.16), rgba(56, 189, 248, 0.14));
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--accent-main);
+      border-radius: 18px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-card);
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .active-session-bar.shown {
+      display: flex;
+    }
+
+    /* ==========================================================================
+       7. KONTEN UTAMA DOCS
        ========================================================================== */
     .doc-wrapper {
       max-width: 960px;
@@ -889,7 +905,6 @@
       transform: translateY(0);
     }
 
-    /* Hero Banner Card Berlatar Foto Cewek */
     .jere-banner-card {
       position: relative;
       border-radius: 22px;
@@ -1108,7 +1123,6 @@
       color: #F8FAFC;
     }
 
-    /* Center Hero & Multi-Tab Code Box */
     .center-hero {
       text-align: center;
       margin: 36px auto;
@@ -1248,7 +1262,6 @@
       line-height: 1.6;
     }
 
-    /* API Statistics 2x2 Grid */
     .stats-section {
       margin-bottom: 38px;
     }
@@ -1305,7 +1318,6 @@
       pointer-events: none;
     }
 
-    /* Simulator Role & Kuota Harian */
     .role-showcase {
       background-color: var(--bg-surface);
       backdrop-filter: blur(16px);
@@ -1389,7 +1401,7 @@
     }
 
     /* ==========================================================================
-       7. DAFTAR ENDPOINT LIVE REST API (LANGSUNG TEMBAK BACKEND)
+       8. DAFTAR ENDPOINT LIVE REST API
        ========================================================================== */
     .section-head {
       display: flex;
@@ -1629,7 +1641,7 @@
     }
 
     /* ==========================================================================
-       8. BOTTOM NAVIGATION BAR
+       9. BOTTOM NAVIGATION BAR
        ========================================================================== */
     .bottom-nav {
       position: fixed;
@@ -1721,11 +1733,11 @@
     <div id="loaderLog" class="loader-status-text">Menghubungkan ke cluster MongoDB...</div>
   </div>
 
-  <!-- 3. TOP NAVBAR (PERSIS SESUAI SCREENSHOT + LOGIN & REGISTER DI SEBELAH ☀️ 🔔) -->
+  <!-- 3. TOP NAVBAR (TOMBOL LOGIN & REGISTER DI SEBELAH ☀️ & 🔔) -->
   <header class="navbar">
     <div class="navbar-inner">
       <div class="brand-cluster">
-        <button class="menu-box-btn" onclick="openAuthModal('login')" title="Buka Menu Akun & API">☰</button>
+        <button class="menu-box-btn" onclick="openAuthModal(isUserLoggedIn() ? 'profile' : 'login')" title="Buka Menu Akun & API">☰</button>
         <div class="brand-title">
           <span>WABOT-<br>API</span>
           <span class="brand-tag">v2.1</span>
@@ -1733,7 +1745,6 @@
       </div>
 
       <div class="nav-controls">
-        <!-- Baris 1: Pilih Foto Latar & Mode Kejelasan Latar -->
         <div class="nav-row-top">
           <button class="btn-pill-action" onclick="document.getElementById('bgFileInput').click()">
             🖼️ Pilih Foto Latar
@@ -1743,7 +1754,6 @@
           </button>
         </div>
 
-        <!-- Baris 2: ☀️, 🔔, dan Tombol Login / Register Tepat di Sebelahnya -->
         <div class="nav-row-bottom">
           <button class="icon-circle-btn" onclick="toggleTheme()" id="themeBtn" title="Mode Terang/Gelap">
             ☀️
@@ -1773,7 +1783,7 @@
     </div>
   </header>
 
-  <!-- 4. MODAL / DRAWER LOGIN, REGISTER & PROFIL BERANIMASI (SESUAI LATAR FOTO CEWEK) -->
+  <!-- 4. MODAL LOGIN, REGISTER & PROFIL BERANIMASI -->
   <div class="auth-modal-backdrop" id="authModalBackdrop" onclick="handleBackdropClick(event)">
     <div class="auth-modal-dialog">
 
@@ -1863,7 +1873,7 @@
               </label>
               <div class="input-wrap">
                 <span class="input-icon">👤</span>
-                <input type="text" id="regUsername" class="auth-input" placeholder="contoh: raka_dev" required minlength="3" />
+                <input type="text" id="regUsername" class="auth-input" placeholder="contoh: vallsky" required minlength="3" />
               </div>
             </div>
 
@@ -1919,8 +1929,8 @@
 
           <div class="user-key-box">
             <div>
-              <div style="font-size: 10.5px; color: var(--text-muted);">API KEY AKTIF (TERHUBUNG KE DOCS)</div>
-              <code style="font-size: 13.5px; font-weight: 700; color: var(--accent-main);" id="dashApiKey">-</code>
+              <div style="font-size: 10.5px; color: var(--text-muted);">API KEY AKTIF (OTOMATIS TERISI KE DOCS)</div>
+              <code style="font-size: 13.5px; font-weight: 700; color: var(--accent-main); word-break: break-all;" id="dashApiKey">-</code>
             </div>
             <button type="button" class="btn-pill-action" onclick="copyActiveApiKey()">📋 Salin</button>
           </div>
@@ -1952,6 +1962,26 @@
 
   <!-- 5. KONTEN UTAMA DOKUMENTASI -->
   <main class="doc-wrapper" id="topHome">
+
+    <!-- BAR AKUN AKTIF DI HALAMAN UTAMA (MUNCUL OTOMATIS SAAT BERHASIL LOGIN) -->
+    <div class="active-session-bar" id="mainSessionBar">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div class="sync-avatar" style="width:38px; height:38px;"></div>
+        <div>
+          <div style="font-size:13.5px; font-weight:800;">
+            Halo, <span id="barUsername">User</span>!
+            <span class="brand-tag" id="barRole" style="margin-left:6px;">USER</span>
+          </div>
+          <div style="font-size:12px; color:var(--text-secondary);">
+            API Key Aktif: <code style="color:var(--accent-main); font-weight:700;" id="barApiKey">-</code> • Kuota: <strong id="barQuota">0/50</strong>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button class="btn-pill-action" onclick="copyActiveApiKey()">📋 Salin API Key</button>
+        <button class="btn-pill-action" onclick="openAuthModal('profile')">⚙️ Detail Akun</button>
+      </div>
+    </div>
 
     <!-- A. HERO BANNER CARD BERLATAR FOTO CEWEK (GAYA JERE-API) -->
     <section class="stagger-section jere-banner-card">
@@ -2009,7 +2039,7 @@
         </div>
 
         <div class="banner-actions-row">
-          <button class="btn-cyan-glow" onclick="openAuthModal('register')">
+          <button class="btn-cyan-glow" onclick="openAuthModal(isUserLoggedIn() ? 'profile' : 'login')">
             Hubungkan Akun Sekarang ↗
           </button>
           <span class="banner-meta-pill">Server: Production • Gratis & Cepat</span>
@@ -2057,7 +2087,7 @@
         <button class="btn-emerald-main" onclick="document.getElementById('secEndpoints').scrollIntoView()">
           Explore Docs
         </button>
-        <button class="btn-glass-secondary" onclick="openAuthModal('login')">
+        <button class="btn-glass-secondary" onclick="openAuthModal(isUserLoggedIn() ? 'profile' : 'login')">
           🔐 Login / Ambil API Key
         </button>
       </div>
@@ -2076,11 +2106,11 @@
           </div>
           <button class="btn-copy-code" id="copyCodeBtn" onclick="copyTerminalCode()">Copy</button>
         </div>
-        <pre class="terminal-body"><code id="terminalCodeContent">curl -X GET "http://localhost:3000/api/feature/tiktok?url=https://vt.tiktok.com/ZS89xYz/&apikey=YOUR_APIKEY"</code></pre>
+        <pre class="terminal-body"><code id="terminalCodeContent">curl -X GET "https://wabot-api.herokuapp.com/api/feature/tiktok?url=https://vt.tiktok.com/ZS89xYz/&apikey=YOUR_APIKEY"</code></pre>
       </div>
     </section>
 
-    <!-- C. API STATISTICS 2X2 GRID (NEXRAY STYLE) -->
+    <!-- C. API STATISTICS 2X2 GRID -->
     <section class="stagger-section stats-section" style="transition-delay: 0.12s;">
       <div class="section-center-head">
         <h2>API Statistics</h2>
@@ -2143,7 +2173,7 @@
       </div>
     </section>
 
-    <!-- E. DAFTAR ENDPOINT LIVE REST API (LANGSUNG TEMBAK BACKEND) -->
+    <!-- E. DAFTAR ENDPOINT LIVE REST API -->
     <section class="stagger-section" id="secEndpoints" style="transition-delay: 0.2s;">
       <div class="section-head">
         <div>
@@ -2177,7 +2207,7 @@
       <span>⭐</span>
       <span>Plan</span>
     </a>
-    <button class="bnav-item" onclick="openAuthModal(activeToken ? 'profile' : 'login')">
+    <button class="bnav-item" onclick="openAuthModal(isUserLoggedIn() ? 'profile' : 'login')">
       <span>👤</span>
       <span id="bottomNavAuthLabel">Login</span>
     </button>
@@ -2185,18 +2215,39 @@
 
   <script>
     // =========================================================================
-    // 1. STATE GLOBAL & DATA SESUAI SIMPELAPI-MAIN.ZIP
+    // 1. STATE GLOBAL & PERSISTENSI SESI LOGIN
     // =========================================================================
     let activeToken = localStorage.getItem('wabot_jwt_token') || '';
     let activeApiKey = localStorage.getItem('wabot_api_key') || '';
+    let activeUserObj = null;
+    try {
+      const savedUser = localStorage.getItem('wabot_user_data');
+      if (savedUser) activeUserObj = JSON.parse(savedUser);
+    } catch (_) {}
+
     let activeCategory = 'all';
     let bgClarityMode = 0;
+
+    function isUserLoggedIn() {
+      return Boolean(activeToken || activeUserObj);
+    }
 
     function getApiBaseUrl() {
       if (window.location.protocol === 'http:' || window.location.protocol === 'https:') {
         return window.location.origin;
       }
       return 'http://localhost:3000';
+    }
+
+    function getAuthHeaders(includeJson = false) {
+      const h = {};
+      if (includeJson) h['Content-Type'] = 'application/json';
+      if (activeToken) {
+        h['Authorization'] = `Bearer ${activeToken}`;
+        h['x-auth-token'] = activeToken;
+        h['x-access-token'] = activeToken;
+      }
+      return h;
     }
 
     const rolePresets = {
@@ -2319,7 +2370,8 @@
             renderEndpoints(activeCategory);
             moveRolePill(document.querySelector('.pill-btn.active'));
             updateTerminalSnippet('curl');
-            if (activeToken) {
+            if (isUserLoggedIn()) {
+              applyUserToUI(activeUserObj);
               refreshUserProfile(true);
             }
           }, 200);
@@ -2328,7 +2380,7 @@
     });
 
     // =========================================================================
-    // 3. MODAL LOGIN, REGISTER & PROFIL (DIBUKA DARI HEADER DEKAT ☀️ & 🔔)
+    // 3. MODAL LOGIN, REGISTER & PROFIL (KOMPATIBEL PENUH DENGAN AUTHROUTES.JS)
     // =========================================================================
     function openAuthModal(mode = 'login') {
       const backdrop = document.getElementById('authModalBackdrop');
@@ -2337,7 +2389,7 @@
 
       backdrop.classList.add('open');
 
-      if (activeToken && mode === 'profile') {
+      if (isUserLoggedIn() && mode === 'profile') {
         guestSec.style.display = 'none';
         profSec.style.display = 'block';
         document.getElementById('modalHeroTitle').textContent = 'Profil & Kuota API Key Anda';
@@ -2466,8 +2518,8 @@
           const msg = data.message || 'Registrasi berhasil! Silakan cek inbox/spam email Anda untuk verifikasi akun.';
           showAuthFeedback(true, msg);
           showToast(msg, false);
-          document.getElementById('loginIdentifier').value = email;
-          setTimeout(() => switchAuthTab('login'), 1700);
+          document.getElementById('loginIdentifier').value = username || email;
+          setTimeout(() => switchAuthTab('login'), 1600);
         } else {
           const errMsg = data.message || data.error || `Gagal registrasi (HTTP ${res.status})`;
           showAuthFeedback(false, errMsg);
@@ -2481,11 +2533,17 @@
       }
     }
 
+    // Perbaikan Utama Login: Kirim semua variasi kunci identifier/username/email
     async function handleRealLogin(e) {
       e.preventDefault();
-      const identifier = document.getElementById('loginIdentifier').value.trim();
-      const password = document.getElementById('loginPassword').value;
+      const idVal = document.getElementById('loginIdentifier').value.trim();
+      const passVal = document.getElementById('loginPassword').value;
       const url = `${getApiBaseUrl()}/api/auth/login`;
+
+      if (!idVal || !passVal) {
+        showAuthFeedback(false, 'Masukkan username/email dan password');
+        return;
+      }
 
       setAuthLoading(true, 'Memverifikasi Akun & Mengambil API Key...', 'POST /api/auth/login');
 
@@ -2494,11 +2552,17 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            email: identifier,
-            username: identifier,
-            password
+            identifier: idVal,
+            usernameOrEmail: idVal,
+            emailOrUsername: idVal,
+            login: idVal,
+            user: idVal,
+            username: idVal,
+            email: idVal,
+            password: passVal
           })
         });
+
         const data = await res.json();
 
         if (!res.ok || data.status === false) {
@@ -2509,21 +2573,38 @@
           return;
         }
 
-        const token = data.token || data.result?.token || data.data?.token || '';
-        const userObj = data.user || data.result?.user || data.data || data;
+        // Ekstrak token dan objek user dari berbagai kemungkinan struktur JSON backend
+        const token = data.token || data.accessToken || data.result?.token || data.data?.token || '';
+        const rawUser = data.user || data.result?.user || data.data?.user || data.result || data.data || data;
+
+        const normalizedUser = {
+          username: rawUser.username || rawUser.name || idVal,
+          email: rawUser.email || (idVal.includes('@') ? idVal : ''),
+          role: rawUser.role || 'user',
+          apiKey: rawUser.apiKey || rawUser.apikey || data.apiKey || '',
+          limitUsed: rawUser.limitUsed ?? rawUser.limit ?? 0,
+          limitMax: rawUser.limitMax ?? rawUser.maxLimit ?? 50,
+          expiredAt: rawUser.expiredAt || rawUser. premiumExpired || null
+        };
 
         if (token) {
           activeToken = token;
           localStorage.setItem('wabot_jwt_token', token);
         }
-        if (userObj && userObj.apiKey) {
-          syncGlobalApiKey(userObj.apiKey);
+
+        activeUserObj = normalizedUser;
+        localStorage.setItem('wabot_user_data', JSON.stringify(normalizedUser));
+
+        if (normalizedUser.apiKey) {
+          syncGlobalApiKey(normalizedUser.apiKey);
         }
 
-        await refreshUserProfile(true, userObj);
+        applyUserToUI(normalizedUser);
+        await refreshUserProfile(true, normalizedUser);
+
         setAuthLoading(false);
         openAuthModal('profile');
-        showToast('Login berhasil! API Key Anda sudah otomatis terpasang di semua endpoint.', false);
+        showToast(`Selamat datang, ${normalizedUser.username}! API Key Anda telah disinkronkan.`, false);
       } catch (err) {
         setAuthLoading(false);
         const netErr = `Tidak dapat terhubung ke ${url}. Pastikan server Express aktif.`;
@@ -2532,63 +2613,116 @@
       }
     }
 
+    function applyUserToUI(userData) {
+      if (!userData) return;
+
+      const uname = userData.username || 'Developer';
+      const uemail = userData.email || 'Terverifikasi';
+      const urole = (userData.role || 'user').toUpperCase();
+      const ukey = userData.apiKey || activeApiKey || '-';
+      const used = userData.limitUsed ?? userData.limit ?? 0;
+      const max = userData.limitMax ?? userData.maxLimit ?? (urole === 'PREMIUM' ? 1000 : 50);
+      const expText = userData.expiredAt
+        ? new Date(userData.expiredAt).toLocaleDateString('id-ID')
+        : 'Permanen / Aktif';
+
+      // Update di dalam Modal Profil
+      document.getElementById('dashUsername').textContent = uname;
+      document.getElementById('dashEmail').textContent = uemail;
+      document.getElementById('dashRoleBadge').textContent = urole;
+      document.getElementById('dashApiKey').textContent = ukey;
+      document.getElementById('dashQuota').textContent = `${used} / ${max}`;
+      document.getElementById('dashExpiry').textContent = expText;
+
+      // Update di Header Kanan Atas (Dekat ☀️ & 🔔)
+      document.getElementById('headerGuestBtns').style.display = 'none';
+      const profBtn = document.getElementById('headerUserBtn');
+      profBtn.classList.add('active');
+      document.getElementById('headerUsernameText').textContent = `${uname} (${urole})`;
+
+      // Update di Bar Sesi Halaman Utama & Banner
+      const mainBar = document.getElementById('mainSessionBar');
+      mainBar.classList.add('shown');
+      document.getElementById('barUsername').textContent = uname;
+      document.getElementById('barRole').textContent = urole;
+      document.getElementById('barApiKey').textContent = ukey;
+      document.getElementById('barQuota').textContent = `${used}/${max}`;
+
+      document.getElementById('bannerAuthStatus').textContent = `@${uname} (${urole})`;
+      document.getElementById('bottomNavAuthLabel').textContent = uname;
+
+      if (ukey && ukey !== '-') {
+        syncGlobalApiKey(ukey);
+      }
+    }
+
     async function refreshUserProfile(silent = false, fallbackUser = null) {
-      if (!activeToken && !fallbackUser) return;
-      let userData = fallbackUser;
+      if (!isUserLoggedIn() && !fallbackUser) return;
+      let userData = fallbackUser || activeUserObj;
 
       if (activeToken) {
+        const candidatePaths = ['/api/user/profile', '/api/user/me', '/api/auth/me'];
+        for (const path of candidatePaths) {
+          try {
+            const res = await fetch(`${getApiBaseUrl()}${path}`, {
+              headers: getAuthHeaders(false)
+            });
+            if (res.ok) {
+              const json = await res.json();
+              const fetched = json.user || json.result || json.data || json;
+              if (fetched && (fetched.username || fetched.apiKey || fetched.email)) {
+                userData = { ...userData, ...fetched };
+                break;
+              }
+            }
+          } catch (_) {}
+        }
+      }
+
+      // Jika kita punya API key, kita juga bisa memperbarui sisa kuota dari /api/check-apikey
+      const keyToCheck = userData?.apiKey || activeApiKey;
+      if (keyToCheck && keyToCheck !== '-') {
         try {
-          const res = await fetch(`${getApiBaseUrl()}/api/user/profile`, {
-            headers: { 'Authorization': `Bearer ${activeToken}` }
-          });
-          if (res.ok) {
-            const json = await res.json();
-            userData = json.user || json.result || json.data || json;
+          const resCheck = await fetch(`${getApiBaseUrl()}/api/check-apikey?apikey=${encodeURIComponent(keyToCheck)}`);
+          if (resCheck.ok) {
+            const checkJson = await resCheck.json();
+            const c = checkJson.result || checkJson.data || checkJson;
+            if (c) {
+              userData = {
+                ...userData,
+                username: c.username || userData?.username,
+                role: c.role || userData?.role,
+                limitUsed: c.limitUsed ?? c.limit ?? userData?.limitUsed,
+                limitMax: c.limitMax ?? c.maxLimit ?? userData?.limitMax,
+                expiredAt: c.expiredAt ?? userData?.expiredAt
+              };
+            }
           }
         } catch (_) {}
       }
 
       if (userData) {
-        const uname = userData.username || userData.name || 'Developer';
-        const uemail = userData.email || '';
-        const urole = (userData.role || 'user').toUpperCase();
-        const ukey = userData.apiKey || activeApiKey || '-';
-        const used = userData.limitUsed ?? userData.limit ?? 0;
-        const max = userData.limitMax ?? userData.maxLimit ?? (urole === 'PREMIUM' ? 1000 : 50);
-
-        document.getElementById('dashUsername').textContent = uname;
-        document.getElementById('dashEmail').textContent = uemail;
-        document.getElementById('dashRoleBadge').textContent = urole;
-        document.getElementById('dashApiKey').textContent = ukey;
-        document.getElementById('dashQuota').textContent = `${used} / ${max}`;
-        document.getElementById('dashExpiry').textContent = userData.expiredAt
-          ? new Date(userData.expiredAt).toLocaleDateString('id-ID')
-          : 'Permanen / Aktif';
-
-        // Update tombol di Header dekat ☀️ & 🔔
-        document.getElementById('headerGuestBtns').style.display = 'none';
-        const profBtn = document.getElementById('headerUserBtn');
-        profBtn.classList.add('active');
-        document.getElementById('headerUsernameText').textContent = `${uname} (${urole})`;
-        document.getElementById('bannerAuthStatus').textContent = `@${uname} (${urole})`;
-        document.getElementById('bottomNavAuthLabel').textContent = uname;
-
-        if (ukey && ukey !== '-') {
-          syncGlobalApiKey(ukey);
-        }
+        activeUserObj = userData;
+        localStorage.setItem('wabot_user_data', JSON.stringify(userData));
+        applyUserToUI(userData);
         if (!silent) {
-          showToast('Data profil & kuota berhasil disinkronkan!', false);
+          showToast('Data profil & sisa kuota berhasil diperbarui!', false);
         }
       }
     }
 
     function handleLogout() {
       activeToken = '';
+      activeUserObj = null;
       localStorage.removeItem('wabot_jwt_token');
+      localStorage.removeItem('wabot_user_data');
+
       document.getElementById('headerUserBtn').classList.remove('active');
       document.getElementById('headerGuestBtns').style.display = 'inline-flex';
+      document.getElementById('mainSessionBar').classList.remove('shown');
       document.getElementById('bannerAuthStatus').textContent = 'Guest (Belum Login)';
       document.getElementById('bottomNavAuthLabel').textContent = 'Login';
+
       closeAuthModal();
       showToast('Anda telah keluar dari akun.', false);
     }
@@ -2604,21 +2738,21 @@
     }
 
     function copyActiveApiKey() {
-      const key = document.getElementById('dashApiKey').textContent;
+      const key = activeApiKey || document.getElementById('dashApiKey').textContent;
       if (!key || key === '-') return;
       navigator.clipboard.writeText(key);
-      showToast('API Key berhasil disalin!', false);
+      showToast('API Key berhasil disalin ke clipboard!', false);
     }
 
     function showServerStatusToast() {
       const statusMsg = activeApiKey
-        ? `Server v2.1 Aktif • API Key terhubung (${activeApiKey.slice(0, 10)}...)`
+        ? `Server v2.1 Aktif • API Key terhubung (${activeApiKey})`
         : 'Server v2.1 Aktif • Silakan klik Login / Daftar di sebelah lonceng untuk mengambil API Key.';
       showToast(statusMsg, false);
     }
 
     // =========================================================================
-    // 4. RENDER & EKSEKUSI ENDPOINT LIVE REST API (TANPA SIMULASI PALSU)
+    // 4. RENDER & EKSEKUSI ENDPOINT LIVE REST API
     // =========================================================================
     function renderEndpoints(category) {
       const container = document.getElementById('endpointsContainer');
@@ -2652,7 +2786,7 @@
                 <div class="ep-badges">
                   <span class="method-badge ${ep.method !== 'GET' ? 'put' : ''}">${ep.method}</span>
                   <span class="ep-path">${ep.path}</span>
-                  ${ep.requiresJwt ? '<span class="brand-tag" style="font-size:10px;">🔒 JWT Auth</span>' : ''}
+                  ${ep.requiresJwt ? '<span class="brand-tag" style="font-size:10px;">🔒 Butuh Login</span>' : ''}
                 </div>
                 <div class="ep-title font-heading">${ep.title}</div>
                 <p class="ep-desc">${ep.desc}</p>
@@ -2716,6 +2850,15 @@
           if (f.key === 'customApiKey') {
             bodyPayload.apiKey = val;
             bodyPayload.newApiKey = val;
+            bodyPayload.apikey = val;
+          }
+          if (f.key === 'featureName') {
+            bodyPayload.name = val;
+            bodyPayload.title = val;
+          }
+          if (f.key === 'description') {
+            bodyPayload.detail = val;
+            bodyPayload.message = val;
           }
         }
       });
@@ -2751,8 +2894,8 @@
         }
       }
 
-      if (ep.requiresJwt && !activeToken) {
-        showToast('Endpoint ini membutuhkan Login! Silakan login melalui modal yang terbuka.', true);
+      if (ep.requiresJwt && !isUserLoggedIn()) {
+        showToast('Endpoint ini membutuhkan Login! Silakan login terlebih dahulu.', true);
         openAuthModal('login');
         return;
       }
@@ -2769,15 +2912,9 @@
         </div>
       `;
 
-      const headers = {};
-      if (ep.requiresJwt && activeToken) {
-        headers['Authorization'] = `Bearer ${activeToken}`;
-      }
-      if (ep.method !== 'GET') {
-        headers['Content-Type'] = 'application/json';
-      }
-
+      const headers = getAuthHeaders(ep.method !== 'GET');
       const t0 = performance.now();
+
       try {
         const response = await fetch(fullUrl, {
           method: ep.method,
@@ -2794,7 +2931,10 @@
           const newKey = parsed.apiKey || parsed.result?.apiKey || bodyPayload.customApiKey;
           if (newKey) {
             syncGlobalApiKey(newKey);
-            refreshUserProfile(true);
+            if (activeUserObj) {
+              activeUserObj.apiKey = newKey;
+              applyUserToUI(activeUserObj);
+            }
             showToast(`Custom API Key berhasil diperbarui: ${newKey}`, false);
           }
         }
@@ -2812,6 +2952,7 @@
               </div>
             `;
           }
+          refreshUserProfile(true);
         }
 
         const statusColor = response.ok ? 'var(--accent-main)' : 'var(--accent-danger)';
