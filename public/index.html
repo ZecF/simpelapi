@@ -1,62 +1,76 @@
+Berikut adalah kode lengkap index.html yang siap langsung dipasang ke dalam folder simpelapi-main/public/index.html pada project Anda.
+Apa Saja yang Diperbarui Sesuai Permintaan Anda?
+ * Langsung Tembak ke Real API (fetch Live, Bukan Simulasi):
+   * Semua kartu endpoint (/api/feature/tiktok, /api/check-apikey, /api/user/custom-apikey, dan /api/user/profile) kini memiliki form input parameter asli (url, apikey, customApiKey, dan Bearer Token).
+   * Saat tombol Kirim Request Live diklik, halaman benar-benar memanggil endpoint backend Express + MongoDB Anda menggunakan fetch(), menampilkan HTTP Status asli (200 OK, 400, 401, 403, 429), waktu tempuh asli (ms), tombol Buka URL JSON di Tab Baru, serta Preview Video/Audio Langsung khusus untuk respons TikTok Downloader.
+ * Halaman/Modal Login & Register Beranimasi yang Menyatu dengan Latar Foto:
+   * Menggunakan desain * frosted glassmorphism* yang serasi dengan foto latar (d2f28cd41e76840d4128999a6c05a887.jpg), lengkap dengan transisi geser mulus antara tab Login dan Register, indikator kekuatan password, tombol lihat/sembunyikan password, serta animasi loading orbital + status proses saat menghubungi POST /api/auth/login dan POST /api/auth/register.
+ * Sinkronisasi Otomatis API Key & JWT Token:
+   * Begitu user berhasil Login, token JWT dan apiKey dari database otomatis tersimpan di localStorage dan langsung terisi (auto-fill) ke seluruh form penguji endpoint di bawahnya.
+Simpan kode di bawah ini sebagai public/index.html (pastikan file foto d2f28cd41e76840d4128999a6c05a887.jpg berada di dalam folder public/ yang sama, atau pilih langsung lewat tombol 🖼️ Pilih Foto Latar di kanan atas):
 <!DOCTYPE html>
 <html lang="id" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WA Bot REST API v2.1 — Dokumentasi & Catatan Rilis</title>
+  <title>WA Bot REST API v2.1 — Live Dashboard & Auth</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 
   <style>
     /* ==========================================================================
-       1. TOKENS & TEMA GLASSMORPHISM (DARK & LIGHT)
+       1. TOKENS & TEMA GLASSMORPHISM MENYATU DENGAN LATAR FOTO CEWEK
        ========================================================================== */
     :root[data-theme="dark"] {
-      --bg-base: #090B0E;
-      --bg-overlay: rgba(9, 11, 14, 0.72);
-      --bg-surface: rgba(18, 22, 28, 0.72);
-      --bg-surface-solid: #12161C;
-      --bg-subtle: rgba(30, 36, 45, 0.68);
-      --bg-code: rgba(10, 12, 16, 0.92);
+      --bg-base: #07090D;
+      --bg-overlay: rgba(7, 10, 15, 0.70);
+      --bg-surface: rgba(15, 20, 28, 0.74);
+      --bg-surface-solid: #11161F;
+      --bg-subtle: rgba(26, 33, 44, 0.72);
+      --bg-input: rgba(10, 14, 20, 0.78);
+      --bg-code: rgba(8, 11, 16, 0.94);
       --text-primary: #F8FAFC;
       --text-secondary: #CBD5E1;
       --text-muted: #94A3B8;
-      --border-soft: rgba(255, 255, 255, 0.11);
-      --border-hover: rgba(45, 212, 191, 0.45);
-      --grid-line: rgba(255, 255, 255, 0.04);
-      --accent-main: #10B981;       /* Emerald Green (JERE-API Style) */
+      --border-soft: rgba(255, 255, 255, 0.12);
+      --border-hover: rgba(14, 165, 233, 0.5);
+      --grid-line: rgba(255, 255, 255, 0.035);
+      --accent-main: #10B981;       /* Emerald Green */
       --accent-main-soft: rgba(16, 185, 129, 0.16);
-      --accent-cyan: #0EA5E9;       /* Sky Blue (Senada baju di foto latar) */
-      --accent-cyan-soft: rgba(14, 165, 233, 0.18);
+      --accent-cyan: #38BDF8;       /* Sky Blue senada kaos di foto latar */
+      --accent-cyan-soft: rgba(56, 189, 248, 0.18);
       --accent-warm: #F59E0B;
       --accent-warm-soft: rgba(245, 158, 11, 0.16);
-      --shimmer-highlight: rgba(255, 255, 255, 0.08);
-      --shadow-card: 0 20px 40px -12px rgba(0, 0, 0, 0.6);
+      --accent-danger: #EF4444;
+      --accent-danger-soft: rgba(239, 68, 68, 0.16);
+      --shadow-card: 0 20px 42px -12px rgba(0, 0, 0, 0.65);
       --bg-photo-url: url('d2f28cd41e76840d4128999a6c05a887.jpg');
     }
 
     :root[data-theme="light"] {
       --bg-base: #F1F5F9;
-      --bg-overlay: rgba(248, 250, 252, 0.76);
-      --bg-surface: rgba(255, 255, 255, 0.78);
+      --bg-overlay: rgba(248, 250, 252, 0.74);
+      --bg-surface: rgba(255, 255, 255, 0.80);
       --bg-surface-solid: #FFFFFF;
-      --bg-subtle: rgba(241, 245, 249, 0.82);
+      --bg-subtle: rgba(241, 245, 249, 0.85);
+      --bg-input: rgba(255, 255, 255, 0.92);
       --bg-code: #0F172A;
       --text-primary: #0F172A;
       --text-secondary: #334155;
       --text-muted: #64748B;
       --border-soft: rgba(15, 23, 42, 0.12);
-      --border-hover: rgba(16, 185, 129, 0.5);
-      --grid-line: rgba(15, 23, 42, 0.045);
+      --border-hover: rgba(2, 132, 199, 0.5);
+      --grid-line: rgba(15, 23, 42, 0.04);
       --accent-main: #059669;
-      --accent-main-soft: rgba(5, 150, 105, 0.12);
+      --accent-main-soft: rgba(5, 150, 105, 0.14);
       --accent-cyan: #0284C7;
-      --accent-cyan-soft: rgba(2, 132, 199, 0.12);
+      --accent-cyan-soft: rgba(2, 132, 199, 0.14);
       --accent-warm: #D97706;
-      --accent-warm-soft: rgba(217, 119, 6, 0.12);
-      --shimmer-highlight: rgba(255, 255, 255, 0.7);
-      --shadow-card: 0 16px 32px -10px rgba(15, 23, 42, 0.12);
+      --accent-warm-soft: rgba(217, 119, 6, 0.14);
+      --accent-danger: #DC2626;
+      --accent-danger-soft: rgba(220, 38, 38, 0.14);
+      --shadow-card: 0 16px 32px -10px rgba(15, 23, 42, 0.14);
     }
 
     * {
@@ -74,10 +88,10 @@
       color: var(--text-primary);
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       font-size: 15px;
-      line-height: 1.68;
+      line-height: 1.65;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
-      padding-bottom: 92px; /* Ruang untuk Bottom Nav */
+      padding-bottom: 96px;
     }
 
     h1, h2, h3, h4, .font-heading {
@@ -91,7 +105,7 @@
     }
 
     /* ==========================================================================
-       2. LATAR BELAKANG FOTO CEWEK + GRID ARSITEKTURAL (NEXRAY & VELIXS)
+       2. LATAR BELAKANG FOTO CEWEK + GRID ARSITEKTURAL
        ========================================================================== */
     .ambient-bg-container {
       position: fixed;
@@ -111,9 +125,9 @@
       inset: 0;
       z-index: -2;
       background: var(--bg-overlay);
-      backdrop-filter: blur(var(--bg-blur, 5px));
-      -webkit-backdrop-filter: blur(var(--bg-blur, 5px));
-      transition: background 0.35s ease, backdrop-filter 0.35s ease;
+      backdrop-filter: blur(var(--bg-blur, 4px));
+      -webkit-backdrop-filter: blur(var(--bg-blur, 4px));
+      transition: background 0.35s ease, backdrop-filter 0.35s ease, opacity 0.35s ease;
     }
 
     .ambient-grid {
@@ -123,12 +137,12 @@
       background-image:
         linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
         linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
-      background-size: 40px 40px;
+      background-size: 38px 38px;
       pointer-events: none;
     }
 
     /* ==========================================================================
-       3. ANIMASI LOADING KREATIF
+       3. ANIMASI LOADING HALAMAN & OVERLAY PROSES AUTH / API
        ========================================================================== */
     .loader-overlay {
       position: fixed;
@@ -139,7 +153,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1), transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+      transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1), transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     .loader-overlay.done {
@@ -176,7 +190,7 @@
       height: 12px;
       border-radius: 50%;
       background-color: var(--accent-main);
-      animation: nodePulse 1.2s infinite ease-in-out;
+      animation: nodePulse 1.15s infinite ease-in-out;
     }
 
     .node-dot:nth-child(2) {
@@ -189,8 +203,8 @@
     }
 
     @keyframes nodePulse {
-      0%, 100% { transform: translateY(0) scale(0.85); opacity: 0.5; }
-      50% { transform: translateY(-7px) scale(1.15); opacity: 1; box-shadow: 0 6px 14px var(--accent-main-soft); }
+      0%, 100% { transform: translateY(0) scale(0.85); opacity: 0.45; }
+      50% { transform: translateY(-7px) scale(1.18); opacity: 1; box-shadow: 0 6px 14px var(--accent-cyan-soft); }
     }
 
     .progress-rail {
@@ -216,8 +230,48 @@
       font-family: 'JetBrains Mono', monospace;
     }
 
+    /* Toast Notification Melayang */
+    .toast-container {
+      position: fixed;
+      top: 76px;
+      right: 20px;
+      z-index: 9000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 360px;
+      width: calc(100% - 40px);
+      pointer-events: none;
+    }
+
+    .toast-item {
+      pointer-events: auto;
+      background: var(--bg-surface-solid);
+      border: 1px solid var(--border-soft);
+      border-left: 4px solid var(--accent-main);
+      color: var(--text-primary);
+      padding: 13px 16px;
+      border-radius: 12px;
+      box-shadow: var(--shadow-card);
+      font-size: 13px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      animation: toastSlideIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    .toast-item.error {
+      border-left-color: var(--accent-danger);
+    }
+
+    @keyframes toastSlideIn {
+      from { opacity: 0; transform: translateX(30px) scale(0.96); }
+      to { opacity: 1; transform: translateX(0) scale(1); }
+    }
+
     /* ==========================================================================
-       4. TOP NAVBAR (GAYA JERE-API & NEXRAY)
+       4. TOP NAVBAR
        ========================================================================== */
     .navbar {
       position: sticky;
@@ -230,24 +284,25 @@
     }
 
     .navbar-inner {
-      max-width: 960px;
+      max-width: 980px;
       margin: 0 auto;
       padding: 12px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
     .brand-cluster {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
     .menu-box-btn {
-      width: 38px;
-      height: 38px;
+      width: 36px;
+      height: 36px;
       border-radius: 10px;
       background-color: var(--bg-subtle);
       border: 1px solid var(--border-soft);
@@ -256,20 +311,14 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      font-size: 16px;
-      transition: all 0.2s ease;
-    }
-
-    .menu-box-btn:hover {
-      border-color: var(--accent-main);
+      font-size: 15px;
     }
 
     .brand-title {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 800;
-      letter-spacing: 0.04em;
-      color: var(--text-primary);
+      letter-spacing: 0.03em;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -293,44 +342,13 @@
       flex-wrap: wrap;
     }
 
-    .icon-circle-btn {
-      position: relative;
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      background-color: var(--bg-subtle);
-      border: 1px solid var(--border-soft);
-      color: var(--text-primary);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .icon-circle-btn:hover {
-      border-color: var(--accent-main);
-      transform: translateY(-1px);
-    }
-
-    .notif-dot {
-      position: absolute;
-      top: 2px;
-      right: 2px;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background-color: #EF4444;
-      box-shadow: 0 0 0 2px var(--bg-surface-solid);
-    }
-
     .btn-pill-action {
       background-color: var(--bg-subtle);
       color: var(--text-primary);
       border: 1px solid var(--border-soft);
-      padding: 7px 14px;
+      padding: 6px 13px;
       border-radius: 99px;
-      font-size: 12.5px;
+      font-size: 12px;
       font-weight: 600;
       cursor: pointer;
       display: inline-flex;
@@ -344,19 +362,49 @@
       background-color: var(--accent-cyan-soft);
     }
 
+    .btn-auth-trigger {
+      background: linear-gradient(135deg, var(--accent-cyan), #0284C7);
+      color: #FFFFFF;
+      border: none;
+      padding: 7px 16px;
+      border-radius: 99px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(56, 189, 248, 0.35);
+      transition: transform 0.2s ease;
+    }
+
+    .btn-auth-trigger:hover {
+      transform: translateY(-1px);
+    }
+
+    .icon-circle-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border-soft);
+      color: var(--text-primary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
     /* ==========================================================================
-       5. CONTAINER UTAMA & EFEK REVEAL
+       5. LAYOUT UTAMA
        ========================================================================== */
     .doc-wrapper {
-      max-width: 960px;
+      max-width: 980px;
       margin: 0 auto;
-      padding: 32px 20px 40px;
+      padding: 28px 20px 40px;
     }
 
     .stagger-section {
       opacity: 0;
       transform: translateY(16px);
-      transition: opacity 0.55s ease, transform 0.55s ease;
+      transition: opacity 0.5s ease, transform 0.5s ease;
     }
 
     .stagger-section.shown {
@@ -365,300 +413,398 @@
     }
 
     /* ==========================================================================
-       6. HERO BANNER CARD BERLATAR FOTO CEWEK (GAYA JERE-API)
+       6. PANEL REGISTER & LOGIN BERANIMASI (SESUAI LATAR FOTO CEWEK)
        ========================================================================== */
-    .jere-banner-card {
+    .auth-showcase-wrapper {
+      margin-bottom: 38px;
+    }
+
+    .auth-glass-card {
       position: relative;
-      border-radius: 22px;
+      border-radius: 24px;
       overflow: hidden;
       border: 1px solid var(--border-soft);
       box-shadow: var(--shadow-card);
-      margin-bottom: 36px;
-      background-color: #0D1117;
-      min-height: 360px;
+      background-color: var(--bg-surface);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
       display: grid;
-      grid-template-columns: 1.25fr 0.75fr;
+      grid-template-columns: 1.05fr 1.15fr;
+      min-height: 460px;
     }
 
-    /* Foto Cewek di sisi kanan & latar kartu */
-    .jere-banner-photo {
+    /* Sisi Kiri: Visual Foto Cewek Pelabuhan + Status Live API */
+    .auth-visual-side {
+      position: relative;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      min-height: 290px;
+    }
+
+    .auth-visual-photo {
       position: absolute;
       inset: 0;
       background-image: var(--bg-photo-url);
       background-size: cover;
-      background-position: center 25%;
+      background-position: center 22%;
       z-index: 1;
-      transition: transform 0.6s ease;
+      transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
-    .jere-banner-card:hover .jere-banner-photo {
-      transform: scale(1.03);
+    .auth-glass-card:hover .auth-visual-photo {
+      transform: scale(1.04);
     }
 
-    /* Gradient gelap di kiri agar teks tajam, transparan di kanan agar foto cewek jelas */
-    .jere-banner-gradient {
+    .auth-visual-gradient {
       position: absolute;
       inset: 0;
       z-index: 2;
       background: linear-gradient(
-        90deg,
-        rgba(9, 12, 16, 0.95) 0%,
-        rgba(9, 12, 16, 0.86) 48%,
-        rgba(9, 12, 16, 0.25) 100%
+        180deg,
+        rgba(8, 12, 18, 0.30) 0%,
+        rgba(8, 12, 18, 0.55) 50%,
+        rgba(8, 12, 18, 0.94) 100%
       );
     }
 
-    .jere-banner-left {
+    .auth-visual-top,
+    .auth-visual-bottom {
       position: relative;
       z-index: 3;
-      padding: 26px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
     }
 
-    .sync-brand-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-
-    .sync-avatar {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background-image: var(--bg-photo-url);
-      background-size: cover;
-      background-position: center;
-      border: 1.5px solid var(--accent-cyan);
-    }
-
-    .sync-badge-icon {
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-      background-color: var(--accent-cyan);
-      color: #FFF;
+    .live-badge-pill {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      font-size: 12px;
+      gap: 7px;
+      background: rgba(10, 14, 22, 0.76);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: #F8FAFC;
+      padding: 5px 13px;
+      border-radius: 99px;
+      font-size: 11px;
       font-weight: 700;
+      letter-spacing: 0.04em;
     }
 
-    .banner-kicker {
-      font-size: 10.5px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--accent-cyan);
-      margin-bottom: 4px;
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: #10B981;
+      box-shadow: 0 0 10px #10B981;
+      animation: dotBlink 1.6s infinite ease-in-out;
     }
 
-    .banner-heading {
-      font-size: clamp(20px, 3vw, 26px);
+    @keyframes dotBlink {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.45; transform: scale(0.85); }
+    }
+
+    .auth-visual-title {
+      font-size: 22px;
       font-weight: 800;
       color: #FFFFFF;
       line-height: 1.25;
       margin-bottom: 6px;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
     }
 
-    .banner-sub {
+    .auth-visual-sub {
       font-size: 13px;
-      color: #CBD5E1;
-      margin-bottom: 18px;
-      max-width: 480px;
+      color: #E2E8F0;
+      margin-bottom: 14px;
     }
 
-    .mini-features-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-bottom: 18px;
-    }
-
-    .mini-feat-box {
-      background: rgba(15, 20, 28, 0.72);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      padding: 10px 12px;
+    .auth-perks-row {
       display: flex;
-      align-items: flex-start;
-      gap: 10px;
+      flex-wrap: wrap;
+      gap: 8px;
     }
 
-    .mini-feat-icon {
-      width: 28px;
-      height: 28px;
+    .perk-tag {
+      background: rgba(15, 23, 42, 0.78);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #38BDF8;
+      padding: 4px 10px;
       border-radius: 8px;
-      background: var(--accent-cyan-soft);
-      color: var(--accent-cyan);
+      font-size: 11.5px;
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Sisi Kanan: Form Login, Register & Dashboard User Aktif */
+    .auth-form-side {
+      position: relative;
+      padding: 28px 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background: var(--bg-surface);
+    }
+
+    /* Switcher Tab Login / Register Beranimasi */
+    .auth-mode-tabs {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background-color: var(--bg-subtle);
+      padding: 4px;
+      border-radius: 12px;
+      border: 1px solid var(--border-soft);
+      margin-bottom: 22px;
+    }
+
+    .auth-tab-slider {
+      position: absolute;
+      top: 4px;
+      bottom: 4px;
+      left: 4px;
+      width: calc(50% - 4px);
+      background: linear-gradient(135deg, var(--accent-cyan), #0284C7);
+      border-radius: 9px;
+      box-shadow: 0 4px 14px rgba(56, 189, 248, 0.35);
+      transition: transform 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+      z-index: 1;
+    }
+
+    .auth-mode-tabs[data-mode="register"] .auth-tab-slider {
+      transform: translateX(100%);
+    }
+
+    .auth-tab-btn {
+      position: relative;
+      z-index: 2;
+      background: none;
+      border: none;
+      padding: 9px 12px;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: color 0.25s ease;
+    }
+
+    .auth-tab-btn.active {
+      color: #FFFFFF;
+    }
+
+    /* Animasi Transisi Form */
+    .auth-pane {
+      display: none;
+      animation: paneFadeSlide 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    .auth-pane.active {
+      display: block;
+    }
+
+    @keyframes paneFadeSlide {
+      from { opacity: 0; transform: translateY(10px) scale(0.99); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 13px;
+      font-size: 14px;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .auth-input {
+      width: 100%;
+      background-color: var(--bg-input);
+      border: 1px solid var(--border-soft);
+      color: var(--text-primary);
+      padding: 11px 38px 11px 38px;
+      border-radius: 11px;
+      font-size: 13.5px;
+      font-family: inherit;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+    }
+
+    .auth-input:focus {
+      outline: none;
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 0 3px var(--accent-cyan-soft);
+    }
+
+    .toggle-pass-btn {
+      position: absolute;
+      right: 10px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 13px;
+      padding: 4px;
+    }
+
+    /* Indikator Kekuatan Password */
+    .strength-meter {
+      display: flex;
+      gap: 5px;
+      margin-top: 6px;
+      height: 4px;
+    }
+
+    .strength-seg {
+      flex: 1;
+      background-color: var(--border-soft);
+      border-radius: 99px;
+      transition: background-color 0.25s ease;
+    }
+
+    .btn-submit-auth {
+      width: 100%;
+      background: linear-gradient(135deg, var(--accent-main), #059669);
+      color: #042F1E;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 13px;
-      flex-shrink: 0;
-      margin-top: 2px;
+      gap: 8px;
+      margin-top: 8px;
+      box-shadow: 0 8px 20px var(--accent-main-soft);
+      transition: transform 0.2s ease, opacity 0.2s ease;
     }
 
-    .mini-feat-title {
-      font-size: 12px;
-      font-weight: 700;
-      color: #FFFFFF;
-      margin-bottom: 2px;
+    .btn-submit-auth:hover {
+      transform: translateY(-1px);
+      opacity: 0.96;
     }
 
-    .mini-feat-desc {
-      font-size: 11px;
-      color: #94A3B8;
-      line-height: 1.4;
+    .btn-submit-auth:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
 
-    .banner-actions-row {
+    /* Overlay Loading Beranimasi di Dalam Kartu Auth Saat Submit */
+    .auth-loading-curtain {
+      position: absolute;
+      inset: 0;
+      z-index: 20;
+      background: rgba(10, 14, 22, 0.86);
+      backdrop-filter: blur(10px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .auth-loading-curtain.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .spinner-ring {
+      width: 44px;
+      height: 44px;
+      border: 3.5px solid rgba(56, 189, 248, 0.2);
+      border-top-color: var(--accent-cyan);
+      border-right-color: var(--accent-main);
+      border-radius: 50%;
+      animation: spinCircle 0.8s linear infinite;
+      margin-bottom: 14px;
+    }
+
+    @keyframes spinCircle {
+      to { transform: rotate(360deg); }
+    }
+
+    .auth-feedback-box {
+      margin-top: 12px;
+      padding: 10px 13px;
+      border-radius: 10px;
+      font-size: 12.5px;
+      display: none;
+    }
+
+    .auth-feedback-box.ok {
+      display: block;
+      background-color: var(--accent-main-soft);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: var(--text-primary);
+    }
+
+    .auth-feedback-box.err {
+      display: block;
+      background-color: var(--accent-danger-soft);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: var(--text-primary);
+    }
+
+    /* Dashboard Mini Saat User Sudah Login */
+    .logged-in-dashboard {
+      display: none;
+      animation: paneFadeSlide 0.35s ease forwards;
+    }
+
+    .logged-in-dashboard.active {
+      display: block;
+    }
+
+    .user-key-box {
+      background-color: var(--bg-input);
+      border: 1px solid var(--border-soft);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin: 12px 0;
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 10px;
       flex-wrap: wrap;
     }
 
-    .btn-cyan-glow {
-      background: linear-gradient(135deg, #0EA5E9, #0284C7);
-      color: #FFFFFF;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 99px;
-      font-size: 12.5px;
-      font-weight: 700;
-      cursor: pointer;
-      box-shadow: 0 4px 16px rgba(14, 165, 233, 0.4);
-      transition: transform 0.2s ease;
-    }
-
-    .btn-cyan-glow:hover {
-      transform: translateY(-1px);
-    }
-
-    .banner-meta-pill {
-      background: rgba(15, 20, 28, 0.75);
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      color: #E2E8F0;
-      padding: 6px 13px;
-      border-radius: 99px;
-      font-size: 11.5px;
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    /* Sisi Kanan Banner (Status Box Mengambang di atas Foto Cewek) */
-    .jere-banner-right {
-      position: relative;
-      z-index: 3;
-      padding: 22px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: flex-end;
-    }
-
-    .status-top-pill {
-      background: rgba(10, 14, 20, 0.78);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(16, 185, 129, 0.4);
-      color: #F8FAFC;
-      padding: 5px 12px;
-      border-radius: 99px;
-      font-size: 10.5px;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .status-dot-green {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background-color: #10B981;
-      box-shadow: 0 0 8px #10B981;
-    }
-
-    .floating-conn-card {
-      width: 100%;
-      max-width: 250px;
-      background: rgba(12, 16, 23, 0.84);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(14, 165, 233, 0.35);
-      border-radius: 14px;
-      padding: 14px;
-      color: #F8FAFC;
-      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
-    }
-
-    .conn-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      color: #94A3B8;
-      margin-bottom: 10px;
-    }
-
-    .conn-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 11.5px;
-      margin-bottom: 6px;
-    }
-
-    .conn-bar {
-      height: 4px;
-      background: rgba(255, 255, 255, 0.12);
-      border-radius: 99px;
-      overflow: hidden;
-      margin-top: 8px;
-    }
-
-    .conn-bar-fill {
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, #0EA5E9, #10B981);
-    }
-
     /* ==========================================================================
-       7. HERO TYPOGRAPHY & TERMINAL MULTI-TAB (NEXRAY + VELIXS + JERE-API)
+       7. HERO & MULTI-TAB CODE SNIPPET
        ========================================================================== */
     .center-hero {
       text-align: center;
-      margin: 42px auto 38px;
-      max-width: 720px;
+      margin: 18px auto 36px;
+      max-width: 740px;
     }
 
-    .nexray-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background-color: var(--bg-surface);
-      backdrop-filter: blur(12px);
-      border: 1px solid var(--border-soft);
-      padding: 6px 16px;
-      border-radius: 99px;
-      font-size: 12.5px;
-      font-weight: 600;
-      color: var(--text-secondary);
-      margin-bottom: 18px;
-    }
-
-    /* Tipografi Kombinasi Solid & Outline ala Velixs */
     .velixs-display-title {
-      font-size: clamp(28px, 5vw, 46px);
+      font-size: clamp(26px, 4.5vw, 42px);
       font-weight: 800;
       line-height: 1.15;
-      margin-bottom: 14px;
-      letter-spacing: -0.03em;
+      margin-bottom: 12px;
     }
 
     .velixs-outline {
@@ -666,57 +812,6 @@
       -webkit-text-stroke: 1.5px var(--text-primary);
     }
 
-    .center-hero-desc {
-      font-size: 15.5px;
-      color: var(--text-secondary);
-      margin-bottom: 24px;
-    }
-
-    .hero-cta-group {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-bottom: 28px;
-    }
-
-    .btn-emerald-main {
-      background-color: var(--accent-main);
-      color: #06281E;
-      font-weight: 700;
-      font-size: 14px;
-      padding: 11px 24px;
-      border-radius: 12px;
-      border: none;
-      cursor: pointer;
-      box-shadow: 0 8px 24px var(--accent-main-soft);
-      transition: transform 0.2s ease, opacity 0.2s ease;
-    }
-
-    .btn-emerald-main:hover {
-      transform: translateY(-2px);
-      opacity: 0.95;
-    }
-
-    .btn-glass-secondary {
-      background-color: var(--bg-surface);
-      backdrop-filter: blur(12px);
-      color: var(--text-primary);
-      border: 1px solid var(--border-soft);
-      font-weight: 600;
-      font-size: 14px;
-      padding: 11px 20px;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .btn-glass-secondary:hover {
-      border-color: var(--text-primary);
-    }
-
-    /* Terminal Code Box (JERE-API & Nexray Style) */
     .terminal-card {
       background-color: var(--bg-code);
       border: 1px solid var(--border-soft);
@@ -724,6 +819,7 @@
       overflow: hidden;
       text-align: left;
       box-shadow: var(--shadow-card);
+      margin-top: 20px;
     }
 
     .terminal-topbar {
@@ -747,7 +843,6 @@
       height: 10px;
       border-radius: 50%;
     }
-
     .mac-dot.red { background-color: #EF4444; }
     .mac-dot.yellow { background-color: #F59E0B; }
     .mac-dot.green { background-color: #10B981; }
@@ -766,7 +861,6 @@
       font-size: 12px;
       font-family: 'JetBrains Mono', monospace;
       cursor: pointer;
-      transition: all 0.2s ease;
     }
 
     .lang-tab.active {
@@ -786,215 +880,48 @@
     }
 
     .terminal-body {
-      padding: 18px 20px;
+      padding: 16px 20px;
       color: #34D399;
       overflow-x: auto;
-      line-height: 1.65;
+      line-height: 1.6;
     }
 
     /* ==========================================================================
-       8. API STATISTICS 2X2 GRID (GAYA NEXRAY API)
+       8. PENGATURAN SERVER BASE URL & LIVE ENDPOINT TESTER (REAL API)
        ========================================================================== */
-    .stats-section {
-      margin-bottom: 42px;
-    }
-
-    .section-center-head {
-      text-align: center;
-      margin-bottom: 22px;
-    }
-
-    .section-center-head h2 {
-      font-size: 22px;
-      display: inline-block;
-      padding-bottom: 6px;
-      border-bottom: 2px solid var(--accent-main);
-      margin-bottom: 6px;
-    }
-
-    .stats-grid-nexray {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 14px;
-    }
-
-    .stat-glass-card {
-      position: relative;
-      background-color: var(--bg-surface);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 1px solid var(--border-soft);
-      border-radius: 16px;
-      padding: 20px;
-      overflow: hidden;
-      transition: transform 0.25s ease, border-color 0.25s ease;
-    }
-
-    .stat-glass-card:hover {
-      transform: translateY(-3px);
-      border-color: var(--border-hover);
-    }
-
-    .stat-number {
-      font-size: 26px;
-      font-weight: 800;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      color: var(--text-primary);
-      margin-bottom: 2px;
-    }
-
-    .stat-caption {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-    }
-
-    .stat-watermark {
-      position: absolute;
-      right: 14px;
-      bottom: 8px;
-      font-size: 38px;
-      opacity: 0.08;
-      pointer-events: none;
-    }
-
-    /* ==========================================================================
-       9. CATATAN TIM & SIMULATOR ROLE
-       ========================================================================== */
-    .dev-note-card {
+    .server-config-bar {
       background-color: var(--bg-surface);
       backdrop-filter: blur(16px);
       border: 1px solid var(--border-soft);
-      border-left: 4px solid var(--accent-cyan);
-      border-radius: 16px;
-      padding: 20px 24px;
-      box-shadow: var(--shadow-card);
-      margin-bottom: 36px;
-    }
-
-    .dev-note-meta {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 10px;
-      font-size: 13px;
-    }
-
-    .author-badge {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 700;
-    }
-
-    .author-avatar {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background-image: var(--bg-photo-url);
-      background-size: cover;
-      background-position: center;
-      border: 1.5px solid var(--accent-cyan);
-    }
-
-    .role-showcase {
-      background-color: var(--bg-surface);
-      backdrop-filter: blur(16px);
-      border: 1px solid var(--border-soft);
-      border-radius: 18px;
-      padding: 24px;
-      box-shadow: var(--shadow-card);
-      margin-bottom: 42px;
-    }
-
-    .showcase-top {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
+      border-radius: 14px;
+      padding: 14px 18px;
       margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
     }
 
-    .pill-tabs {
-      position: relative;
-      display: inline-flex;
-      background-color: var(--bg-subtle);
-      padding: 4px;
-      border-radius: 10px;
+    .server-url-input {
+      background-color: var(--bg-input);
       border: 1px solid var(--border-soft);
-    }
-
-    .sliding-pill {
-      position: absolute;
-      top: 4px;
-      bottom: 4px;
-      left: 4px;
-      background-color: var(--accent-main);
-      border-radius: 7px;
-      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), width 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-      z-index: 1;
-    }
-
-    .pill-btn {
-      position: relative;
-      z-index: 2;
-      background: none;
-      border: none;
-      padding: 6px 14px;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-secondary);
-      cursor: pointer;
-      transition: color 0.2s ease;
-    }
-
-    .pill-btn.active {
-      color: #052E16;
-      font-weight: 700;
-    }
-
-    .role-details-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 14px;
-      transition: opacity 0.25s ease, transform 0.25s ease;
-    }
-
-    .metric-box {
-      background-color: var(--bg-subtle);
-      border: 1px solid var(--border-soft);
-      border-radius: 12px;
-      padding: 15px 18px;
-    }
-
-    .metric-label {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-bottom: 4px;
-    }
-
-    .metric-val {
-      font-size: 16.5px;
-      font-weight: 800;
-      font-family: 'Plus Jakarta Sans', sans-serif;
       color: var(--text-primary);
+      padding: 8px 12px;
+      border-radius: 9px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      min-width: 260px;
+      flex: 1;
     }
 
-    /* ==========================================================================
-       10. DAFTAR ENDPOINT INTERAKTIF
-       ========================================================================== */
     .section-head {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
 
     .filter-group {
@@ -1013,7 +940,6 @@
       font-size: 12.5px;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s ease;
     }
 
     .filter-chip.active {
@@ -1025,7 +951,7 @@
     .endpoint-list {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 14px;
     }
 
     .endpoint-card {
@@ -1035,16 +961,12 @@
       border: 1px solid var(--border-soft);
       border-radius: 16px;
       box-shadow: var(--shadow-card);
-      transition: all 0.25s ease;
       overflow: hidden;
-    }
-
-    .endpoint-card:hover {
-      border-color: var(--border-hover);
+      transition: border-color 0.25s ease;
     }
 
     .endpoint-card.open {
-      border-color: var(--accent-main);
+      border-color: var(--accent-cyan);
     }
 
     .endpoint-header {
@@ -1085,7 +1007,8 @@
       color: var(--accent-main);
     }
 
-    .method-badge.put {
+    .method-badge.put,
+    .method-badge.post {
       background-color: var(--accent-warm-soft);
       color: var(--accent-warm);
     }
@@ -1123,8 +1046,8 @@
 
     .endpoint-card.open .expand-icon {
       transform: rotate(180deg);
-      background-color: var(--accent-main-soft);
-      color: var(--accent-main);
+      background-color: var(--accent-cyan-soft);
+      color: var(--accent-cyan);
     }
 
     .ep-drawer {
@@ -1149,7 +1072,43 @@
       gap: 14px;
     }
 
-    .try-bar {
+    /* Form Input Parameter Live API */
+    .live-params-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      background-color: var(--bg-subtle);
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border-soft);
+    }
+
+    .param-field label {
+      display: block;
+      font-size: 11.5px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--accent-cyan);
+      margin-bottom: 5px;
+    }
+
+    .param-field input {
+      width: 100%;
+      background-color: var(--bg-input);
+      border: 1px solid var(--border-soft);
+      color: var(--text-primary);
+      padding: 8px 11px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .param-field input:focus {
+      outline: none;
+      border-color: var(--accent-cyan);
+    }
+
+    .live-action-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -1161,15 +1120,36 @@
       border: 1px solid var(--border-soft);
     }
 
-    .btn-try {
-      background-color: var(--accent-main);
-      color: #052E16;
+    .btn-live-exec {
+      background: linear-gradient(135deg, var(--accent-main), #059669);
+      color: #042F1E;
       border: none;
-      padding: 6px 14px;
-      border-radius: 7px;
+      padding: 8px 16px;
+      border-radius: 8px;
       font-size: 12.5px;
-      font-weight: 700;
+      font-weight: 800;
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-open-raw {
+      background-color: var(--bg-input);
+      color: var(--text-primary);
+      border: 1px solid var(--border-soft);
+      padding: 7px 13px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .btn-open-raw:hover {
+      border-color: var(--accent-cyan);
     }
 
     .json-preview {
@@ -1180,32 +1160,11 @@
       overflow-x: auto;
       line-height: 1.55;
       border: 1px solid var(--border-soft);
-    }
-
-    .shimmer-card {
-      position: relative;
-      overflow: hidden;
-      background-color: var(--bg-subtle);
-      border-radius: 12px;
-      border: 1px solid var(--border-soft);
-    }
-
-    .shimmer-card::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(105deg, transparent 25%, var(--shimmer-highlight) 50%, transparent 75%);
-      background-size: 200% 100%;
-      animation: diagonalShimmer 1.3s infinite linear;
-    }
-
-    @keyframes diagonalShimmer {
-      0% { background-position: 100% 0; }
-      100% { background-position: -100% 0; }
+      max-height: 360px;
     }
 
     /* ==========================================================================
-       11. BOTTOM NAVIGATION BAR (GAYA JERE-API & VELIXS)
+       9. BOTTOM NAVIGATION BAR
        ========================================================================== */
     .bottom-nav {
       position: fixed;
@@ -1221,7 +1180,6 @@
       justify-content: space-around;
       align-items: center;
       padding: 8px 12px 12px;
-      max-width: 100%;
     }
 
     .bnav-item {
@@ -1238,57 +1196,37 @@
       padding: 4px 12px;
       border-radius: 10px;
       text-decoration: none;
-      transition: color 0.2s ease;
     }
 
     .bnav-item.active,
     .bnav-item:hover {
-      color: var(--accent-main);
+      color: var(--accent-cyan);
     }
 
-    .bnav-icon {
-      font-size: 17px;
-    }
-
-    /* Responsif Mobile */
-    @media (max-width: 768px) {
-      .jere-banner-card {
+    @media (max-width: 780px) {
+      .auth-glass-card {
         grid-template-columns: 1fr;
       }
-      .jere-banner-gradient {
-        background: linear-gradient(
-          180deg,
-          rgba(9, 12, 16, 0.45) 0%,
-          rgba(9, 12, 16, 0.88) 45%,
-          rgba(9, 12, 16, 0.96) 100%
-        );
-      }
-      .jere-banner-right {
-        order: -1;
-        flex-direction: row;
-        align-items: center;
-        padding-bottom: 0;
-      }
-      .floating-conn-card {
-        display: none;
-      }
-      .mini-features-grid {
-        grid-template-columns: 1fr;
+      .auth-visual-side {
+        min-height: 220px;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- 1. LAYER LATAR BELAKANG FOTO CEWEK + GRID OVERLAY -->
+  <!-- 1. LAYER LATAR FOTO CEWEK + GRID ARSITEKTURAL -->
   <div class="ambient-bg-container" id="ambientBg"></div>
   <div class="ambient-dimmer" id="ambientDimmer"></div>
   <div class="ambient-grid"></div>
 
-  <!-- Input File Tersembunyi agar User Bisa Ganti/Pilih Foto Latar Langsung dari HP/PC -->
+  <!-- Input File Tersembunyi untuk Ganti/Pilih Foto Latar dari Galeri HP/PC -->
   <input type="file" id="bgFileInput" accept="image/*" style="display: none;" onchange="handleCustomBgUpload(event)" />
 
-  <!-- 2. ANIMASI LOADING KREATIF -->
+  <!-- Container Notifikasi Toast -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- 2. ANIMASI LOADING PEMBUKA HALAMAN -->
   <div id="pageLoader" class="loader-overlay">
     <div class="api-nodes-loader">
       <div class="node-dot"></div>
@@ -1298,33 +1236,32 @@
     <div class="progress-rail">
       <div id="loaderBar" class="progress-bar-fill"></div>
     </div>
-    <div id="loaderLog" class="loader-status-text">Menghubungkan ke cluster MongoDB...</div>
+    <div id="loaderLog" class="loader-status-text">Menghubungkan ke server REST API...</div>
   </div>
 
-  <!-- 3. HEADER NAVIGASI (JERE-API STYLE) -->
+  <!-- 3. TOP NAVBAR -->
   <header class="navbar">
     <div class="navbar-inner">
       <div class="brand-cluster">
-        <button class="menu-box-btn" onclick="replayShimmerTransition()" title="Segarkan Modul">☰</button>
+        <button class="menu-box-btn" onclick="window.scrollTo(0,0)" title="Ke Atas">☰</button>
         <div class="brand-title">
           <span>WABOT-API</span>
-          <span class="brand-tag">v2.1</span>
+          <span class="brand-tag">v2.1 LIVE</span>
         </div>
       </div>
 
       <div class="nav-controls">
-        <button class="btn-pill-action" onclick="document.getElementById('bgFileInput').click()" title="Pilih foto cewek dari galeri jika belum termuat">
+        <button class="btn-pill-action" onclick="document.getElementById('bgFileInput').click()">
           🖼️ Pilih Foto Latar
         </button>
-        <button class="btn-pill-action" onclick="cycleBgVisibility()" id="blurToggleBtn" title="Atur seberapa jelas foto latar terlihat">
+        <button class="btn-pill-action" onclick="cycleBgVisibility()" id="blurToggleBtn">
           ✨ Latar: Jelas
         </button>
-        <button class="icon-circle-btn" onclick="toggleTheme()" id="themeBtn" title="Ganti Mode Terang/Gelap">
-          ☀️
+        <button class="btn-auth-trigger" id="navAuthBtn" onclick="scrollToAuth('register')">
+          🚀 Daftar / Login
         </button>
-        <button class="icon-circle-btn" title="Status Server Production Aktif">
-          🔔
-          <span class="notif-dot"></span>
+        <button class="icon-circle-btn" onclick="toggleTheme()" id="themeBtn" title="Mode Terang/Gelap">
+          ☀️
         </button>
       </div>
     </div>
@@ -1333,119 +1270,194 @@
   <!-- 4. KONTEN UTAMA -->
   <main class="doc-wrapper" id="topHome">
 
-    <!-- A. HERO BANNER CARD BERLATAR FOTO CEWEK (REFERENSI JERE-API) -->
-    <section class="stagger-section jere-banner-card">
-      <div class="jere-banner-photo"></div>
-      <div class="jere-banner-gradient"></div>
+    <!-- A. PANEL REGISTER, LOGIN & PROFIL BERANIMASI (SESUAI LATAR FOTO CEWEK) -->
+    <section class="stagger-section auth-showcase-wrapper" id="secAuth">
+      <div class="auth-glass-card">
 
-      <div class="jere-banner-left">
-        <div>
-          <div class="sync-brand-row">
-            <div class="sync-avatar"></div>
-            <span style="color:#94A3B8; font-size:12px;">⇄</span>
-            <div class="sync-badge-icon">⚡</div>
-            <div>
-              <div style="font-size:12.5px; font-weight:700; color:#FFF; line-height:1.1;">WA Bot API v2.1</div>
-              <div style="font-size:10px; color:#94A3B8; font-family:'JetBrains Mono',monospace;">BAILEYS & HEROKU SYNC</div>
-            </div>
+        <!-- Sisi Kiri: Latar Foto Cewek Pelabuhan & Status Koneksi -->
+        <div class="auth-visual-side">
+          <div class="auth-visual-photo"></div>
+          <div class="auth-visual-gradient"></div>
+
+          <div class="auth-visual-top">
+            <span class="live-badge-pill">
+              <span class="pulse-dot"></span>
+              MONGODB & SMTP NODEMAILER AKTIF
+            </span>
           </div>
 
-          <div class="banner-kicker">PEMBARUAN MESIN KUOTA & PROTOKOL</div>
-          <h2 class="banner-heading">Sinkronisasi Otomatis Bot WhatsApp & MongoDB</h2>
-          <p class="banner-sub">
-            Integrasikan script bot Baileys dengan sistem kuota harian berbasis zona waktu <strong>Asia/Jakarta</strong>, deteksi HTTPS Heroku otomatis, dan modul downloader tanpa watermark.
-          </p>
-
-          <div class="mini-features-grid">
-            <div class="mini-feat-box">
-              <div class="mini-feat-icon">⚡</div>
-              <div>
-                <div class="mini-feat-title">Auto-Reset WIB</div>
-                <div class="mini-feat-desc">Fungsi syncPlanAndLimit() mereset kuota tepat pukul 00:00 WIB.</div>
-              </div>
-            </div>
-            <div class="mini-feat-box">
-              <div class="mini-feat-icon">🔒</div>
-              <div>
-                <div class="mini-feat-title">Custom API Key VIP</div>
-                <div class="mini-feat-desc">Bebas kustomisasi string key 5-32 karakter alfanumerik.</div>
-              </div>
-            </div>
-            <div class="mini-feat-box">
-              <div class="mini-feat-icon">🛡️</div>
-              <div>
-                <div class="mini-feat-title">SMTP Proxy Heroku</div>
-                <div class="mini-feat-desc">Deteksi x-forwarded-proto otomatis untuk link verifikasi email.</div>
-              </div>
-            </div>
-            <div class="mini-feat-box">
-              <div class="mini-feat-icon">🎬</div>
-              <div>
-                <div class="mini-feat-title">TikTok HD Scraper</div>
-                <div class="mini-feat-desc">Ekstraksi MP4 tanpa watermark & audio MP3 berkecepatan tinggi.</div>
-              </div>
+          <div class="auth-visual-bottom">
+            <h2 class="auth-visual-title">Portal Akses & Manajemen API Key Bot WhatsApp</h2>
+            <p class="auth-visual-sub">
+              Daftar akun gratis untuk mendapatkan <strong>50 kuota harian</strong> otomatis, atau masuk untuk menyinkronkan API Key langsung ke penguji endpoint di bawah.
+            </p>
+            <div class="auth-perks-row">
+              <span class="perk-tag">⚡ Reset 00:00 WIB</span>
+              <span class="perk-tag">🔑 Auto-Fill API Key</span>
+              <span class="perk-tag">📧 Verifikasi SMTP</span>
             </div>
           </div>
         </div>
 
-        <div class="banner-actions-row">
-          <button class="btn-cyan-glow" onclick="document.getElementById('secEndpoints').scrollIntoView()">
-            Jelajahi Endpoint ↗
-          </button>
-          <span class="banner-meta-pill">Cluster: Asia/Jakarta • Stabil 100%</span>
-        </div>
-      </div>
+        <!-- Sisi Kanan: Form Login & Register Beranimasi + Tirai Loading -->
+        <div class="auth-form-side">
 
-      <div class="jere-banner-right">
-        <div class="status-top-pill">
-          <span class="status-dot-green"></span>
-          INTEGRASI AKUN AKTIF
-        </div>
+          <!-- Tirai Loading Beranimasi Saat Request Login / Register Berjalan -->
+          <div class="auth-loading-curtain" id="authLoadingCurtain">
+            <div class="spinner-ring"></div>
+            <div class="font-heading" style="font-size: 16px; font-weight: 700; color: #FFF; margin-bottom: 4px;" id="authLoadingTitle">
+              Memproses Permintaan...
+            </div>
+            <div class="font-mono" style="font-size: 12px; color: #94A3B8;" id="authLoadingSub">
+              Menghubungi endpoint /api/auth/...
+            </div>
+          </div>
 
-        <div class="floating-conn-card">
-          <div class="conn-header">
-            <span>STATUS KONEKSI SERVER</span>
-            <span class="status-dot-green"></span>
+          <!-- TAMPILAN BELUM LOGIN: TAB LOGIN & REGISTER -->
+          <div id="guestAuthContainer">
+            <div class="auth-mode-tabs" id="authModeTabs" data-mode="register">
+              <div class="auth-tab-slider"></div>
+              <button type="button" class="auth-tab-btn" id="tabBtnLogin" onclick="switchAuthTab('login')">
+                🔐 Masuk (Login)
+              </button>
+              <button type="button" class="auth-tab-btn active" id="tabBtnRegister" onclick="switchAuthTab('register')">
+                ✨ Daftar (Register)
+              </button>
+            </div>
+
+            <!-- PANE 1: FORM REGISTER KE POST /api/auth/register -->
+            <form id="formRegister" class="auth-pane active" onsubmit="handleRealRegister(event)">
+              <div class="form-group">
+                <label class="form-label">
+                  <span>Username Bot / Developer</span>
+                  <span class="font-mono" style="font-size:11px; color:var(--text-muted);">Min. 3 karakter</span>
+                </label>
+                <div class="input-wrap">
+                  <span class="input-icon">👤</span>
+                  <input type="text" id="regUsername" class="auth-input" placeholder="contoh: chikaa_bot" required minlength="3" />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">
+                  <span>Alamat Email Aktif</span>
+                  <span class="font-mono" style="font-size:11px; color:var(--accent-cyan);">Untuk link verifikasi SMTP</span>
+                </label>
+                <div class="input-wrap">
+                  <span class="input-icon">✉️</span>
+                  <input type="email" id="regEmail" class="auth-input" placeholder="nama@email.com" required />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">
+                  <span>Password Akun</span>
+                  <span id="passStrengthText" class="font-mono" style="font-size:11px; color:var(--text-muted);">Min. 6 karakter</span>
+                </label>
+                <div class="input-wrap">
+                  <span class="input-icon">🔒</span>
+                  <input type="password" id="regPassword" class="auth-input" placeholder="••••••••" required minlength="6" oninput="updatePasswordStrength(this.value)" />
+                  <button type="button" class="toggle-pass-btn" onclick="togglePassVisibility('regPassword', this)">👁️</button>
+                </div>
+                <div class="strength-meter">
+                  <div class="strength-seg" id="seg1"></div>
+                  <div class="strength-seg" id="seg2"></div>
+                  <div class="strength-seg" id="seg3"></div>
+                </div>
+              </div>
+
+              <button type="submit" class="btn-submit-auth">
+                <span>🚀 Buat Akun & Kirim Verifikasi</span>
+              </button>
+            </form>
+
+            <!-- PANE 2: FORM LOGIN KE POST /api/auth/login -->
+            <form id="formLogin" class="auth-pane" onsubmit="handleRealLogin(event)">
+              <div class="form-group">
+                <label class="form-label">
+                  <span>Email atau Username</span>
+                </label>
+                <div class="input-wrap">
+                  <span class="input-icon">📧</span>
+                  <input type="text" id="loginIdentifier" class="auth-input" placeholder="Masukkan email atau username Anda" required />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">
+                  <span>Password</span>
+                </label>
+                <div class="input-wrap">
+                  <span class="input-icon">🔑</span>
+                  <input type="password" id="loginPassword" class="auth-input" placeholder="••••••••" required />
+                  <button type="button" class="toggle-pass-btn" onclick="togglePassVisibility('loginPassword', this)">👁️</button>
+                </div>
+              </div>
+
+              <button type="submit" class="btn-submit-auth" style="background: linear-gradient(135deg, var(--accent-cyan), #0284C7); color: #FFF;">
+                <span>⚡ Masuk & Sinkronkan API Key</span>
+              </button>
+            </form>
+
+            <!-- Kotak Respons Asli dari Server Auth -->
+            <div id="authFeedbackBox" class="auth-feedback-box"></div>
           </div>
-          <div class="conn-row">
-            <span style="color:#94A3B8;">Engine Bot:</span>
-            <span class="font-mono" style="color:#FFF;">@wabot_v2.1</span>
+
+          <!-- TAMPILAN SUDAH LOGIN: PROFIL & API KEY AKTIF -->
+          <div id="userDashboardContainer" class="logged-in-dashboard">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:10px;">
+              <div>
+                <span class="brand-tag" id="dashRoleBadge">USER</span>
+                <h3 style="font-size: 19px; margin-top: 4px;" id="dashUsername">Memuat Profil...</h3>
+                <p style="font-size: 12.5px; color: var(--text-muted);" id="dashEmail">-</p>
+              </div>
+              <button class="btn-pill-action" onclick="refreshUserProfile()" title="Muat ulang data dari /api/user/profile">
+                ↻ Segarkan
+              </button>
+            </div>
+
+            <div class="user-key-box">
+              <div>
+                <div style="font-size: 11px; color: var(--text-muted);">API KEY AKTIF ANDA</div>
+                <code style="font-size: 14px; font-weight: 700; color: var(--accent-main);" id="dashApiKey">-</code>
+              </div>
+              <button class="btn-pill-action" onclick="copyActiveApiKey()">📋 Salin Key</button>
+            </div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:14px;">
+              <div style="background:var(--bg-subtle); padding:10px 12px; border-radius:10px; border:1px solid var(--border-soft);">
+                <div style="font-size:11px; color:var(--text-muted);">Kuota Harian</div>
+                <div class="font-heading" style="font-size:15px; font-weight:700;" id="dashQuota">- / -</div>
+              </div>
+              <div style="background:var(--bg-subtle); padding:10px 12px; border-radius:10px; border:1px solid var(--border-soft);">
+                <div style="font-size:11px; color:var(--text-muted);">Masa Aktif Paket</div>
+                <div class="font-heading" style="font-size:14px; font-weight:700;" id="dashExpiry">Permanen</div>
+              </div>
+            </div>
+
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+              <button class="btn-submit-auth" style="flex:1; margin-top:0;" onclick="document.getElementById('secEndpoints').scrollIntoView()">
+                ⚡ Uji Endpoint Sekarang
+              </button>
+              <button class="btn-pill-action" style="color:var(--accent-danger); border-color:rgba(239,68,68,0.35);" onclick="handleLogout()">
+                Keluar (Logout)
+              </button>
+            </div>
           </div>
-          <div class="conn-row">
-            <span style="color:#94A3B8;">Sinkronisasi:</span>
-            <span style="color:#10B981; font-weight:700;">Real-time Active (100%)</span>
-          </div>
-          <div class="conn-bar">
-            <div class="conn-bar-fill"></div>
-          </div>
+
         </div>
       </div>
     </section>
 
-    <!-- B. HERO CENTER & MULTI-TAB CODE SNIPPET (NEXRAY + VELIXS + JERE-API) -->
-    <section class="stagger-section center-hero" style="transition-delay: 0.06s;">
-      <div class="nexray-badge">
-        <span style="color: var(--accent-main);">✔</span> #1 High-Speed WhatsApp Bot REST API v2.1
-      </div>
-
+    <!-- B. HERO & CONTOH PEMANGGILAN LANGSUNG -->
+    <section class="stagger-section center-hero" style="transition-delay: 0.08s;">
       <h1 class="velixs-display-title">
-        REST <span class="velixs-outline">API</span> SERVICES
+        REAL-TIME <span class="velixs-outline">API</span> CONSOLE
       </h1>
-
-      <p class="center-hero-desc">
-        Pusat layanan API backend Node.js + MongoDB yang menyediakan modul downloader tanpa watermark, manajemen masa aktif paket 30 hari otomatis, dan pengiriman SMTP instan.
+      <p style="color: var(--text-secondary); font-size: 15px;">
+        Seluruh kartu endpoint di bawah ini terhubung langsung ke rute backend Express & MongoDB Anda (bukan sekadar simulasi). Masukkan parameter dan tekan <strong>Kirim Request Live</strong>.
       </p>
 
-      <div class="hero-cta-group">
-        <button class="btn-emerald-main" onclick="document.getElementById('secEndpoints').scrollIntoView()">
-          Explore Docs →
-        </button>
-        <button class="btn-glass-secondary" onclick="document.getElementById('secRoleSim').scrollIntoView()">
-          ⚡ Simulasi Kuota Role
-        </button>
-      </div>
-
-      <!-- Terminal Code Box Multi-Bahasa -->
       <div class="terminal-card">
         <div class="terminal-topbar">
           <div class="mac-dots">
@@ -1460,101 +1472,37 @@
           </div>
           <button class="btn-copy-code" id="copyCodeBtn" onclick="copyTerminalCode()">Copy</button>
         </div>
-        <pre class="terminal-body"><code id="terminalCodeContent">curl -X GET "https://wabot-api.herokuapp.com/api/feature/tiktok?url=https://vt.tiktok.com/ZS89xYz/&apikey=berkah_bot_2026"</code></pre>
+        <pre class="terminal-body"><code id="terminalCodeContent">curl -X GET "http://localhost:3000/api/check-apikey?apikey=YOUR_APIKEY"</code></pre>
       </div>
     </section>
 
-    <!-- C. API STATISTICS 2X2 GRID (REFERENSI NEXRAY API) -->
-    <section class="stagger-section stats-section" style="transition-delay: 0.12s;">
-      <div class="section-center-head">
-        <h2>API Statistics</h2>
-        <p style="font-size: 13.5px; color: var(--text-secondary);">Ringkasan performa server production & arsitektur database kami.</p>
-      </div>
+    <!-- C. PENGUJI ENDPOINT LANGSUNG KE REAL API (LIVE FETCH) -->
+    <section class="stagger-section" id="secEndpoints" style="transition-delay: 0.14s;">
 
-      <div class="stats-grid-nexray">
-        <div class="stat-glass-card">
-          <div class="stat-number">1.000+</div>
-          <div class="stat-caption">KUOTA HARIAN PREMIUM</div>
-          <div class="stat-watermark">📊</div>
-        </div>
-        <div class="stat-glass-card">
-          <div class="stat-number">99.99%</div>
-          <div class="stat-caption">SYSTEM UPTIME HEROKU</div>
-          <div class="stat-watermark">🕒</div>
-        </div>
-        <div class="stat-glass-card">
-          <div class="stat-number">&lt; 45ms</div>
-          <div class="stat-caption">AVG. LATENCY MONGODB</div>
-          <div class="stat-watermark">⚡</div>
-        </div>
-        <div class="stat-glass-card">
-          <div class="stat-number">30 Hari</div>
-          <div class="stat-caption">AUTO-SYNC MASA AKTIF</div>
-          <div class="stat-watermark">&lt;/&gt;</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- D. CATATAN MAINTAINER -->
-    <section class="stagger-section" style="transition-delay: 0.16s;">
-      <div class="dev-note-card">
-        <div class="dev-note-meta">
-          <div class="author-badge">
-            <div class="author-avatar"></div>
-            <span>Catatan Maintainer (Deployment & Database v2.1)</span>
-          </div>
-          <span class="font-mono" style="color: var(--accent-main); font-size: 12px;">● Berjalan Stabil di Production</span>
-        </div>
-        <p style="color: var(--text-secondary); font-size: 14.5px;">
-          "Mulai pembaruan ini, teman-teman yang menghubungkan script bot Baileys tidak perlu lagi khawatir limit terlambat ter-reset. Fungsi <code>syncPlanAndLimit()</code> sekarang otomatis memeriksa zona waktu <strong>Asia/Jakarta</strong> tepat saat request masuk, sekaligus menurunkan status akun Premium/VIP yang sudah melewati masa aktif 30 hari."
-        </p>
-      </div>
-    </section>
-
-    <!-- E. SIMULATOR ROLE & KUOTA API KEY -->
-    <section class="stagger-section role-showcase" id="secRoleSim" style="transition-delay: 0.2s;">
-      <div class="showcase-top">
+      <!-- Bar Konfigurasi Base URL Server & API Key Global -->
+      <div class="server-config-bar">
         <div>
-          <h2 style="font-size: 18px; margin-bottom: 2px;">Simulasi Role & Masa Aktif API Key</h2>
-          <p style="font-size: 13.5px; color: var(--text-muted);">Klik pada salah satu paket role untuk melihat perbedaan hak akses yang diterima oleh bot.</p>
+          <div style="font-size: 13px; font-weight: 700;">🌐 Target Server Base URL & API Key</div>
+          <div style="font-size: 11.5px; color: var(--text-muted);">
+            Biarkan Base URL kosong jika file ini dibuka langsung dari server Express (<code>public/index.html</code>), atau isi domain jika dibuka terpisah.
+          </div>
         </div>
-
-        <div class="pill-tabs" id="roleTabs">
-          <div class="sliding-pill" id="rolePill"></div>
-          <button class="pill-btn active" onclick="switchRolePreview('user', this)">User Biasa</button>
-          <button class="pill-btn" onclick="switchRolePreview('premium', this)">Premium</button>
-          <button class="pill-btn" onclick="switchRolePreview('vip', this)">VIP / Owner</button>
-        </div>
-      </div>
-
-      <div class="role-details-grid" id="roleMetricsGrid">
-        <div class="metric-box">
-          <div class="metric-label">Kuota Request Harian</div>
-          <div class="metric-val" id="mLimit">50 req / hari</div>
-        </div>
-        <div class="metric-box">
-          <div class="metric-label">Masa Aktif Paket</div>
-          <div class="metric-val" id="mDuration">Permanen (Gratis)</div>
-        </div>
-        <div class="metric-box">
-          <div class="metric-label">Fitur Custom API Key</div>
-          <div class="metric-val" id="mCustomKey">Terkunci (Default Hex)</div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; width:100%;">
+          <input type="text" id="baseUrlInput" class="server-url-input" placeholder="Base URL (otomatis mengikuti server saat ini)" />
+          <input type="text" id="globalApiKeyInput" class="server-url-input" placeholder="Masukkan API Key Anda di sini..." oninput="syncGlobalApiKey(this.value)" />
         </div>
       </div>
-    </section>
 
-    <!-- F. DAFTAR ENDPOINT & PLAYGROUND SIMULASI -->
-    <section class="stagger-section" id="secEndpoints" style="transition-delay: 0.24s;">
       <div class="section-head">
         <div>
-          <h2 style="font-size: 20px; margin-bottom: 2px;">Daftar Endpoint & Pembaruan Sistem</h2>
-          <p style="font-size: 13.5px; color: var(--text-muted);">Klik kartu di bawah untuk membuka detail parameter dan menguji simulasi respons JSON.</p>
+          <h2 style="font-size: 20px; margin-bottom: 2px;">Daftar Endpoint Live REST API</h2>
+          <p style="font-size: 13.5px; color: var(--text-muted);">Isi form parameter di tiap kartu lalu klik <strong>Kirim Request Live</strong> untuk memanggil server secara nyata.</p>
         </div>
 
         <div class="filter-group">
-          <button class="filter-chip active" onclick="filterEndpoints('all', this)">Semua Modul (4)</button>
-          <button class="filter-chip" onclick="filterEndpoints('scraper', this)">Fitur Bot WA</button>
-          <button class="filter-chip" onclick="filterEndpoints('account', this)">Autentikasi & Akun</button>
+          <button class="filter-chip active" onclick="filterEndpoints('all', this)">Semua Endpoint (5)</button>
+          <button class="filter-chip" onclick="filterEndpoints('scraper', this)">Fitur Scraper WA</button>
+          <button class="filter-chip" onclick="filterEndpoints('account', this)">Akun & Proteksi Key</button>
         </div>
       </div>
 
@@ -1563,75 +1511,59 @@
 
   </main>
 
-  <!-- 5. FIXED BOTTOM NAVIGATION BAR (GAYA JERE-API & VELIXS) -->
+  <!-- 5. BOTTOM NAVIGATION BAR -->
   <nav class="bottom-nav">
     <a href="#topHome" class="bnav-item active" onclick="setActiveNav(this)">
-      <span class="bnav-icon">🏠</span>
+      <span>🏠</span>
       <span>Home</span>
     </a>
-    <a href="#secEndpoints" class="bnav-item" onclick="setActiveNav(this)">
-      <span class="bnav-icon">📄</span>
-      <span>Docs</span>
+    <a href="#secAuth" class="bnav-item" onclick="setActiveNav(this)">
+      <span>🔐</span>
+      <span>Login / Daftar</span>
     </a>
-    <a href="#secRoleSim" class="bnav-item" onclick="setActiveNav(this)">
-      <span class="bnav-icon">⭐</span>
-      <span>Plan</span>
+    <a href="#secEndpoints" class="bnav-item" onclick="setActiveNav(this)">
+      <span>⚡</span>
+      <span>Live API</span>
     </a>
     <button class="bnav-item" onclick="document.getElementById('bgFileInput').click()">
-      <span class="bnav-icon">🖼️</span>
-      <span>Latar</span>
+      <span>🖼️</span>
+      <span>Foto Latar</span>
     </button>
   </nav>
 
   <script>
     // =========================================================================
-    // 1. DATA KONTEKS PROYEK WA BOT REST API v2.1
+    // 1. STATE GLOBAL & DETEKSI BASE URL OTOMATIS
     // =========================================================================
-    const codeSamples = {
-      curl: `curl -X GET "https://wabot-api.herokuapp.com/api/feature/tiktok?url=https://vt.tiktok.com/ZS89xYz/&apikey=berkah_bot_2026"`,
-      node: `import axios from 'axios';\n\nasync function downloadTikTok(videoUrl) {\n  const { data } = await axios.get('https://wabot-api.herokuapp.com/api/feature/tiktok', {\n    params: { url: videoUrl, apikey: 'berkah_bot_2026' }\n  });\n  console.log(data.result.videoNoWatermark);\n}\n\ndownloadTikTok('https://vt.tiktok.com/ZS89xYz/');`,
-      python: `import requests\n\nres = requests.get(\n    "https://wabot-api.herokuapp.com/api/feature/tiktok",\n    params={"url": "https://vt.tiktok.com/ZS89xYz/", "apikey": "berkah_bot_2026"}\n)\nprint(res.json()["result"]["videoNoWatermark"])`
-    };
+    let activeToken = localStorage.getItem('wabot_jwt_token') || '';
+    let activeApiKey = localStorage.getItem('wabot_api_key') || '';
+    let activeCategory = 'all';
+    let bgClarityMode = 0;
 
-    const rolePresets = {
-      user: {
-        limit: '50 req / hari',
-        duration: 'Permanen (Gratis)',
-        customKey: 'Terkunci (key_8f92a...)'
-      },
-      premium: {
-        limit: '1.000 req / hari',
-        duration: '30 Hari (Otomatis Sinkron)',
-        customKey: 'Aktif (Bebas Kustomisasi)'
-      },
-      vip: {
-        limit: 'Unlimited Request',
-        duration: '30 Hari / Prioritas Server',
-        customKey: 'Aktif + Bypass Rate Limit'
+    function getApiBaseUrl() {
+      const manual = document.getElementById('baseUrlInput')?.value.trim();
+      if (manual) return manual.replace(/\/+$/, '');
+      if (window.location.protocol === 'http:' || window.location.protocol === 'https:') {
+        return window.location.origin;
       }
-    };
+      return 'http://localhost:3000';
+    }
 
+    // =========================================================================
+    // 2. DEFINISI ENDPOINT NYATA SESUAI RUTE BACKEND SIMPELAPI-MAIN
+    // =========================================================================
     const endpointsData = [
       {
         id: 'ep-tiktok',
         category: 'scraper',
         method: 'GET',
         path: '/api/feature/tiktok',
-        title: 'TikTok Downloader Tanpa Watermark',
-        desc: 'Mengekstrak video MP4 kualitas HD dan musik MP3 langsung untuk dikirim oleh bot WhatsApp.',
-        note: 'Sudah dilengkapi validasi middleware verifyApiKey. Setiap panggilan sukses oleh user biasa atau premium akan otomatis memotong kuota harian sebanyak 1 poin.',
-        sampleParam: '?url=https://vt.tiktok.com/ZS89xYz/&apikey=berkah_bot_2026',
-        sampleResponse: {
-          status: true,
-          creator: "@admin_owner",
-          remainingLimit: 994,
-          result: {
-            title: "Tutorial Setup Node.js di Termux",
-            duration: "01:14",
-            videoNoWatermark: "https://cdn.wabot-api.id/dl/tt-99281.mp4",
-            audio: "https://cdn.wabot-api.id/dl/tt-99281.mp3"
-          }
-        },
+        title: 'TikTok Downloader Tanpa Watermark (Live Scraper)',
+        desc: 'Memanggil langsung endpoint /api/feature/tiktok di server dengan parameter URL video TikTok dan API Key Anda.',
+        fields: [
+          { key: 'url', label: 'Parameter ?url= (Link Video TikTok)', placeholder: 'https://vt.tiktok.com/ZS89xYz/', type: 'url', required: true },
+          { key: 'apikey', label: 'Parameter &apikey=', placeholder: 'Masukkan API Key aktif Anda', type: 'apikey', required: true }
+        ],
         defaultOpen: true
       },
       {
@@ -1639,129 +1571,607 @@
         category: 'account',
         method: 'GET',
         path: '/api/check-apikey',
-        title: 'Cek Status API Key, Sisa Limit, & Masa Aktif',
-        desc: 'Digunakan oleh command .cekkey atau .profile langsung dari dalam chat WhatsApp.',
-        note: 'Endpoint ini tidak memotong kuota harian pengguna. Sangat cocok dipasang pada menu utama bot agar pengguna tahu kapan paket Premium 30 hari mereka berakhir.',
-        sampleParam: '?apikey=berkah_bot_2026',
-        sampleResponse: {
-          status: true,
-          result: {
-            username: "raka_dev",
-            role: "PREMIUM",
-            limitUsed: 6,
-            limitMax: 1000,
-            limitRemaining: 994,
-            customApiKeyAllowed: true,
-            expiredAt: "2026-11-16T00:00:00.000Z"
-          }
-        },
-        defaultOpen: false
+        title: 'Cek Status API Key, Sisa Limit & Masa Aktif',
+        desc: 'Mengecek langsung sisa kuota harian dan tanggal kedaluwarsa paket dari database MongoDB tanpa memotong limit.',
+        fields: [
+          { key: 'apikey', label: 'Parameter ?apikey=', placeholder: 'Masukkan API Key yang ingin dicek', type: 'apikey', required: true }
+        ],
+        defaultOpen: true
       },
       {
         id: 'ep-customkey',
         category: 'account',
         method: 'PUT',
         path: '/api/user/custom-apikey',
-        title: 'Ubah Custom API Key (Khusus Premium & VIP)',
-        desc: 'Mengizinkan pelanggan berbayar mengganti string API key sesuai nama bot mereka.',
-        note: 'Dilindungi oleh middleware authorize("premium", "vip", "owner"). Memvalidasi karakter alfanumerik 5-32 karakter dan memastikan key belum dipakai user lain di MongoDB.',
-        sampleParam: 'Header: Authorization: Bearer <jwt_token>',
-        sampleResponse: {
-          status: true,
-          message: "Custom API Key berhasil disimpan",
-          apiKey: "elaina_bot_vip"
-        },
+        title: 'Ubah Custom API Key (Khusus Role Premium / VIP / Owner)',
+        desc: 'Mengirim request PUT langsung ke /api/user/custom-apikey menggunakan token JWT login Anda.',
+        requiresJwt: true,
+        fields: [
+          { key: 'customApiKey', label: 'Body JSON: customApiKey (5-32 Karakter Alfanumerik)', placeholder: 'contoh: berkah_bot_vip', type: 'text', required: true }
+        ],
         defaultOpen: false
       },
       {
-        id: 'ep-smtp',
+        id: 'ep-profile',
         category: 'account',
+        method: 'GET',
+        path: '/api/user/profile',
+        title: 'Ambil Data Profil & Status Akun (JWT Auth)',
+        desc: 'Memanggil GET /api/user/profile menggunakan header Authorization: Bearer <token> hasil login.',
+        requiresJwt: true,
+        fields: [],
+        defaultOpen: false
+      },
+      {
+        id: 'ep-reqfeat',
+        category: 'scraper',
         method: 'POST',
-        path: '/api/auth/register',
-        title: 'Registrasi Akun & Deteksi Domain SMTP Otomatis',
-        desc: 'Mengirimkan email verifikasi via Nodemailer dengan deteksi x-forwarded-proto untuk Heroku.',
-        note: 'Memperbaiki kendala link localhost saat di-deploy ke Heroku. Fungsi getBaseUrl(req) otomatis mengenali protokol HTTPS aplikasi tanpa perlu mengubah kode saat pindah server.',
-        sampleParam: 'Body: { "username": "bot_baru", "email": "dev@mail.com" }',
-        sampleResponse: {
-          status: true,
-          message: "Registrasi berhasil! Silakan cek inbox/spam email Anda untuk verifikasi akun."
-        },
+        path: '/api/user/request-feature',
+        title: 'Kirim Usulan Fitur / Endpoint Baru (FeatureRequest)',
+        desc: 'Menyimpan usulan fitur scraper baru ke koleksi FeatureRequest di MongoDB.',
+        requiresJwt: true,
+        fields: [
+          { key: 'featureName', label: 'Body JSON: Nama Fitur / Endpoint', placeholder: 'contoh: Instagram Reels Downloader', type: 'text', required: true },
+          { key: 'description', label: 'Body JSON: Deskripsi / Detail', placeholder: 'Ekstrak video MP4 dari URL Reels', type: 'text', required: true }
+        ],
         defaultOpen: false
       }
     ];
 
-    let activeCategory = 'all';
-    let bgClarityMode = 0; // 0: Normal Jelas, 1: Sangat Jelas (Tanpa Blur), 2: Soft Blur
-
     // =========================================================================
-    // 2. LOADING SCREEN & INISIALISASI
+    // 3. INISIALISASI HALAMAN & LOADING PEMBUKA
     // =========================================================================
     window.addEventListener('DOMContentLoaded', () => {
+      if (window.location.protocol.startsWith('http')) {
+        document.getElementById('baseUrlInput').value = window.location.origin;
+      }
+      if (activeApiKey) {
+        document.getElementById('globalApiKeyInput').value = activeApiKey;
+      }
+
       const bar = document.getElementById('loaderBar');
       const log = document.getElementById('loaderLog');
       const overlay = document.getElementById('pageLoader');
 
       const steps = [
-        { pct: 35, text: 'Menghubungkan ke cluster MongoDB...' },
-        { pct: 75, text: 'Memuat latar & komponen antarmuka v2.1...' },
-        { pct: 100, text: 'Dokumentasi WA Bot REST API v2.1 Siap!' }
+        { pct: 40, text: 'Menyiapkan rute autentikasi & endpoint live...' },
+        { pct: 80, text: 'Memuat latar & modul penguji API...' },
+        { pct: 100, text: 'Sistem Siap Digunakan!' }
       ];
 
-      let stepIdx = 0;
-      const interval = setInterval(() => {
-        if (stepIdx < steps.length) {
-          bar.style.width = steps[stepIdx].pct + '%';
-          log.textContent = steps[stepIdx].text;
-          stepIdx++;
+      let idx = 0;
+      const timer = setInterval(() => {
+        if (idx < steps.length) {
+          bar.style.width = steps[idx].pct + '%';
+          log.textContent = steps[idx].text;
+          idx++;
         } else {
-          clearInterval(interval);
+          clearInterval(timer);
           setTimeout(() => {
             overlay.classList.add('done');
             document.querySelectorAll('.stagger-section').forEach(el => el.classList.add('shown'));
             renderEndpoints(activeCategory);
-            moveRolePill(document.querySelector('.pill-btn.active'));
-          }, 200);
+            updateTerminalSnippet('curl');
+            if (activeToken) {
+              refreshUserProfile(true);
+            }
+          }, 180);
         }
-      }, 240);
+      }, 200);
     });
 
     // =========================================================================
-    // 3. FITUR GANTI FOTO LATAR DARI GALERI & KONTROL KEJELASAN FOTO
+    // 4. LOGIKA REGISTER & LOGIN ASLI KE BACKEND (/api/auth/register & login)
     // =========================================================================
-    function handleCustomBgUpload(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      const objectUrl = URL.createObjectURL(file);
-      document.documentElement.style.setProperty('--bg-photo-url', `url('${objectUrl}')`);
-    }
+    function switchAuthTab(mode) {
+      const tabsWrap = document.getElementById('authModeTabs');
+      const btnLogin = document.getElementById('tabBtnLogin');
+      const btnReg = document.getElementById('tabBtnRegister');
+      const formLogin = document.getElementById('formLogin');
+      const formReg = document.getElementById('formRegister');
+      const fb = document.getElementById('authFeedbackBox');
 
-    function cycleBgVisibility() {
-      const dimmer = document.getElementById('ambientDimmer');
-      const btn = document.getElementById('blurToggleBtn');
-      bgClarityMode = (bgClarityMode + 1) % 3;
+      fb.className = 'auth-feedback-box';
+      tabsWrap.setAttribute('data-mode', mode);
 
-      if (bgClarityMode === 0) {
-        document.documentElement.style.setProperty('--bg-blur', '5px');
-        dimmer.style.opacity = '1';
-        btn.textContent = '✨ Latar: Jelas';
-      } else if (bgClarityMode === 1) {
-        document.documentElement.style.setProperty('--bg-blur', '0px');
-        dimmer.style.opacity = '0.55';
-        btn.textContent = '🖼️ Latar: HD Tajam';
+      if (mode === 'login') {
+        btnLogin.classList.add('active');
+        btnReg.classList.remove('active');
+        formReg.classList.remove('active');
+        formLogin.classList.add('active');
       } else {
-        document.documentElement.style.setProperty('--bg-blur', '12px');
-        dimmer.style.opacity = '1';
-        btn.textContent = '🌫️ Latar: Fokus Teks';
+        btnReg.classList.add('active');
+        btnLogin.classList.remove('active');
+        formLogin.classList.remove('active');
+        formReg.classList.add('active');
       }
     }
 
+    function scrollToAuth(mode) {
+      document.getElementById('secAuth').scrollIntoView({ behavior: 'smooth' });
+      if (!activeToken && mode) {
+        switchAuthTab(mode);
+      }
+    }
+
+    function togglePassVisibility(inputId, btn) {
+      const inp = document.getElementById(inputId);
+      if (inp.type === 'password') {
+        inp.type = 'text';
+        btn.textContent = '🙈';
+      } else {
+        inp.type = 'password';
+        btn.textContent = '👁️';
+      }
+    }
+
+    function updatePasswordStrength(val) {
+      const s1 = document.getElementById('seg1');
+      const s2 = document.getElementById('seg2');
+      const s3 = document.getElementById('seg3');
+      const label = document.getElementById('passStrengthText');
+
+      s1.style.backgroundColor = 'var(--border-soft)';
+      s2.style.backgroundColor = 'var(--border-soft)';
+      s3.style.backgroundColor = 'var(--border-soft)';
+
+      if (!val) {
+        label.textContent = 'Min. 6 karakter';
+        return;
+      }
+      if (val.length < 6) {
+        s1.style.backgroundColor = '#EF4444';
+        label.textContent = 'Terlalu Pendek';
+      } else if (val.length < 9) {
+        s1.style.backgroundColor = '#F59E0B';
+        s2.style.backgroundColor = '#F59E0B';
+        label.textContent = 'Cukup Kuat';
+      } else {
+        s1.style.backgroundColor = '#10B981';
+        s2.style.backgroundColor = '#10B981';
+        s3.style.backgroundColor = '#10B981';
+        label.textContent = 'Sangat Kuat';
+      }
+    }
+
+    function setAuthLoading(isLoading, title = '', sub = '') {
+      const curtain = document.getElementById('authLoadingCurtain');
+      if (isLoading) {
+        document.getElementById('authLoadingTitle').textContent = title;
+        document.getElementById('authLoadingSub').textContent = sub;
+        curtain.classList.add('active');
+      } else {
+        curtain.classList.remove('active');
+      }
+    }
+
+    function showAuthFeedback(isSuccess, message) {
+      const box = document.getElementById('authFeedbackBox');
+      box.className = 'auth-feedback-box ' + (isSuccess ? 'ok' : 'err');
+      box.innerHTML = (isSuccess ? '✅ ' : '⚠️ ') + message;
+    }
+
+    async function handleRealRegister(e) {
+      e.preventDefault();
+      const username = document.getElementById('regUsername').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const password = document.getElementById('regPassword').value;
+      const url = `${getApiBaseUrl()}/api/auth/register`;
+
+      setAuthLoading(true, 'Mendaftarkan Akun Baru...', 'Menghubungi POST /api/auth/register & mengirim SMTP...');
+
+      try {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, email, password })
+        });
+        const data = await res.json();
+
+        setAuthLoading(false);
+
+        if (res.ok && data.status !== false) {
+          const msg = data.message || 'Registrasi berhasil! Silakan cek inbox/spam email Anda untuk verifikasi.';
+          showAuthFeedback(true, msg);
+          showToast(msg, false);
+          document.getElementById('loginIdentifier').value = email;
+          setTimeout(() => switchAuthTab('login'), 1800);
+        } else {
+          const errMsg = data.message || data.error || `Gagal registrasi (HTTP ${res.status})`;
+          showAuthFeedback(false, errMsg);
+          showToast(errMsg, true);
+        }
+      } catch (err) {
+        setAuthLoading(false);
+        const netErr = `Tidak dapat terhubung ke ${url}. Pastikan server Node.js Anda sedang berjalan.`;
+        showAuthFeedback(false, netErr);
+        showToast(netErr, true);
+      }
+    }
+
+    async function handleRealLogin(e) {
+      e.preventDefault();
+      const identifier = document.getElementById('loginIdentifier').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const url = `${getApiBaseUrl()}/api/auth/login`;
+
+      setAuthLoading(true, 'Memverifikasi Kredensial...', 'Menghubungi POST /api/auth/login...');
+
+      try {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: identifier,
+            username: identifier,
+            password
+          })
+        });
+        const data = await res.json();
+
+        if (!res.ok || data.status === false) {
+          setAuthLoading(false);
+          const errMsg = data.message || data.error || `Login gagal (HTTP ${res.status})`;
+          showAuthFeedback(false, errMsg);
+          showToast(errMsg, true);
+          return;
+        }
+
+        // Ambil JWT token & data user dari respons login backend
+        const token = data.token || data.result?.token || data.data?.token || '';
+        const userObj = data.user || data.result?.user || data.data || data;
+
+        if (token) {
+          activeToken = token;
+          localStorage.setItem('wabot_jwt_token', token);
+        }
+
+        if (userObj && userObj.apiKey) {
+          syncGlobalApiKey(userObj.apiKey);
+        }
+
+        await refreshUserProfile(true, userObj);
+        setAuthLoading(false);
+        showToast('Login berhasil! API Key otomatis terhubung ke semua endpoint.', false);
+      } catch (err) {
+        setAuthLoading(false);
+        const netErr = `Gagal menghubungi ${url}. Pastikan server backend Express aktif.`;
+        showAuthFeedback(false, netErr);
+        showToast(netErr, true);
+      }
+    }
+
+    async function refreshUserProfile(silent = false, fallbackUser = null) {
+      if (!activeToken && !fallbackUser) return;
+
+      let userData = fallbackUser;
+
+      // Coba panggil /api/user/profile atau /api/auth/me untuk sinkronisasi penuh
+      if (activeToken) {
+        try {
+          const res = await fetch(`${getApiBaseUrl()}/api/user/profile`, {
+            headers: { 'Authorization': `Bearer ${activeToken}` }
+          });
+          if (res.ok) {
+            const json = await res.json();
+            userData = json.user || json.result || json.data || json;
+          }
+        } catch (_) {
+          // Gunakan fallbackUser jika rute profil berbeda
+        }
+      }
+
+      if (userData) {
+        document.getElementById('guestAuthContainer').style.display = 'none';
+        const dash = document.getElementById('userDashboardContainer');
+        dash.classList.add('active');
+
+        const uname = userData.username || userData.name || 'Developer Aktif';
+        const uemail = userData.email || '';
+        const urole = (userData.role || 'user').toUpperCase();
+        const ukey = userData.apiKey || activeApiKey || '-';
+        const used = userData.limitUsed ?? userData.limit ?? 0;
+        const max = userData.limitMax ?? userData.maxLimit ?? (urole === 'PREMIUM' ? 1000 : 50);
+
+        document.getElementById('dashUsername').textContent = uname;
+        document.getElementById('dashEmail').textContent = uemail;
+        document.getElementById('dashRoleBadge').textContent = urole;
+        document.getElementById('dashApiKey').textContent = ukey;
+        document.getElementById('dashQuota').textContent = `${used} / ${max}`;
+        document.getElementById('dashExpiry').textContent = userData.expiredAt
+          ? new Date(userData.expiredAt).toLocaleDateString('id-ID')
+          : 'Permanen / Aktif';
+
+        document.getElementById('navAuthBtn').textContent = `👤 ${uname}`;
+
+        if (ukey && ukey !== '-') {
+          syncGlobalApiKey(ukey);
+        }
+        if (!silent) {
+          showToast('Profil & kuota berhasil diperbarui dari server!', false);
+        }
+      }
+    }
+
+    function handleLogout() {
+      activeToken = '';
+      localStorage.removeItem('wabot_jwt_token');
+      document.getElementById('userDashboardContainer').classList.remove('active');
+      document.getElementById('guestAuthContainer').style.display = 'block';
+      document.getElementById('navAuthBtn').textContent = '🚀 Daftar / Login';
+      showToast('Anda telah keluar dari sesi.', false);
+    }
+
+    function syncGlobalApiKey(val) {
+      activeApiKey = val.trim();
+      localStorage.setItem('wabot_api_key', activeApiKey);
+      document.getElementById('globalApiKeyInput').value = activeApiKey;
+      document.querySelectorAll('input[data-field-type="apikey"]').forEach(inp => {
+        inp.value = activeApiKey;
+      });
+      updateTerminalSnippet(document.querySelector('.lang-tab.active')?.dataset?.lang || 'curl');
+    }
+
+    function copyActiveApiKey() {
+      const key = document.getElementById('dashApiKey').textContent;
+      if (!key || key === '-') return;
+      navigator.clipboard.writeText(key);
+      showToast('API Key berhasil disalin ke clipboard!', false);
+    }
+
     // =========================================================================
-    // 4. INTERAKSI TERMINAL MULTI-TAB (JERE-API & NEXRAY STYLE)
+    // 5. RENDER & EKSEKUSI LANGSUNG ENDPOINT KE SERVER (REAL FETCH API)
     // =========================================================================
+    function renderEndpoints(category) {
+      const container = document.getElementById('endpointsContainer');
+      const items = category === 'all'
+        ? endpointsData
+        : endpointsData.filter(e => e.category === category);
+
+      container.innerHTML = items.map(ep => {
+        const fieldsHtml = ep.fields.length > 0
+          ? `<div class="live-params-grid">
+              ${ep.fields.map(f => `
+                <div class="param-field">
+                  <label>${f.label}</label>
+                  <input
+                    type="text"
+                    id="input-${ep.id}-${f.key}"
+                    data-field-type="${f.type}"
+                    placeholder="${f.placeholder}"
+                    value="${f.type === 'apikey' ? activeApiKey : ''}"
+                    oninput="updateLiveUrlPreview('${ep.id}')"
+                  />
+                </div>
+              `).join('')}
+            </div>`
+          : '';
+
+        return `
+          <article class="endpoint-card ${ep.defaultOpen ? 'open' : ''}" id="card-${ep.id}">
+            <button class="endpoint-header" onclick="toggleEndpointCard('${ep.id}')">
+              <div class="ep-left">
+                <div class="ep-badges">
+                  <span class="method-badge ${ep.method !== 'GET' ? 'put' : ''}">${ep.method}</span>
+                  <span class="ep-path">${ep.path}</span>
+                  ${ep.requiresJwt ? '<span class="brand-tag" style="font-size:10px;">🔒 Butuh Login JWT</span>' : ''}
+                </div>
+                <div class="ep-title font-heading">${ep.title}</div>
+                <p class="ep-desc">${ep.desc}</p>
+              </div>
+              <div class="expand-icon">↓</div>
+            </button>
+
+            <div class="ep-drawer">
+              <div class="ep-drawer-inner">
+                <div class="ep-content">
+                  ${fieldsHtml}
+
+                  <div class="live-action-bar">
+                    <code id="url-preview-${ep.id}" style="color: var(--text-secondary); word-break: break-all;">
+                      ${ep.method} ${ep.path}
+                    </code>
+                    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                      ${ep.method === 'GET' && !ep.requiresJwt ? `
+                        <a id="raw-link-${ep.id}" href="${ep.path}" target="_blank" class="btn-open-raw">
+                          ↗ Buka URL Langsung
+                        </a>
+                      ` : ''}
+                      <button class="btn-live-exec" onclick="executeRealApiCall('${ep.id}')">
+                        ⚡ Kirim Request Live
+                      </button>
+                    </div>
+                  </div>
+
+                  <div id="output-${ep.id}">
+                    <pre class="json-preview"><code>// Tekan "Kirim Request Live" untuk memanggil endpoint ${ep.path} secara nyata dari server Anda.</code></pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      items.forEach(ep => updateLiveUrlPreview(ep.id));
+    }
+
+    function toggleEndpointCard(id) {
+      document.getElementById(`card-${id}`).classList.toggle('open');
+    }
+
+    function buildEndpointRequestConfig(id) {
+      const ep = endpointsData.find(item => item.id === id);
+      const base = getApiBaseUrl();
+      let fullUrl = `${base}${ep.path}`;
+      const queryParams = new URLSearchParams();
+      const bodyPayload = {};
+
+      ep.fields.forEach(f => {
+        const el = document.getElementById(`input-${ep.id}-${f.key}`);
+        const val = el ? el.value.trim() : '';
+        if (ep.method === 'GET') {
+          if (val) queryParams.set(f.key, val);
+        } else {
+          bodyPayload[f.key] = val;
+          if (f.key === 'customApiKey') {
+            bodyPayload.apiKey = val;
+            bodyPayload.newApiKey = val;
+          }
+        }
+      });
+
+      const qs = queryParams.toString();
+      if (ep.method === 'GET' && qs) {
+        fullUrl += `?${qs}`;
+      }
+
+      return { ep, fullUrl, bodyPayload };
+    }
+
+    function updateLiveUrlPreview(id) {
+      const { ep, fullUrl } = buildEndpointRequestConfig(id);
+      const previewEl = document.getElementById(`url-preview-${id}`);
+      if (previewEl) {
+        previewEl.textContent = `${ep.method} ${fullUrl}`;
+      }
+      const rawLink = document.getElementById(`raw-link-${id}`);
+      if (rawLink) {
+        rawLink.href = fullUrl;
+      }
+    }
+
+    async function executeRealApiCall(id) {
+      const { ep, fullUrl, bodyPayload } = buildEndpointRequestConfig(id);
+      const outputBox = document.getElementById(`output-${id}`);
+
+      // Validasi input wajib sebelum menembak API
+      for (const f of ep.fields) {
+        const el = document.getElementById(`input-${ep.id}-${f.key}`);
+        if (f.required && (!el || !el.value.trim())) {
+          showToast(`Mohon isi kolom "${f.key}" terlebih dahulu!`, true);
+          el?.focus();
+          return;
+        }
+      }
+
+      if (ep.requiresJwt && !activeToken) {
+        showToast('Endpoint ini membutuhkan Login! Silakan login terlebih dahulu di panel atas.', true);
+        scrollToAuth('login');
+        return;
+      }
+
+      // Animasi Loading saat menembak API asli
+      outputBox.innerHTML = `
+        <div style="padding: 20px; border-radius: 12px; background: var(--bg-code); border: 1px solid var(--border-soft); display:flex; align-items:center; gap:14px;">
+          <div class="spinner-ring" style="width:28px; height:28px; margin:0;"></div>
+          <div class="font-mono" style="font-size:12.5px; color:var(--accent-cyan);">
+            Menghubungi endpoint asli <strong>${ep.method} ${fullUrl}</strong>...
+          </div>
+        </div>
+      `;
+
+      const headers = {};
+      if (ep.requiresJwt && activeToken) {
+        headers['Authorization'] = `Bearer ${activeToken}`;
+      }
+      if (ep.method !== 'GET') {
+        headers['Content-Type'] = 'application/json';
+      }
+
+      const startTime = performance.now();
+
+      try {
+        const response = await fetch(fullUrl, {
+          method: ep.method,
+          headers,
+          body: ep.method !== 'GET' ? JSON.stringify(bodyPayload) : undefined
+        });
+
+        const durationMs = Math.round(performance.now() - startTime);
+        const rawText = await response.text();
+        let parsedJson = null;
+
+        try {
+          parsedJson = JSON.parse(rawText);
+        } catch (_) {
+          parsedJson = null;
+        }
+
+        // Jika ubah custom API key sukses, perbarui API key global secara otomatis
+        if (id === 'ep-customkey' && response.ok && parsedJson) {
+          const updatedKey = parsedJson.apiKey || parsedJson.result?.apiKey || bodyPayload.customApiKey;
+          if (updatedKey) {
+            syncGlobalApiKey(updatedKey);
+            refreshUserProfile(true);
+            showToast(`Custom API Key berhasil diubah menjadi: ${updatedKey}`, false);
+          }
+        }
+
+        // Jika hasil TikTok Downloader memiliki link video/audio, tampilkan player langsung
+        let mediaPreviewHtml = '';
+        if (id === 'ep-tiktok' && response.ok && parsedJson) {
+          const resObj = parsedJson.result || parsedJson.data || parsedJson;
+          const videoUrl = resObj?.videoNoWatermark || resObj?.video || resObj?.nowm || resObj?.play;
+          const audioUrl = resObj?.audio || resObj?.music;
+          if (videoUrl || audioUrl) {
+            mediaPreviewHtml = `
+              <div style="margin-top: 10px; padding: 12px; background: var(--bg-subtle); border-radius: 10px; border: 1px solid var(--border-soft); display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+                <span style="font-size:12px; font-weight:700; color:var(--accent-main);">🎬 Media Ditemukan:</span>
+                ${videoUrl ? `<a href="${videoUrl}" target="_blank" class="btn-open-raw">⬇ Unduh / Putar Video MP4</a>` : ''}
+                ${audioUrl ? `<a href="${audioUrl}" target="_blank" class="btn-open-raw">🎵 Unduh Audio MP3</a>` : ''}
+              </div>
+            `;
+          }
+        }
+
+        const badgeColor = response.ok ? 'var(--accent-main)' : 'var(--accent-danger)';
+        const formattedBody = parsedJson ? JSON.stringify(parsedJson, null, 2) : rawText;
+
+        outputBox.innerHTML = `
+          <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; font-size:12px; color:${badgeColor}; margin-bottom:6px;" class="font-mono">
+            <span>● HTTP ${response.status} ${response.statusText || (response.ok ? 'OK' : 'Error')}</span>
+            <span>Waktu Respons Nyata: ${durationMs} ms</span>
+          </div>
+          <pre class="json-preview"><code>${escapeHtml(formattedBody)}</code></pre>
+          ${mediaPreviewHtml}
+        `;
+      } catch (error) {
+        outputBox.innerHTML = `
+          <div style="font-size:12px; color:var(--accent-danger); margin-bottom:6px;" class="font-mono">
+            ⚠️ Koneksi Gagal (Network / CORS Error)
+          </div>
+          <pre class="json-preview"><code>Gagal menghubungi ${fullUrl}\nDetail: ${escapeHtml(error.message)}\n\nPastikan file HTML ini dibuka melalui server Express Anda (misal http://localhost:3000) atau isi kolom Target Server Base URL di atas.</code></pre>
+        `;
+      }
+    }
+
+    function filterEndpoints(category, chipEl) {
+      activeCategory = category;
+      document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+      chipEl.classList.add('active');
+      renderEndpoints(category);
+    }
+
+    // =========================================================================
+    // 6. UTILITAS TERMINAL, FOTO LATAR, TEMA, & TOAST
+    // =========================================================================
+    function updateTerminalSnippet(lang) {
+      const base = getApiBaseUrl();
+      const key = activeApiKey || 'YOUR_APIKEY';
+      const snippets = {
+        curl: `curl -X GET "${base}/api/check-apikey?apikey=${key}"`,
+        node: `import axios from 'axios';\n\nconst { data } = await axios.get('${base}/api/check-apikey', {\n  params: { apikey: '${key}' }\n});\nconsole.log(data);`,
+        python: `import requests\n\nres = requests.get("${base}/api/check-apikey", params={"apikey": "${key}"})\nprint(res.json())`
+      };
+      document.getElementById('terminalCodeContent').textContent = snippets[lang] || snippets.curl;
+    }
+
     function switchCodeSample(lang, btnEl) {
       document.querySelectorAll('.lang-tab').forEach(t => t.classList.remove('active'));
       btnEl.classList.add('active');
-      document.getElementById('terminalCodeContent').textContent = codeSamples[lang];
+      btnEl.dataset.lang = lang;
+      updateTerminalSnippet(lang);
     }
 
     function copyTerminalCode() {
@@ -1772,115 +2182,32 @@
       setTimeout(() => { btn.textContent = 'Copy'; }, 1500);
     }
 
-    // =========================================================================
-    // 5. SIMULATOR ROLE & ENDPOINT PLAYGROUND
-    // =========================================================================
-    function switchRolePreview(roleKey, btnEl) {
-      document.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
-      btnEl.classList.add('active');
-      moveRolePill(btnEl);
-
-      const grid = document.getElementById('roleMetricsGrid');
-      grid.style.opacity = '0';
-      grid.style.transform = 'translateY(5px)';
-
-      setTimeout(() => {
-        const data = rolePresets[roleKey];
-        document.getElementById('mLimit').textContent = data.limit;
-        document.getElementById('mDuration').textContent = data.duration;
-        document.getElementById('mCustomKey').textContent = data.customKey;
-        grid.style.opacity = '1';
-        grid.style.transform = 'translateY(0)';
-      }, 150);
+    function handleCustomBgUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const objectUrl = URL.createObjectURL(file);
+      document.documentElement.style.setProperty('--bg-photo-url', `url('${objectUrl}')`);
+      showToast('Foto latar berhasil diperbarui!', false);
     }
 
-    function moveRolePill(activeBtn) {
-      const pill = document.getElementById('rolePill');
-      if (!activeBtn || !pill) return;
-      pill.style.width = `${activeBtn.offsetWidth}px`;
-      pill.style.transform = `translateX(${activeBtn.offsetLeft - 4}px)`;
-    }
+    function cycleBgVisibility() {
+      const dimmer = document.getElementById('ambientDimmer');
+      const btn = document.getElementById('blurToggleBtn');
+      bgClarityMode = (bgClarityMode + 1) % 3;
 
-    window.addEventListener('resize', () => {
-      moveRolePill(document.querySelector('.pill-btn.active'));
-    });
-
-    function renderEndpoints(category) {
-      const container = document.getElementById('endpointsContainer');
-      const items = category === 'all'
-        ? endpointsData
-        : endpointsData.filter(e => e.category === category);
-
-      container.innerHTML = items.map(ep => `
-        <article class="endpoint-card ${ep.defaultOpen ? 'open' : ''}" id="card-${ep.id}">
-          <button class="endpoint-header" onclick="toggleEndpointCard('${ep.id}')">
-            <div class="ep-left">
-              <div class="ep-badges">
-                <span class="method-badge ${ep.method === 'PUT' || ep.method === 'POST' ? 'put' : ''}">${ep.method}</span>
-                <span class="ep-path">${ep.path}</span>
-              </div>
-              <div class="ep-title font-heading">${ep.title}</div>
-              <p class="ep-desc">${ep.desc}</p>
-            </div>
-            <div class="expand-icon">↓</div>
-          </button>
-
-          <div class="ep-drawer">
-            <div class="ep-drawer-inner">
-              <div class="ep-content">
-                <p style="font-size: 13.5px; color: var(--text-secondary);">${ep.note}</p>
-                <div class="try-bar">
-                  <code style="color: var(--text-secondary);">${ep.path}${ep.sampleParam}</code>
-                  <button class="btn-try" onclick="simulateEndpointCall('${ep.id}')">
-                    ▶ Simulasikan Request
-                  </button>
-                </div>
-                <div id="output-${ep.id}">
-                  <pre class="json-preview"><code>${JSON.stringify(ep.sampleResponse, null, 2)}</code></pre>
-                </div>
-              </div>
-            </div>
-          </div>
-        </article>
-      `).join('');
-    }
-
-    function toggleEndpointCard(id) {
-      document.getElementById(`card-${id}`).classList.toggle('open');
-    }
-
-    function simulateEndpointCall(id) {
-      const ep = endpointsData.find(item => item.id === id);
-      const outputBox = document.getElementById(`output-${id}`);
-      outputBox.innerHTML = `<div class="shimmer-card" style="height: 120px;"></div>`;
-
-      const latency = Math.floor(Math.random() * 30) + 22;
-      setTimeout(() => {
-        outputBox.innerHTML = `
-          <div style="display:flex; justify-content:space-between; font-size:11.5px; color:var(--accent-main); margin-bottom:6px;" class="font-mono">
-            <span>✓ 200 OK • Respons diterima</span>
-            <span>Waktu tempuh: ${latency} ms</span>
-          </div>
-          <pre class="json-preview"><code>${JSON.stringify(ep.sampleResponse, null, 2)}</code></pre>
-        `;
-      }, 480);
-    }
-
-    function filterEndpoints(category, chipEl) {
-      if (activeCategory === category) return;
-      activeCategory = category;
-      document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-      chipEl.classList.add('active');
-      replayShimmerTransition();
-    }
-
-    function replayShimmerTransition() {
-      const container = document.getElementById('endpointsContainer');
-      container.innerHTML = `
-        <div class="shimmer-card" style="height: 92px;"></div>
-        <div class="shimmer-card" style="height: 92px;"></div>
-      `;
-      setTimeout(() => renderEndpoints(activeCategory), 420);
+      if (bgClarityMode === 0) {
+        document.documentElement.style.setProperty('--bg-blur', '4px');
+        dimmer.style.opacity = '1';
+        btn.textContent = '✨ Latar: Jelas';
+      } else if (bgClarityMode === 1) {
+        document.documentElement.style.setProperty('--bg-blur', '0px');
+        dimmer.style.opacity = '0.48';
+        btn.textContent = '🖼️ Latar: HD Tajam';
+      } else {
+        document.documentElement.style.setProperty('--bg-blur', '12px');
+        dimmer.style.opacity = '1';
+        btn.textContent = '🌫️ Latar: Fokus Teks';
+      }
     }
 
     function toggleTheme() {
@@ -1895,6 +2222,28 @@
       document.querySelectorAll('.bnav-item').forEach(i => i.classList.remove('active'));
       el.classList.add('active');
     }
+
+    function showToast(message, isError = false) {
+      const container = document.getElementById('toastContainer');
+      const item = document.createElement('div');
+      item.className = 'toast-item' + (isError ? ' error' : '');
+      item.innerHTML = `
+        <span>${escapeHtml(message)}</span>
+        <button onclick="this.parentElement.remove()" style="background:none;border:none;color:inherit;cursor:pointer;font-weight:700;">✕</button>
+      `;
+      container.appendChild(item);
+      setTimeout(() => {
+        if (item.parentElement) item.remove();
+      }, 4200);
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
   </script>
 </body>
 </html>
+
