@@ -1,27 +1,220 @@
 <!DOCTYPE html>
-<html lang="id" data-theme="dark">
+<html lang="id" class="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard REST API Bot WhatsApp</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>API Documentation - WhatsApp Bot REST API</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    };
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    code, pre, .font-mono { font-family: 'JetBrains Mono', monospace; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
+  </style>
 </head>
-<body>
-  <div class="card" style="display: flex; justify-content: space-between; align-items: center;">
-    <h2>WA Bot REST API</h2>
-    <button id="themeToggle">Ubah ke Light Mode</button>
+<body class="bg-slate-50 text-slate-900 dark:bg-[#0b0f19] dark:text-slate-100 min-h-screen transition-colors duration-200">
+
+  <!-- TOP NAVBAR -->
+  <header class="sticky top-0 z-30 backdrop-blur-md bg-white/80 dark:bg-[#0b0f19]/80 border-b border-slate-200 dark:border-slate-800">
+    <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold text-sm">API</div>
+        <div>
+          <h1 id="brandTitle" class="font-bold text-base leading-none">WA Bot REST API</h1>
+          <span id="brandVersion" class="text-[11px] text-slate-500 dark:text-slate-400 font-mono">v1.0 • Ready</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button onclick="openModal('pricingModal')" class="text-xs font-medium px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          💎 Pricing
+        </button>
+        <button onclick="openModal('requestModal')" class="text-xs font-medium px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          💡 Request Fitur
+        </button>
+        <button id="themeBtn" onclick="toggleTheme()" class="p-2 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs">
+          ☀️
+        </button>
+        <button id="authActionBtn" onclick="handleAuthButtonClick()" class="text-xs font-semibold px-3.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white transition">
+          Login
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-5xl mx-auto px-4 py-8">
+
+    <!-- QUICK STATUS & APIKEY BAR -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+      <!-- Kolom Input Global API Key -->
+      <div class="md:col-span-2 p-4 rounded-xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Global API Key</span>
+          <span id="keyRoleBadge" class="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">Guest</span>
+        </div>
+        <div class="flex gap-2">
+          <input
+            type="text"
+            id="globalApiKey"
+            placeholder="Tempel API Key di sini (otomatis terisi ke semua endpoint)..."
+            class="w-full text-xs font-mono px-3 py-2 rounded-lg bg-slate-50 dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800 focus:outline-none focus:border-indigo-500"
+            oninput="syncGlobalApiKey(this.value)"
+          />
+          <button onclick="verifyGlobalKey()" class="text-xs font-semibold px-4 py-2 rounded-lg bg-slate-900 dark:bg-indigo-600 text-white hover:opacity-90 shrink-0">
+            Cek Key
+          </button>
+        </div>
+      </div>
+
+      <!-- Info Sisa Limit -->
+      <div class="p-4 rounded-xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
+        <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Status Limit Harian</span>
+        <div class="my-1">
+          <div id="limitDisplay" class="text-xl font-bold font-mono">- / -</div>
+          <p id="expiredDisplay" class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Masukkan API Key untuk cek limit</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEARCH & CATEGORY FILTER PILLS -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <div id="categoryTabs" class="flex items-center gap-1.5 overflow-x-auto pb-1">
+        <!-- Dirender via JS -->
+      </div>
+
+      <div class="relative w-full sm:w-64">
+        <input
+          type="text"
+          id="searchEndpoint"
+          oninput="renderEndpoints()"
+          placeholder="Cari endpoint (mis. tiktok, ai)..."
+          class="w-full text-xs px-3.5 py-2 rounded-lg bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 focus:outline-none focus:border-indigo-500"
+        />
+      </div>
+    </div>
+
+    <!-- DAFTAR ENDPOINT (ACCORDION GAYA ZELAPI) -->
+    <div id="endpointsContainer" class="space-y-3">
+      <!-- Dirender via JS -->
+    </div>
+
+  </main>
+
+  <!-- MODAL: LOGIN / REGISTER / FORGOT -->
+  <div id="authModal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 rounded-2xl max-w-md w-full p-6">
+      <div class="flex justify-between items-center mb-4">
+        <h3 id="authModalTitle" class="font-bold text-base">Login Akun</h3>
+        <button onclick="closeModal('authModal')" class="text-slate-400 hover:text-slate-200 text-sm">✕</button>
+      </div>
+
+      <div class="flex gap-2 mb-4 text-xs">
+        <button onclick="switchAuthTab('login')" id="tabLogin" class="flex-1 py-1.5 rounded-lg bg-indigo-600 text-white font-medium">Login</button>
+        <button onclick="switchAuthTab('register')" id="tabRegister" class="flex-1 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 font-medium">Register</button>
+        <button onclick="switchAuthTab('forgot')" id="tabForgot" class="flex-1 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 font-medium">Reset</button>
+      </div>
+
+      <form id="authForm" onsubmit="submitAuth(event)" class="space-y-3 text-xs">
+        <div id="fieldUsername" class="hidden">
+          <label class="block mb-1 text-slate-400">Username</label>
+          <input type="text" id="authUsername" class="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800" placeholder="username_anda" />
+        </div>
+        <div id="fieldEmailOrUser">
+          <label id="labelEmailOrUser" class="block mb-1 text-slate-400">Email atau Username</label>
+          <input type="text" id="authEmailOrUser" class="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800" placeholder="email@domain.com" required />
+        </div>
+        <div id="fieldPassword">
+          <label class="block mb-1 text-slate-400">Password</label>
+          <input type="password" id="authPassword" class="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800" placeholder="••••••••" />
+        </div>
+        <div id="authFeedback" class="text-xs hidden p-2.5 rounded-lg"></div>
+        <button type="submit" class="w-full py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold">
+          Lanjutkan
+        </button>
+      </form>
+    </div>
   </div>
 
-  <div class="card">
-    <h3>Cek Status API Key</h3>
-    <input type="text" id="apiKeyInput" placeholder="Masukkan API Key..." style="padding: 8px; width: 65%;" />
-    <button onclick="checkKey()">Cek Limit</button>
-    <pre id="keyResult" style="margin-top: 1rem; white-space: pre-wrap;"></pre>
+  <!-- MODAL: PROFIL & CUSTOM API KEY -->
+  <div id="profileModal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 rounded-2xl max-w-md w-full p-6 text-xs space-y-4">
+      <div class="flex justify-between items-center">
+        <h3 class="font-bold text-base">Profil & Pengaturan API Key</h3>
+        <button onclick="closeModal('profileModal')" class="text-slate-400 hover:text-slate-200 text-sm">✕</button>
+      </div>
+
+      <div class="space-y-2">
+        <label class="block text-slate-400">Username</label>
+        <input type="text" id="profUsername" class="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800" />
+        <label class="block text-slate-400">Nama Lengkap</label>
+        <input type="text" id="profFullName" class="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800" />
+        <label class="block text-slate-400">Bio</label>
+        <input type="text" id="profBio" class="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800" />
+        <button onclick="saveProfile()" class="w-full py-2 rounded-lg bg-indigo-600 text-white font-semibold mt-1">Simpan Profil</button>
+      </div>
+
+      <hr class="border-slate-200 dark:border-slate-800" />
+
+      <!-- Custom API Key Khusus Premium/VIP -->
+      <div class="space-y-2">
+        <div class="flex justify-between">
+          <label class="text-slate-400 font-semibold">Custom API Key</label>
+          <span class="text-[10px] px-2 py-0.5 rounded bg-amber-500/10 text-amber-400">Khusus Premium / VIP</span>
+        </div>
+        <div class="flex gap-2">
+          <input type="text" id="customKeyInput" placeholder="Masukkan custom key baru..." class="w-full font-mono px-3 py-2 rounded-lg bg-slate-50 dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800" />
+          <button onclick="saveCustomApiKey()" class="px-3 py-2 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-semibold shrink-0">Ubah Key</button>
+        </div>
+      </div>
+
+      <div id="profFeedback" class="hidden p-2 rounded-lg"></div>
+
+      <button onclick="logoutUser()" class="w-full py-2 rounded-lg border border-red-500/40 text-red-400 hover:bg-red-500/10 font-semibold">
+        Logout
+      </button>
+    </div>
   </div>
 
-  <div class="card">
-    <h3>Daftar Harga & Upgrade</h3>
-    <div id="pricingContainer">Memuat daftar paket...</div>
+  <!-- MODAL: PRICING LIST -->
+  <div id="pricingModal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 rounded-2xl max-w-2xl w-full p-6 text-xs">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="font-bold text-base">Daftar Paket & Upgrade</h3>
+        <button onclick="closeModal('pricingModal')" class="text-slate-400 hover:text-slate-200 text-sm">✕</button>
+      </div>
+      <div id="pricingModalContent" class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4"></div>
+      <div id="pricingOwnerBox" class="p-3.5 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-300"></div>
+    </div>
+  </div>
+
+  <!-- MODAL: REQUEST FITUR -->
+  <div id="requestModal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 rounded-2xl max-w-md w-full p-6 text-xs space-y-3">
+      <div class="flex justify-between items-center">
+        <h3 class="font-bold text-base">Request Fitur Baru</h3>
+        <button onclick="closeModal('requestModal')" class="text-slate-400 hover:text-slate-200 text-sm">✕</button>
+      </div>
+      <p class="text-slate-400">Butuh scraper atau endpoint baru untuk bot WA Anda? Kirimkan detailnya ke Owner (wajib login).</p>
+      <input type="text" id="reqFeatureName" placeholder="Nama Fitur (contoh: Spotify Downloader)" class="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800" />
+      <textarea id="reqFeatureDesc" rows="3" placeholder="Contoh URL target atau deskripsi output JSON..." class="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800"></textarea>
+      <div id="reqFeedback" class="hidden p-2 rounded-lg"></div>
+      <button onclick="submitFeatureRequest()" class="w-full py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold">Kirim Request</button>
+    </div>
   </div>
 
   <script src="script.js"></script>
