@@ -9,7 +9,6 @@ const userRoutes = require('./routes/userRoutes');
 const apiRoutes = require('./routes/apiRoutes');
 
 const app = express();
-const app = express();
 app.set('trust proxy', 1); // Wajib di Heroku agar req.protocol terbaca sebagai https
 // Koneksi ke MongoDB
 connectDB();
