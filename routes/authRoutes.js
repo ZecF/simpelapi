@@ -10,6 +10,15 @@ const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN || '7d' });
 };
 
+// Fungsi otomatis mendeteksi domain Heroku (https) atau Localhost
+const getBaseUrl = (req) => {
+  if (process.env.BASE_URL && !process.env.BASE_URL.includes('localhost')) {
+    return process.env.BASE_URL.replace(/\/+$/, ''); // Hapus garis miring (/) berlebih di ujung URL
+  }
+  const protocol = req.headers['x-forwarded-proto'] || req.protocol;
+  return `${protocol}://${req.get('host')}`;
+};
+
 // 1. REGISTER & KIRIM EMAIL VERIFIKASI
 router.post('/register', async (req, res) => {
   try {
@@ -19,7 +28,7 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ status: false, message: 'Username, email, dan password wajib diisi' });
     }
 
-    const existingUser = await User.findOne({ $or: [{ email }, { username: username.toLowerCase() }] });
+    const existingUser = await User.findOne({ $or: [{ email: email.toLowerCase() }, { username: username.toLowerCase() }] });
     if (existingUser) {
       return res.status(400).json({ status: false, message: 'Username atau Email sudah digunakan' });
     }
@@ -35,7 +44,8 @@ router.post('/register', async (req, res) => {
       verificationExpires: Date.now() + 24 * 60 * 60 * 1000 // Berlaku 24 jam
     });
 
-    const verifyUrl = `${process.env.BASE_URL}/api/auth/verify-email/${rawVerifyToken}`;
+    const baseUrl = getBaseUrl(req);
+    const verifyUrl = `${baseUrl}/api/auth/verify-email/${rawVerifyToken}`;
 
     await sendEmail({
       to: user.email,
@@ -43,7 +53,7 @@ router.post('/register', async (req, res) => {
       html: `
         <h3>Halo, ${user.username}!</h3>
         <p>Terima kasih telah mendaftar. Silakan klik tombol/tautan di bawah ini untuk memverifikasi akun dan mengaktifkan API Key Anda:</p>
-        <a href="${verifyUrl}" style="padding:10px 15px; background:#4F46E5; color:#fff; text-decoration:none; border-radius:5px;">Verifikasi Email</a>
+        <a href="${verifyUrl}" style="padding:10px 15px; background:#4F46E5; color:#fff; text-decoration:none; border-radius:5px; display:inline-block;">Verifikasi Email</a>
         <p>Atau salin URL ini: ${verifyUrl}</p>
         <p>Tautan ini berlaku selama 24 jam.</p>
       `
@@ -143,7 +153,8 @@ router.post('/forgot-password', async (req, res) => {
     user.resetPasswordExpires = Date.now() + 30 * 60 * 1000; // Berlaku 30 menit
     await user.save({ validateBeforeSave: false });
 
-    const resetUrl = `${process.env.BASE_URL}/api/auth/reset-password/${rawResetToken}`;
+    const baseUrl = getBaseUrl(req);
+    const resetUrl = `${baseUrl}/api/auth/reset-password/${rawResetToken}`;
 
     await sendEmail({
       to: user.email,
@@ -151,7 +162,8 @@ router.post('/forgot-password', async (req, res) => {
       html: `
         <h3>Permintaan Reset Password</h3>
         <p>Gunakan tautan berikut untuk mengatur ulang password Anda (berlaku 30 menit):</p>
-        <p><a href="${resetUrl}">${resetUrl}</a></p>
+        <p><a href="${resetUrl}" style="padding:10px 15px; background:#4F46E5; color:#fff; text-decoration:none; border-radius:5px; display:inline-block;">Reset Password</a></p>
+        <p>Atau salin URL ini: ${resetUrl}</p>
         <p>Jika Anda tidak merasa meminta reset password, abaikan email ini.</p>
       `
     });
@@ -162,7 +174,50 @@ router.post('/forgot-password', async (req, res) => {
   }
 });
 
-// 5. RESET PASSWORD
+// 5A. HALAMAN FORM SAAT LINK RESET PASSWORD DIKLIK DARI EMAIL (GET)
+router.get('/reset-password/:token', (req, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html lang="id">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Reset Password</title>
+      <style>
+        body { background: #0b0f19; color: #f8fafc; font-family: system-ui, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .box { background: #111827; padding: 24px; border-radius: 12px; border: 1px solid #1e293b; width: 100%; max-width: 360px; }
+        input { width: 100%; padding: 10px; margin: 12px 0; border-radius: 8px; border: 1px solid #334155; background: #0b0f19; color: #fff; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background: #4f46e5; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+      </style>
+    </head>
+    <body>
+      <div class="box">
+        <h3>Buat Password Baru</h3>
+        <input type="password" id="newPass" placeholder="Minimal 6 karakter" required />
+        <button onclick="submitNewPass()">Simpan Password</button>
+        <p id="msg" style="font-size: 13px; margin-top: 12px;"></p>
+      </div>
+      <script>
+        async function submitNewPass() {
+          const newPassword = document.getElementById('newPass').value;
+          const res = await fetch(window.location.pathname, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ newPassword })
+          });
+          const data = await res.json();
+          const msg = document.getElementById('msg');
+          msg.style.color = data.status ? '#34d399' : '#f87171';
+          msg.textContent = data.message;
+          if (data.status) setTimeout(() => window.location.href = '/', 1500);
+        }
+      </script>
+    </body>
+    </html>
+  `);
+});
+
+// 5B. PROSES SIMPAN PASSWORD BARU (POST)
 router.post('/reset-password/:token', async (req, res) => {
   try {
     const { newPassword } = req.body;
