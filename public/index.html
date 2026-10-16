@@ -1,53 +1,57 @@
 <!DOCTYPE html>
-<html lang="id" data-theme="light">
+<html lang="id" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Catatan Rilis & Dokumentasi — WA Bot REST API v2.1</title>
+  <title>Developer Dashboard — Manajemen Akun & API Key</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
   <style>
     /* ==========================================================================
-       1. PALET WARNA HANGAT & NYAMAN DI MATA (WARM STUDIO TOKENS)
+       1. SISTEM WARNA & TIPOGRAFI MODERN
        ========================================================================== */
     :root[data-theme="light"] {
-      --bg-canvas: #FAF8F5;
+      --bg-body: #F8FAFC;
       --bg-surface: #FFFFFF;
-      --bg-subtle: #F2EFE9;
-      --bg-code: #1E1E1C;
-      --text-primary: #1C1917;
-      --text-secondary: #57534E;
-      --text-muted: #8A847C;
-      --border-soft: #E6E1DA;
-      --border-hover: #D4CDC3;
-      --accent-main: #0F766E;       /* Deep Warm Teal */
-      --accent-main-soft: rgba(15, 118, 110, 0.1);
-      --accent-warm: #C25E00;       /* Terracotta Amber */
-      --accent-warm-soft: rgba(194, 94, 0, 0.1);
-      --shimmer-highlight: rgba(255, 255, 255, 0.8);
-      --shadow-sm: 0 2px 8px -2px rgba(28, 25, 23, 0.04), 0 1px 3px -1px rgba(28, 25, 23, 0.03);
-      --shadow-md: 0 12px 28px -6px rgba(28, 25, 23, 0.07), 0 4px 10px -2px rgba(28, 25, 23, 0.04);
+      --bg-subtle: #F1F5F9;
+      --bg-elevated: #E2E8F0;
+      --text-main: #0F172A;
+      --text-secondary: #475569;
+      --text-muted: #64748B;
+      --border-color: #E2E8F0;
+      --accent: #2563EB;
+      --accent-hover: #1D4ED8;
+      --accent-soft: rgba(37, 99, 235, 0.1);
+      --success: #059669;
+      --success-soft: rgba(5, 150, 105, 0.12);
+      --warning: #D97706;
+      --warning-soft: rgba(217, 119, 6, 0.12);
+      --danger: #DC2626;
+      --danger-soft: rgba(220, 38, 38, 0.1);
+      --shadow: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
     }
 
     :root[data-theme="dark"] {
-      --bg-canvas: #121312;
-      --bg-surface: #1A1C1A;
-      --bg-subtle: #232623;
-      --bg-code: #0D0E0D;
-      --text-primary: #F3F4F3;
-      --text-secondary: #A3A8A3;
-      --text-muted: #6E736E;
-      --border-soft: #2B2E2B;
-      --border-hover: #3D423D;
-      --accent-main: #2DD4BF;
-      --accent-main-soft: rgba(45, 212, 191, 0.12);
-      --accent-warm: #F59E0B;
-      --accent-warm-soft: rgba(245, 158, 11, 0.12);
-      --shimmer-highlight: rgba(255, 255, 255, 0.06);
-      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.25);
-      --shadow-md: 0 16px 32px rgba(0, 0, 0, 0.45);
+      --bg-body: #0B0F17;
+      --bg-surface: #111827;
+      --bg-subtle: #1E293B;
+      --bg-elevated: #334155;
+      --text-main: #F8FAFC;
+      --text-secondary: #94A3B8;
+      --text-muted: #64748B;
+      --border-color: #1E293B;
+      --accent: #3B82F6;
+      --accent-hover: #2563EB;
+      --accent-soft: rgba(59, 130, 246, 0.14);
+      --success: #10B981;
+      --success-soft: rgba(16, 185, 129, 0.14);
+      --warning: #F59E0B;
+      --warning-soft: rgba(245, 158, 11, 0.14);
+      --danger: #EF4444;
+      --danger-soft: rgba(239, 68, 68, 0.14);
+      --shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
     }
 
     * {
@@ -57,1073 +61,916 @@
     }
 
     body {
-      background-color: var(--bg-canvas);
-      color: var(--text-primary);
+      background-color: var(--bg-body);
+      color: var(--text-main);
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      font-size: 15px;
-      line-height: 1.72;
-      letter-spacing: -0.011em;
+      font-size: 14px;
+      line-height: 1.6;
       -webkit-font-smoothing: antialiased;
-      transition: background-color 0.35s ease, color 0.35s ease;
-      overflow-x: hidden;
+      transition: background-color 0.25s ease, color 0.25s ease;
     }
 
-    h1, h2, h3, h4, .font-heading {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      letter-spacing: -0.025em;
-    }
-
-    code, pre, .font-mono {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12.5px;
-    }
-
-    /* ==========================================================================
-       2. ANIMASI LOADING KREATIF (ORBITAL PULSE + PROGRESS CURTAIN)
-       ========================================================================== */
-    .loader-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background-color: var(--bg-canvas);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-    .loader-overlay.done {
-      opacity: 0;
-      transform: translateY(-20px) scale(0.99);
-      pointer-events: none;
-    }
-
-    /* Elemen Bergerak Estetik: 3 Titik Koneksi API yang Berdenyut & Bergeser */
-    .api-nodes-loader {
-      position: relative;
-      width: 68px;
-      height: 42px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 22px;
-    }
-
-    .api-nodes-loader::before {
-      content: "";
-      position: absolute;
-      top: 50%;
-      left: 8px;
-      right: 8px;
-      height: 2px;
-      background: var(--border-soft);
-      transform: translateY(-50%);
-      z-index: 1;
-    }
-
-    .node-dot {
-      position: relative;
-      z-index: 2;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background-color: var(--accent-main);
-      animation: nodePulse 1.2s infinite ease-in-out;
-    }
-
-    .node-dot:nth-child(2) {
-      animation-delay: 0.2s;
-      background-color: var(--accent-warm);
-    }
-
-    .node-dot:nth-child(3) {
-      animation-delay: 0.4s;
-    }
-
-    @keyframes nodePulse {
-      0%, 100% { transform: translateY(0) scale(0.85); opacity: 0.5; }
-      50% { transform: translateY(-7px) scale(1.15); opacity: 1; box-shadow: 0 6px 14px var(--accent-main-soft); }
-    }
-
-    .progress-rail {
-      width: 220px;
-      height: 4px;
-      background-color: var(--bg-subtle);
-      border-radius: 99px;
-      overflow: hidden;
-      margin-bottom: 12px;
-      border: 1px solid var(--border-soft);
-    }
-
-    .progress-bar-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, var(--accent-main), var(--accent-warm));
-      border-radius: 99px;
-      transition: width 0.22s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-    .loader-status-text {
-      font-size: 12px;
-      color: var(--text-muted);
+    code, .font-mono {
       font-family: 'JetBrains Mono', monospace;
     }
 
     /* ==========================================================================
-       3. SKELETON SHIMMER (UNTUK TRANSISI FILTER & SIMULASI REQUEST)
+       2. BAGIAN PALING ATAS: TOP AUTHENTICATION & API KEY BAR
        ========================================================================== */
-    .shimmer-card {
-      position: relative;
-      overflow: hidden;
-      background-color: var(--bg-subtle);
-      border-radius: 12px;
-      border: 1px solid var(--border-soft);
-    }
-
-    .shimmer-card::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        105deg,
-        transparent 25%,
-        var(--shimmer-highlight) 50%,
-        transparent 75%
-      );
-      background-size: 200% 100%;
-      animation: diagonalShimmer 1.4s infinite cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    @keyframes diagonalShimmer {
-      0% { background-position: 100% 0; }
-      100% { background-position: -100% 0; }
-    }
-
-    /* ==========================================================================
-       4. HEADER & STICKY NAVIGATION
-       ========================================================================== */
-    .navbar {
+    .top-auth-bar {
+      background-color: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
       position: sticky;
       top: 0;
-      z-index: 40;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      background-color: color-mix(in srgb, var(--bg-canvas) 85%, transparent);
-      border-bottom: 1px solid var(--border-soft);
+      z-index: 50;
+      box-shadow: var(--shadow);
     }
 
-    .navbar-inner {
-      max-width: 880px;
+    .top-auth-container {
+      max-width: 1160px;
       margin: 0 auto;
-      padding: 14px 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .brand-cluster {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .live-indicator {
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      background-color: var(--accent-main);
-      box-shadow: 0 0 0 4px var(--accent-main-soft);
-    }
-
-    .brand-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-
-    .brand-tag {
-      font-size: 11px;
-      font-family: 'JetBrains Mono', monospace;
-      padding: 2px 8px;
-      border-radius: 6px;
-      background-color: var(--bg-subtle);
-      color: var(--text-secondary);
-      border: 1px solid var(--border-soft);
-    }
-
-    .nav-controls {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .btn-ghost {
-      background-color: var(--bg-surface);
-      color: var(--text-secondary);
-      border: 1px solid var(--border-soft);
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 12.5px;
-      font-weight: 500;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-    .btn-ghost:hover {
-      border-color: var(--border-hover);
-      background-color: var(--bg-subtle);
-      color: var(--text-primary);
-      transform: translateY(-1px);
-    }
-
-    /* ==========================================================================
-       5. LAYOUT UTAMA & EFEK REVEAL BERTAHAP
-       ========================================================================== */
-    .doc-wrapper {
-      max-width: 880px;
-      margin: 0 auto;
-      padding: 44px 24px 80px;
-    }
-
-    .stagger-section {
-      opacity: 0;
-      transform: translateY(16px);
-      transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1), transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-    .stagger-section.shown {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* ==========================================================================
-       6. BAGIAN INTRO & CATATAN TIM OTENTIK
-       ========================================================================== */
-    .release-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--accent-main);
-      background-color: var(--accent-main-soft);
-      padding: 4px 12px;
-      border-radius: 99px;
-      margin-bottom: 16px;
-    }
-
-    .hero-title {
-      font-size: clamp(26px, 4vw, 36px);
-      line-height: 1.22;
-      margin-bottom: 14px;
-    }
-
-    .hero-desc {
-      font-size: 16px;
-      color: var(--text-secondary);
-      max-width: 700px;
-      margin-bottom: 28px;
-    }
-
-    .dev-note-card {
-      background-color: var(--bg-surface);
-      border: 1px solid var(--border-soft);
-      border-left: 3.5px solid var(--accent-warm);
-      border-radius: 14px;
-      padding: 20px 24px;
-      box-shadow: var(--shadow-sm);
-      margin-bottom: 44px;
-    }
-
-    .dev-note-meta {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 10px;
-      font-size: 13px;
-    }
-
-    .author-badge {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      font-weight: 600;
-    }
-
-    .author-avatar {
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-      background-color: var(--accent-warm);
-      color: #FFFFFF;
-      font-size: 11px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    /* ==========================================================================
-       7. SIMULATOR ROLE & LIMIT HARIAN (INTERAKTIF)
-       ========================================================================== */
-    .role-showcase {
-      background-color: var(--bg-surface);
-      border: 1px solid var(--border-soft);
-      border-radius: 16px;
-      padding: 24px;
-      box-shadow: var(--shadow-sm);
-      margin-bottom: 48px;
-    }
-
-    .showcase-top {
+      padding: 12px 24px;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      margin-bottom: 20px;
     }
 
-    .pill-tabs {
-      position: relative;
+    .auth-status-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .status-dot.guest {
+      background-color: var(--warning);
+      box-shadow: 0 0 0 4px var(--warning-soft);
+    }
+
+    .status-dot.logged-in {
+      background-color: var(--success);
+      box-shadow: 0 0 0 4px var(--success-soft);
+    }
+
+    .welcome-text {
+      font-weight: 600;
+      font-size: 14.5px;
+      color: var(--text-main);
+    }
+
+    /* Kotak API Key di Top Bar */
+    .top-apikey-group {
       display: inline-flex;
+      align-items: center;
+      background-color: var(--bg-body);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 4px 6px 4px 12px;
+      gap: 8px;
+    }
+
+    .top-apikey-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+    }
+
+    .top-apikey-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--accent);
+      font-weight: 500;
+      user-select: all;
+    }
+
+    .auth-status-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* ==========================================================================
+       3. TOMBOL & ELEMEN INTERAKTIF
+       ========================================================================== */
+    .btn {
+      border: 1px solid transparent;
+      border-radius: 8px;
+      padding: 7px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.18s ease;
+    }
+
+    .btn-primary {
+      background-color: var(--accent);
+      color: #FFFFFF;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--accent-hover);
+    }
+
+    .btn-secondary {
       background-color: var(--bg-subtle);
-      padding: 4px;
-      border-radius: 10px;
-      border: 1px solid var(--border-soft);
+      color: var(--text-main);
+      border-color: var(--border-color);
     }
 
-    .sliding-pill {
-      position: absolute;
-      top: 4px;
-      bottom: 4px;
-      left: 4px;
+    .btn-secondary:hover {
+      background-color: var(--bg-elevated);
+    }
+
+    .btn-danger {
+      background-color: var(--danger-soft);
+      color: var(--danger);
+      border-color: transparent;
+    }
+
+    .btn-danger:hover {
+      background-color: var(--danger);
+      color: #FFFFFF;
+    }
+
+    .btn-icon-small {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-icon-small:hover {
+      color: var(--text-main);
+      border-color: var(--text-muted);
+    }
+
+    /* ==========================================================================
+       4. LAYOUT DASHBOARD & SIDEBAR NAVIGASI
+       ========================================================================== */
+    .dashboard-shell {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 28px 24px 64px;
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+
+    @media (max-width: 860px) {
+      .dashboard-shell {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Sidebar Navigasi */
+    .sidebar-nav {
       background-color: var(--bg-surface);
-      border-radius: 7px;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-      transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1), width 0.32s cubic-bezier(0.22, 1, 0.36, 1);
-      z-index: 1;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 14px;
+      box-shadow: var(--shadow);
     }
 
-    .pill-btn {
-      position: relative;
-      z-index: 2;
+    .nav-section-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      padding: 6px 10px 8px;
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-item {
+      width: 100%;
+      text-align: left;
       background: none;
       border: none;
-      padding: 6px 14px;
-      font-size: 13px;
+      padding: 9px 12px;
+      border-radius: 8px;
+      font-size: 13.5px;
       font-weight: 500;
       color: var(--text-secondary);
       cursor: pointer;
-      transition: color 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.15s ease;
     }
 
-    .pill-btn.active {
-      color: var(--text-primary);
+    .nav-item:hover {
+      background-color: var(--bg-subtle);
+      color: var(--text-main);
+    }
+
+    .nav-item.active {
+      background-color: var(--accent-soft);
+      color: var(--accent);
       font-weight: 600;
     }
 
-    .role-details-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 14px;
-      transition: opacity 0.25s ease, transform 0.25s ease;
+    .sidebar-account-indicator {
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 8px;
+      background-color: var(--bg-body);
+      border: 1px solid var(--border-color);
+      font-size: 12px;
     }
 
-    .metric-box {
-      background-color: var(--bg-canvas);
-      border: 1px solid var(--border-soft);
+    /* ==========================================================================
+       5. KOMPONEN KONTEN UTAMA & INDIKATOR KEPEMILIKAN AKUN
+       ========================================================================== */
+    .main-stage {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-color);
       border-radius: 12px;
-      padding: 14px 16px;
+      padding: 22px 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .card-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .card-subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    .badge {
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 99px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .badge-guest {
+      background-color: var(--warning-soft);
+      color: var(--warning);
+    }
+
+    .badge-verified {
+      background-color: var(--success-soft);
+      color: var(--success);
+    }
+
+    /* Grid Status kepemilikan akun (Belum Punya Akun vs Sudah Punya Akun) */
+    .onboarding-split {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 12px;
+    }
+
+    .option-box {
+      background-color: var(--bg-body);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .option-box h4 {
+      font-size: 14.5px;
+      margin-bottom: 6px;
+    }
+
+    .option-box p {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    /* Metrik Grid untuk User yang Sudah Login */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 14px;
+    }
+
+    .metric-tile {
+      background-color: var(--bg-body);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 16px;
     }
 
     .metric-label {
       font-size: 12px;
       color: var(--text-muted);
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
 
-    .metric-val {
-      font-size: 16px;
+    .metric-number {
+      font-size: 20px;
       font-weight: 700;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-main);
     }
 
-    /* ==========================================================================
-       8. DAFTAR FITUR & ENDPOINT BARU (ACCORDION + MINI PLAYGROUND)
-       ========================================================================== */
-    .section-head {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 20px;
-    }
-
-    .filter-group {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    .filter-chip {
-      background-color: var(--bg-surface);
-      border: 1px solid var(--border-soft);
-      color: var(--text-secondary);
-      padding: 5px 13px;
-      border-radius: 99px;
-      font-size: 12.5px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .filter-chip.active {
-      background-color: var(--text-primary);
-      color: var(--bg-canvas);
-      border-color: var(--text-primary);
-    }
-
-    .endpoint-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .endpoint-card {
-      background-color: var(--bg-surface);
-      border: 1px solid var(--border-soft);
-      border-radius: 14px;
-      box-shadow: var(--shadow-sm);
-      transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease, border-color 0.25s ease;
-      overflow: hidden;
-    }
-
-    .endpoint-card:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
-      border-color: var(--border-hover);
-    }
-
-    .endpoint-card.open {
-      border-color: var(--accent-main);
-    }
-
-    .endpoint-header {
+    .progress-bar-wrap {
       width: 100%;
-      background: none;
-      border: none;
-      padding: 18px 22px;
-      text-align: left;
+      height: 6px;
+      background-color: var(--bg-subtle);
+      border-radius: 99px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .progress-bar-inner {
+      height: 100%;
+      width: 14%;
+      background-color: var(--accent);
+      border-radius: 99px;
+    }
+
+    /* Form Input Standar Developer */
+    .form-row {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      cursor: pointer;
-      color: inherit;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .input-field {
+      flex: 1;
+      min-width: 220px;
+      background-color: var(--bg-body);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 9px 12px;
+      border-radius: 8px;
+      font-size: 13px;
       font-family: inherit;
     }
 
-    .ep-left {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
+    .input-field:focus {
+      outline: none;
+      border-color: var(--accent);
     }
 
-    .ep-badges {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .method-badge {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      font-weight: 600;
-      padding: 2px 8px;
-      border-radius: 6px;
-      background-color: var(--accent-main-soft);
-      color: var(--accent-main);
-    }
-
-    .method-badge.put {
-      background-color: var(--accent-warm-soft);
-      color: var(--accent-warm);
-    }
-
-    .ep-path {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text-primary);
-    }
-
-    .ep-title {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-
-    .ep-desc {
-      font-size: 13.5px;
-      color: var(--text-secondary);
-    }
-
-    .expand-icon {
-      width: 30px;
-      height: 30px;
-      border-radius: 8px;
-      background-color: var(--bg-subtle);
-      display: flex;
+    /* Modal Login / Register */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(4px);
+      display: none;
       align-items: center;
       justify-content: center;
-      color: var(--text-secondary);
-      flex-shrink: 0;
-      transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.2s ease;
+      z-index: 100;
+      padding: 16px;
     }
 
-    .endpoint-card.open .expand-icon {
-      transform: rotate(180deg);
-      background-color: var(--accent-main-soft);
-      color: var(--accent-main);
-    }
-
-    /* Transisi Buka/Tutup Mulus dengan CSS Grid */
-    .ep-drawer {
-      display: grid;
-      grid-template-rows: 0fr;
-      transition: grid-template-rows 0.36s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-    .endpoint-card.open .ep-drawer {
-      grid-template-rows: 1fr;
-    }
-
-    .ep-drawer-inner {
-      overflow: hidden;
-    }
-
-    .ep-content {
-      padding: 0 22px 22px;
-      border-top: 1px solid var(--border-soft);
-      padding-top: 16px;
+    .modal-backdrop.open {
       display: flex;
-      flex-direction: column;
-      gap: 14px;
     }
 
-    .ep-note {
-      font-size: 14px;
-      color: var(--text-secondary);
-    }
-
-    .try-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 10px;
-      background-color: var(--bg-subtle);
-      padding: 10px 14px;
-      border-radius: 10px;
-      border: 1px solid var(--border-soft);
-    }
-
-    .btn-try {
-      background-color: var(--accent-main);
-      color: #FFFFFF;
-      border: none;
-      padding: 6px 14px;
-      border-radius: 7px;
-      font-size: 12.5px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: opacity 0.2s ease, transform 0.15s ease;
-    }
-
-    .btn-try:hover {
-      opacity: 0.92;
-      transform: translateY(-1px);
-    }
-
-    .json-preview {
-      background-color: var(--bg-code);
-      color: #E5E7EB;
-      padding: 14px 16px;
-      border-radius: 10px;
-      overflow-x: auto;
-      line-height: 1.55;
-      border: 1px solid var(--border-soft);
-    }
-
-    /* ==========================================================================
-       9. FOOTER & REAKSI TIM
-       ========================================================================== */
-    .doc-footer {
-      margin-top: 56px;
-      padding-top: 26px;
-      border-top: 1px solid var(--border-soft);
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      font-size: 13px;
-      color: var(--text-muted);
-    }
-
-    .reaction-bar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .react-pill {
+    .modal-card {
       background-color: var(--bg-surface);
-      border: 1px solid var(--border-soft);
-      color: var(--text-secondary);
-      padding: 5px 12px;
-      border-radius: 99px;
-      font-size: 12.5px;
-      cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 400px;
+      padding: 24px;
+      box-shadow: var(--shadow);
     }
 
-    .react-pill:hover {
-      border-color: var(--accent-main);
-      transform: scale(1.04);
-    }
-
-    .react-pill.active {
-      background-color: var(--accent-main-soft);
-      border-color: var(--accent-main);
-      color: var(--accent-main);
-      font-weight: 600;
+    .hidden {
+      display: none !important;
     }
   </style>
 </head>
 <body>
 
-  <!-- 1. ANIMASI LOADING KREATIF SAAT MEMBUKA HALAMAN -->
-  <div id="pageLoader" class="loader-overlay">
-    <div class="api-nodes-loader">
-      <div class="node-dot"></div>
-      <div class="node-dot"></div>
-      <div class="node-dot"></div>
-    </div>
-    <div class="progress-rail">
-      <div id="loaderBar" class="progress-bar-fill"></div>
-    </div>
-    <div id="loaderLog" class="loader-status-text">Menghubungkan ke cluster MongoDB...</div>
-  </div>
+  <!-- ========================================================================
+       1. BAGIAN PALING ATAS: BAR STATUS LOGIN & API KEY
+       ======================================================================== -->
+  <header class="top-auth-bar">
+    <div class="top-auth-container">
 
-  <!-- 2. HEADER NAVIGASI -->
-  <header class="navbar">
-    <div class="navbar-inner">
-      <div class="brand-cluster">
-        <span class="live-indicator" title="Server Heroku Aktif"></span>
-        <span class="brand-title">WA Bot REST API</span>
-        <span class="brand-tag">Rilis v2.1</span>
+      <!-- TAMPILAN JIKA BELUM LOGIN / REGISTER -->
+      <div id="topGuestView" class="auth-status-left">
+        <span class="status-dot guest"></span>
+        <span class="welcome-text">Status: Belum Login</span>
+        <span style="font-size: 13px; color: var(--text-secondary);">
+          Silakan masuk atau daftar akun untuk mendapatkan API Key Anda.
+        </span>
       </div>
-      <div class="nav-controls">
-        <button class="btn-ghost" onclick="replayShimmerTransition()" title="Lihat ulang animasi transisi pemuatan">
-          <span>↻</span> Ulangi Animasi Muat
+
+      <!-- TAMPILAN JIKA SUDAH LOGIN / REGISTER -->
+      <div id="topUserView" class="auth-status-left hidden">
+        <span class="status-dot logged-in"></span>
+        <span class="welcome-text">Selamat datang, <span id="displayUsername">raka_dev</span></span>
+
+        <!-- Komponen API Key User di Bagian Atas -->
+        <div class="top-apikey-group">
+          <span class="top-apikey-label">API Key</span>
+          <span id="topApiKeyText" class="top-apikey-value">••••••••••••••••••••</span>
+          <button class="btn-icon-small" onclick="toggleRevealKey()" id="revealBtn">Tampilkan</button>
+          <button class="btn-icon-small" onclick="copyApiKey()" id="copyBtn">Salin</button>
+        </div>
+      </div>
+
+      <!-- TOMBOL AKSI KANAN ATAS -->
+      <div class="auth-status-right">
+        <!-- Tombol bantu untuk menguji tampilan Belum Login vs Sudah Login -->
+        <button class="btn btn-secondary" onclick="toggleDemoAuthState()" title="Sakelar untuk menguji tampilan">
+          ⇄ Ganti Simulasi Status
         </button>
-        <button id="themeBtn" class="btn-ghost" onclick="toggleTheme()">
-          <span>🌙</span> Mode Gelap
+
+        <button class="btn btn-secondary" onclick="toggleTheme()" id="themeBtn">
+          ☀️ Terang
+        </button>
+
+        <!-- Tombol Login / Register (Muncul saat Belum Login) -->
+        <button id="btnLoginRegister" class="btn btn-primary" onclick="openAuthModal('login')">
+          Login / Register
+        </button>
+
+        <!-- Tombol Logout (Muncul saat Sudah Login) -->
+        <button id="btnLogout" class="btn btn-danger hidden" onclick="handleLogout()">
+          Logout
         </button>
       </div>
+
     </div>
   </header>
 
-  <!-- 3. KONTEN DOKUMEN UTAMA -->
-  <main class="doc-wrapper">
+  <!-- ========================================================================
+       2. STRUKTUR UTAMA DASHBOARD (NAVIGASI SIDEBAR + AREA KONTEN)
+       ======================================================================== -->
+  <div class="dashboard-shell">
 
-    <!-- BAGIAN INTRO & CATATAN PROYEK -->
-    <section class="stagger-section" id="secHero">
-      <div class="release-pill">
-        <span>●</span> Catatan Sinkronisasi & Dokumentasi Proyek • Oktober 2026
-      </div>
-      <h1 class="hero-title">Pembaruan Mesin Kuota Harian, SMTP Otomatis, & Endpoint Scraper v2.1</h1>
-      <p class="hero-desc">
-        Dokumen ini merangkum pembaruan arsitektur backend Node.js + MongoDB untuk layanan REST API Bot WhatsApp kita—mulai dari penanganan protokol HTTPS di Heroku hingga penambahan modul downloader tanpa watermark.
-      </p>
+    <!-- SIDEBAR NAVIGASI JELAS -->
+    <aside class="sidebar-nav">
+      <div class="nav-section-label">Menu Portal Developer</div>
+      <ul class="nav-list">
+        <li>
+          <button class="nav-item active" onclick="switchSection('overview', this)">
+            <span>Ringkasan Akun</span>
+            <span>→</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-item" onclick="switchSection('credentials', this)">
+            <span>Manajemen API Key</span>
+            <span>→</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-item" onclick="switchSection('quota', this)">
+            <span>Kuota & Paket</span>
+            <span>→</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-item" onclick="switchSection('settings', this)">
+            <span>Pengaturan Profil</span>
+            <span>→</span>
+          </button>
+        </li>
+      </ul>
 
-      <!-- Catatan Tim Natural -->
-      <div class="dev-note-card">
-        <div class="dev-note-meta">
-          <div class="author-badge">
-            <div class="author-avatar">DV</div>
-            <span>Catatan Maintainer (Deployment & Database)</span>
-          </div>
-          <span class="font-mono" style="color: var(--text-muted); font-size: 12px;">Status: Berjalan Stabil di Production</span>
+      <!-- Komponen Indikator Kepemilikan Akun di Sidebar -->
+      <div class="sidebar-account-indicator">
+        <div style="font-weight: 600; margin-bottom: 4px;" id="sideAccountStatusTitle">
+          Belum Terhubung ke Akun
         </div>
-        <p style="color: var(--text-secondary); font-size: 14.5px;">
-          "Mulai pembaruan ini, teman-teman yang menghubungkan script bot Baileys tidak perlu lagi khawatir limit terlambat ter-reset. Fungsi <code>syncPlanAndLimit()</code> sekarang otomatis memeriksa zona waktu <strong>Asia/Jakarta</strong> tepat saat request masuk, sekaligus menurunkan status akun Premium/VIP yang sudah melewati masa aktif 30 hari."
+        <p style="color: var(--text-secondary); line-height: 1.45;" id="sideAccountStatusDesc">
+          Anda sedang menjelajah sebagai tamu. Masuk untuk mengelola kredensial.
         </p>
       </div>
-    </section>
+    </aside>
 
-    <!-- BAGIAN INTERAKTIF 1: SIMULATOR ROLE & KUOTA API KEY -->
-    <section class="stagger-section role-showcase" id="secRoleSim" style="transition-delay: 0.08s;">
-      <div class="showcase-top">
+    <!-- AREA KONTEN DINAMIS -->
+    <main class="main-stage">
+
+      <!-- KOMPONEN UTAMA: PENUNJUK APAKAH USER SUDAH MEMILIKI AKUN ATAU BELUM -->
+      <section class="card" id="accountOwnershipCard">
+        <!-- Kondisi A: Ketika User Belum Login / Belum Memiliki Akun -->
+        <div id="guestAccountPanel">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Status Kepemilikan Akun & Akses Kredensial</h2>
+              <p class="card-subtitle">Pilih opsi di bawah sesuai dengan status kepemilikan akun developer Anda.</p>
+            </div>
+            <span class="badge badge-guest">Sesi Tamu (Belum Login)</span>
+          </div>
+
+          <div class="onboarding-split">
+            <div class="option-box">
+              <div>
+                <h4>Belum Memiliki Akun Developer?</h4>
+                <p>Buat akun baru secara gratis untuk menghasilkan API Key unik dan mendapatkan kuota request harian otomatis.</p>
+              </div>
+              <button class="btn btn-primary" onclick="openAuthModal('register')">
+                Daftar Akun Baru
+              </button>
+            </div>
+
+            <div class="option-box">
+              <div>
+                <h4>Sudah Memiliki Akun Terdaftar?</h4>
+                <p>Masuk menggunakan username atau email Anda untuk melihat API Key, memantau sisa limit harian, dan mengatur profil.</p>
+              </div>
+              <button class="btn btn-secondary" onclick="openAuthModal('login')">
+                Masuk ke Akun Saya
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kondisi B: Ketika User Sudah Login / Memiliki Akun Aktif -->
+        <div id="verifiedAccountPanel" class="hidden">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Ringkasan Akun & Kredensial Aktif</h2>
+              <p class="card-subtitle">Akun Anda telah terverifikasi dan siap digunakan untuk autentikasi request HTTP.</p>
+            </div>
+            <span class="badge badge-verified">✓ Akun Terverifikasi (Role: PREMIUM)</span>
+          </div>
+
+          <div class="metrics-grid">
+            <div class="metric-tile">
+              <div class="metric-label">Penggunaan Kuota Hari Ini</div>
+              <div class="metric-number">142 / 1.000</div>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-inner"></div>
+              </div>
+            </div>
+
+            <div class="metric-tile">
+              <div class="metric-label">Sisa Request Harian</div>
+              <div class="metric-number">858</div>
+              <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 6px;">
+                Reset otomatis pukul 00:00 WIB
+              </div>
+            </div>
+
+            <div class="metric-tile">
+              <div class="metric-label">Masa Aktif Paket</div>
+              <div class="metric-number">26 Hari</div>
+              <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 6px;">
+                Berlaku hingga 12 Nov 2026
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PANEL NAVIGASI 1: RINGKASAN & OTORISASI STANDAR -->
+      <section class="card nav-section-panel" id="panel-overview">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Metode Otorisasi Request</h3>
+            <p class="card-subtitle">Gunakan salah satu metode pengiriman API Key berikut pada setiap request ke server.</p>
+          </div>
+        </div>
+
+        <div class="onboarding-split">
+          <div class="option-box">
+            <div>
+              <h4>Opsi 1: Header HTTP (Direkomendasikan)</h4>
+              <p style="margin-bottom: 10px;">Sertakan kredensial Anda di dalam header request agar tidak terlihat langsung di riwayat URL.</p>
+              <code style="display: block; padding: 10px; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 6px; color: var(--accent);">
+                x-api-key: YOUR_API_KEY
+              </code>
+            </div>
+          </div>
+
+          <div class="option-box">
+            <div>
+              <h4>Opsi 2: Query Parameter</h4>
+              <p style="margin-bottom: 10px;">Cocok untuk pengujian cepat atau integrasi langsung melalui pemanggilan URL sederhana.</p>
+              <code style="display: block; padding: 10px; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 6px; color: var(--accent);">
+                ?apikey=YOUR_API_KEY
+              </code>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PANEL NAVIGASI 2: MANAJEMEN & CUSTOM API KEY -->
+      <section class="card nav-section-panel hidden" id="panel-credentials">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Pengaturan Kredensial & Custom API Key</h3>
+            <p class="card-subtitle">Kelola kode akses Anda. Pengguna berstatus Premium dan VIP dapat menentukan kombinasi API Key sendiri.</p>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <input type="text" id="customKeyInput" class="input-field font-mono" placeholder="Masukkan Custom API Key baru (5-32 karakter alfanumerik)..." />
+          <button class="btn btn-primary" onclick="saveCustomKey()">Simpan API Key</button>
+        </div>
+        <p id="customKeyFeedback" style="font-size: 12.5px; color: var(--text-muted); margin-top: 10px;">
+          Catatan: Mengganti API Key akan langsung menonaktifkan kode akses lama Anda.
+        </p>
+      </section>
+
+      <!-- PANEL NAVIGASI 3: KUOTA & PAKET -->
+      <section class="card nav-section-panel hidden" id="panel-quota">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Perbandingan Paket & Batas Kuota Harian</h3>
+            <p class="card-subtitle">Seluruh paket berbayar memiliki masa aktif 30 hari dan otomatis disinkronkan setiap hari.</p>
+          </div>
+        </div>
+
+        <div class="metrics-grid">
+          <div class="metric-tile">
+            <div class="metric-label">User Biasa (Free)</div>
+            <div class="metric-number">50 / hari</div>
+            <p style="font-size: 12px; color: var(--text-secondary); margin-top: 6px;">API Key acak bawaan sistem, tanpa batas waktu masa aktif.</p>
+          </div>
+          <div class="metric-tile">
+            <div class="metric-label">Premium (30 Hari)</div>
+            <div class="metric-number">1.000 / hari</div>
+            <p style="font-size: 12px; color: var(--text-secondary); margin-top: 6px;">Mendukung fitur Custom API Key dan kuota menengah.</p>
+          </div>
+          <div class="metric-tile">
+            <div class="metric-label">VIP (30 Hari)</div>
+            <div class="metric-number">Unlimited</div>
+            <p style="font-size: 12px; color: var(--text-secondary); margin-top: 6px;">Tanpa batas kuota harian dan mendukung Custom API Key.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- PANEL NAVIGASI 4: PENGATURAN PROFIL -->
+      <section class="card nav-section-panel hidden" id="panel-settings">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Pengaturan Profil Developer</h3>
+            <p class="card-subtitle">Perbarui identitas username dan informasi kontak akun Anda.</p>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <input type="text" id="settingUsername" class="input-field" value="raka_dev" placeholder="Username" />
+          <input type="email" class="input-field" value="raka@developer.id" placeholder="Alamat Email" disabled />
+          <button class="btn btn-primary" onclick="updateUsername()">Perbarui Profil</button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ========================================================================
+       3. MODAL LOGIN / REGISTER
+       ======================================================================== -->
+  <div id="authModal" class="modal-backdrop">
+    <div class="modal-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h3 id="modalTitle" style="font-size: 16px; font-weight: 700;">Masuk ke Dashboard</h3>
+        <button class="btn-icon-small" onclick="closeAuthModal()">✕</button>
+      </div>
+
+      <form onsubmit="submitAuthForm(event)" style="display: flex; flex-direction: column; gap: 12px;">
         <div>
-          <h2 style="font-size: 18px; margin-bottom: 2px;">Simulasi Role & Masa Aktif API Key</h2>
-          <p style="font-size: 13.5px; color: var(--text-muted);">Klik pada salah satu role untuk melihat perbedaan hak akses yang diterima oleh bot.</p>
+          <label style="font-size: 12px; color: var(--text-secondary); display: block; margin-bottom: 4px;">Username</label>
+          <input type="text" id="modalUsernameInput" class="input-field" style="width: 100%;" placeholder="contoh: raka_dev" required />
         </div>
-
-        <!-- Sliding Pill Tabs -->
-        <div class="pill-tabs" id="roleTabs">
-          <div class="sliding-pill" id="rolePill"></div>
-          <button class="pill-btn active" onclick="switchRolePreview('user', this)">User Biasa</button>
-          <button class="pill-btn" onclick="switchRolePreview('premium', this)">Premium</button>
-          <button class="pill-btn" onclick="switchRolePreview('vip', this)">VIP / Owner</button>
+        <div id="modalEmailGroup" class="hidden">
+          <label style="font-size: 12px; color: var(--text-secondary); display: block; margin-bottom: 4px;">Alamat Email (Verifikasi SMTP)</label>
+          <input type="email" class="input-field" style="width: 100%;" placeholder="nama@domain.com" />
         </div>
-      </div>
-
-      <div class="role-details-grid" id="roleMetricsGrid">
-        <div class="metric-box">
-          <div class="metric-label">Kuota Request Harian</div>
-          <div class="metric-val" id="mLimit">50 req / hari</div>
-        </div>
-        <div class="metric-box">
-          <div class="metric-label">Masa Aktif Paket</div>
-          <div class="metric-val" id="mDuration">Permanen (Gratis)</div>
-        </div>
-        <div class="metric-box">
-          <div class="metric-label">Fitur Custom API Key</div>
-          <div class="metric-val" id="mCustomKey">Terkunci (Default Hex)</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- BAGIAN INTERAKTIF 2: DAFTAR ENDPOINT & CATATAN UPDATE -->
-    <section class="stagger-section" id="secEndpoints" style="transition-delay: 0.16s;">
-      <div class="section-head">
         <div>
-          <h2 style="font-size: 20px; margin-bottom: 2px;">Daftar Endpoint & Pembaruan Sistem</h2>
-          <p style="font-size: 13.5px; color: var(--text-muted);">Klik kartu di bawah untuk membuka detail parameter dan menguji simulasi respons JSON.</p>
+          <label style="font-size: 12px; color: var(--text-secondary); display: block; margin-bottom: 4px;">Password</label>
+          <input type="password" class="input-field" style="width: 100%;" placeholder="••••••••" required />
         </div>
-
-        <div class="filter-group">
-          <button class="filter-chip active" onclick="filterEndpoints('all', this)">Semua Modul (4)</button>
-          <button class="filter-chip" onclick="filterEndpoints('scraper', this)">Fitur Bot WA</button>
-          <button class="filter-chip" onclick="filterEndpoints('account', this)">Autentikasi & Akun</button>
-        </div>
-      </div>
-
-      <div id="endpointsContainer" class="endpoint-list">
-        <!-- Dirender secara dinamis oleh JavaScript -->
-      </div>
-    </section>
-
-    <!-- 4. FOOTER & FEEDBACK -->
-    <footer class="doc-footer stagger-section" id="secFooter" style="transition-delay: 0.22s;">
-      <div>
-        Dokumentasi Internal WA Bot REST API • Ditenagai Express, Mongoose, & Nodemailer
-      </div>
-      <div class="reaction-bar">
-        <span>Apakah dokumentasi rilis ini membantu?</span>
-        <button class="react-pill" onclick="giveReaction(this, '🚀 Siap Integrasi ke Bot!')">🚀 Siap Integrasi</button>
-        <button class="react-pill" onclick="giveReaction(this, '💡 Ada Usulan Endpoint')">💡 Usul Endpoint</button>
-      </div>
-    </footer>
-
-  </main>
+        <button type="submit" class="btn btn-primary" style="justify-content: center; margin-top: 6px; padding: 10px;">
+          Lanjutkan
+        </button>
+      </form>
+    </div>
+  </div>
 
   <script>
     // =========================================================================
-    // 1. DATA KONTEKS PROYEK WA BOT REST API (OTENTIK & NATURAL)
+    // STATE MANAJEMEN DASHBOARD
     // =========================================================================
-    const rolePresets = {
-      user: {
-        limit: '50 req / hari',
-        duration: 'Permanen (Gratis)',
-        customKey: 'Terkunci (key_8f92a...)'
-      },
-      premium: {
-        limit: '1.000 req / hari',
-        duration: '30 Hari (Otomatis Sinkron)',
-        customKey: 'Aktif (Bebas Kustomisasi)'
-      },
-      vip: {
-        limit: 'Unlimited Request',
-        duration: '30 Hari / Prioritas Server',
-        customKey: 'Aktif + Bypass Rate Limit'
+    let isLoggedIn = false;
+    let isKeyRevealed = false;
+    let currentUsername = 'raka_dev';
+    let currentApiKey = 'key_live_98a72f419c8e301b';
+
+    // Sinkronisasi seluruh elemen berdasarkan status login (Belum Login vs Sudah Login)
+    function renderAuthState() {
+      const topGuest = document.getElementById('topGuestView');
+      const topUser = document.getElementById('topUserView');
+      const btnLoginReg = document.getElementById('btnLoginRegister');
+      const btnLogout = document.getElementById('btnLogout');
+
+      const guestPanel = document.getElementById('guestAccountPanel');
+      const verifiedPanel = document.getElementById('verifiedAccountPanel');
+
+      const sideTitle = document.getElementById('sideAccountStatusTitle');
+      const sideDesc = document.getElementById('sideAccountStatusDesc');
+
+      if (isLoggedIn) {
+        topGuest.classList.add('hidden');
+        topUser.classList.remove('hidden');
+        btnLoginReg.classList.add('hidden');
+        btnLogout.classList.remove('hidden');
+
+        guestPanel.classList.add('hidden');
+        verifiedPanel.classList.remove('hidden');
+
+        document.getElementById('displayUsername').textContent = currentUsername;
+        document.getElementById('settingUsername').value = currentUsername;
+        updateApiKeyDisplay();
+
+        sideTitle.textContent = `Akun Aktif (@${currentUsername})`;
+        sideDesc.textContent = 'Status terautentikasi. Kredensial API Key siap digunakan.';
+      } else {
+        topGuest.classList.remove('hidden');
+        topUser.classList.add('hidden');
+        btnLoginReg.classList.remove('hidden');
+        btnLogout.classList.add('hidden');
+
+        guestPanel.classList.remove('hidden');
+        verifiedPanel.classList.add('hidden');
+
+        sideTitle.textContent = 'Belum Terhubung ke Akun';
+        sideDesc.textContent = 'Anda sedang menjelajah sebagai tamu. Masuk untuk mengelola kredensial.';
       }
-    };
+    }
 
-    const endpointsData = [
-      {
-        id: 'ep-tiktok',
-        category: 'scraper',
-        method: 'GET',
-        path: '/api/feature/tiktok',
-        title: 'TikTok Downloader Tanpa Watermark',
-        desc: 'Mengekstrak video MP4 kualitas HD dan musik MP3 langsung untuk dikirim oleh bot WhatsApp.',
-        note: 'Sudah dilengkapi validasi middleware verifyApiKey. Setiap panggilan sukses oleh user biasa atau premium akan otomatis memotong kuota harian sebanyak 1 poin.',
-        sampleParam: '?url=https://vt.tiktok.com/ZS89xYz/&apikey= berkah_bot_2026',
-        sampleResponse: {
-          status: true,
-          creator: "@admin_owner",
-          remainingLimit: 994,
-          result: {
-            title: "Tutorial Setup Node.js di Termux",
-            duration: "01:14",
-            videoNoWatermark: "https://cdn.wabot-api.id/dl/tt-99281.mp4",
-            audio: "https://cdn.wabot-api.id/dl/tt-99281.mp3"
-          }
-        },
-        defaultOpen: true
-      },
-      {
-        id: 'ep-check',
-        category: 'account',
-        method: 'GET',
-        path: '/api/check-apikey',
-        title: 'Cek Status API Key, Sisa Limit, & Masa Aktif',
-        desc: 'Digunakan oleh command .cekkey atau .profile langsung dari dalam chat WhatsApp.',
-        note: 'Endpoint ini tidak memotong kuota harian pengguna. Sangat cocok dipasang pada menu utama bot agar pengguna tahu kapan paket Premium 30 hari mereka berakhir.',
-        sampleParam: '?apikey=berkah_bot_2026',
-        sampleResponse: {
-          status: true,
-          result: {
-            username: "raka_dev",
-            role: "PREMIUM",
-            limitUsed: 6,
-            limitMax: 1000,
-            limitRemaining: 994,
-            customApiKeyAllowed: true,
-            expiredAt: "2026-11-16T00:00:00.000Z"
-          }
-        },
-        defaultOpen: false
-      },
-      {
-        id: 'ep-customkey',
-        category: 'account',
-        method: 'PUT',
-        path: '/api/user/custom-apikey',
-        title: 'Ubah Custom API Key (Khusus Premium & VIP)',
-        desc: 'Mengizinkan pelanggan berbayar mengganti string API key sesuai nama bot mereka.',
-        note: 'Dilindungi oleh middleware authorize("premium", "vip", "owner"). Memvalidasi karakter alfanumerik 5-32 karakter dan memastikan key belum dipakai user lain di MongoDB.',
-        sampleParam: 'Header: Authorization: Bearer <jwt_token>',
-        sampleResponse: {
-          status: true,
-          message: "Custom API Key berhasil disimpan",
-          apiKey: "elaina_bot_vip"
-        },
-        defaultOpen: false
-      },
-      {
-        id: 'ep-smtp',
-        category: 'account',
-        method: 'POST',
-        path: '/api/auth/register',
-        title: 'Registrasi Akun & Deteksi Domain SMTP Otomatis',
-        desc: 'Mengirimkan email verifikasi via Nodemailer dengan deteksi x-forwarded-proto untuk Heroku.',
-        note: 'Memperbaiki kendala link localhost saat di-deploy ke Heroku. Fungsi getBaseUrl(req) otomatis mengenali protokol HTTPS aplikasi tanpa perlu mengubah kode saat pindah server.',
-        sampleParam: 'Body: { "username": "bot_baru", "email": "dev@mail.com" }',
-        sampleResponse: {
-          status: true,
-          message: "Registrasi berhasil! Silakan cek inbox/spam email Anda untuk verifikasi akun."
-        },
-        defaultOpen: false
+    // Fungsi Tampilkan / Sembunyikan API Key di Top Bar
+    function updateApiKeyDisplay() {
+      const keyEl = document.getElementById('topApiKeyText');
+      const revealBtn = document.getElementById('revealBtn');
+      if (isKeyRevealed) {
+        keyEl.textContent = currentApiKey;
+        revealBtn.textContent = 'Sembunyikan';
+      } else {
+        keyEl.textContent = '••••••••••••••••••••';
+        revealBtn.textContent = 'Tampilkan';
       }
-    ];
+    }
 
-    let activeCategory = 'all';
+    function toggleRevealKey() {
+      isKeyRevealed = !isKeyRevealed;
+      updateApiKeyDisplay();
+    }
 
-    // =========================================================================
-    // 2. LOGIKA LOADING PEMBUKA YANG KREATIF & HALUS
-    // =========================================================================
-    window.addEventListener('DOMContentLoaded', () => {
-      const bar = document.getElementById('loaderBar');
-      const log = document.getElementById('loaderLog');
-      const overlay = document.getElementById('pageLoader');
+    function copyApiKey() {
+      navigator.clipboard.writeText(currentApiKey);
+      const copyBtn = document.getElementById('copyBtn');
+      copyBtn.textContent = '✓ Tersalin';
+      setTimeout(() => {
+        copyBtn.textContent = 'Salin';
+      }, 1400);
+    }
 
-      const steps = [
-        { pct: 30, text: 'Menghubungkan ke cluster MongoDB...' },
-        { pct: 65, text: 'Memvalidasi rute SMTP & skema limit harian...' },
-        { pct: 100, text: 'Menyiapkan dokumentasi v2.1 (Siap)' }
-      ];
+    // Fungsi Simulasi Cepat (Sakelar Belum Login <-> Sudah Login)
+    function toggleDemoAuthState() {
+      isLoggedIn = !isLoggedIn;
+      renderAuthState();
+    }
 
-      let stepIdx = 0;
-      const interval = setInterval(() => {
-        if (stepIdx < steps.length) {
-          bar.style.width = steps[stepIdx].pct + '%';
-          log.textContent = steps[stepIdx].text;
-          stepIdx++;
-        } else {
-          clearInterval(interval);
-          setTimeout(() => {
-            overlay.classList.add('done');
-            document.querySelectorAll('.stagger-section').forEach(el => el.classList.add('shown'));
-            renderEndpoints(activeCategory);
-            moveRolePill(document.querySelector('.pill-btn.active'));
-          }, 220);
-        }
-      }, 280);
-    });
+    function handleLogout() {
+      isLoggedIn = false;
+      isKeyRevealed = false;
+      renderAuthState();
+    }
 
     // =========================================================================
-    // 3. INTERAKSI SIMULATOR ROLE (SLIDING PILL + FADE TRANSITION)
+    // NAVIGASI ANTAR SEKSI DASHBOARD
     // =========================================================================
-    function switchRolePreview(roleKey, btnEl) {
-      document.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
+    function switchSection(sectionId, btnEl) {
+      document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
       btnEl.classList.add('active');
-      moveRolePill(btnEl);
 
-      const grid = document.getElementById('roleMetricsGrid');
-      grid.style.opacity = '0';
-      grid.style.transform = 'translateY(5px)';
-
-      setTimeout(() => {
-        const data = rolePresets[roleKey];
-        document.getElementById('mLimit').textContent = data.limit;
-        document.getElementById('mDuration').textContent = data.duration;
-        document.getElementById('mCustomKey').textContent = data.customKey;
-
-        grid.style.opacity = '1';
-        grid.style.transform = 'translateY(0)';
-      }, 160);
+      document.querySelectorAll('.nav-section-panel').forEach(panel => panel.classList.add('hidden'));
+      document.getElementById(`panel-${sectionId}`).classList.remove('hidden');
     }
-
-    function moveRolePill(activeBtn) {
-      const pill = document.getElementById('rolePill');
-      if (!activeBtn || !pill) return;
-      pill.style.width = `${activeBtn.offsetWidth}px`;
-      pill.style.transform = `translateX(${activeBtn.offsetLeft - 4}px)`;
-    }
-
-    window.addEventListener('resize', () => {
-      moveRolePill(document.querySelector('.pill-btn.active'));
-    });
 
     // =========================================================================
-    // 4. RENDER DAFTAR ENDPOINT & SIMULASI REQUEST DENGAN SKELETON SHIMMER
+    // MODAL LOGIN / REGISTER & PENGATURAN AKUN
     // =========================================================================
-    function renderEndpoints(category) {
-      const container = document.getElementById('endpointsContainer');
-      const items = category === 'all'
-        ? endpointsData
-        : endpointsData.filter(e => e.category === category);
+    function openAuthModal(mode) {
+      const modal = document.getElementById('authModal');
+      const title = document.getElementById('modalTitle');
+      const emailGroup = document.getElementById('modalEmailGroup');
 
-      container.innerHTML = items.map((ep, idx) => `
-        <article class="endpoint-card ${ep.defaultOpen ? 'open' : ''}" id="card-${ep.id}" style="animation: cardSlideUp 0.35s cubic-bezier(0.22, 1, 0.36, 1) ${idx * 0.06}s both;">
-          <button class="endpoint-header" onclick="toggleEndpointCard('${ep.id}')">
-            <div class="ep-left">
-              <div class="ep-badges">
-                <span class="method-badge ${ep.method === 'PUT' || ep.method === 'POST' ? 'put' : ''}">${ep.method}</span>
-                <span class="ep-path">${ep.path}</span>
-              </div>
-              <div class="ep-title font-heading">${ep.title}</div>
-              <p class="ep-desc">${ep.desc}</p>
-            </div>
-            <div class="expand-icon">↓</div>
-          </button>
-
-          <div class="ep-drawer">
-            <div class="ep-drawer-inner">
-              <div class="ep-content">
-                <p class="ep-note">${ep.note}</p>
-                <div class="try-bar">
-                  <code style="color: var(--text-secondary);">${ep.path}${ep.sampleParam}</code>
-                  <button class="btn-try" onclick="simulateEndpointCall('${ep.id}')">
-                    ▶ Simulasikan Request
-                  </button>
-                </div>
-                <div id="output-${ep.id}">
-                  <pre class="json-preview"><code>${JSON.stringify(ep.sampleResponse, null, 2)}</code></pre>
-                </div>
-              </div>
-            </div>
-          </div>
-        </article>
-      `).join('');
-    }
-
-    // Keyframe animasi masuk kartu
-    const animStyle = document.createElement('style');
-    animStyle.textContent = `
-      @keyframes cardSlideUp {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
+      if (mode === 'register') {
+        title.textContent = 'Daftar Akun Developer Baru';
+        emailGroup.classList.remove('hidden');
+      } else {
+        title.textContent = 'Masuk ke Dashboard API';
+        emailGroup.classList.add('hidden');
       }
-    `;
-    document.head.appendChild(animStyle);
-
-    function toggleEndpointCard(id) {
-      const card = document.getElementById(`card-${id}`);
-      card.classList.toggle('open');
+      modal.classList.add('open');
     }
 
-    // Animasi Shimmer saat tombol "Simulasikan Request" diklik
-    function simulateEndpointCall(id) {
-      const ep = endpointsData.find(item => item.id === id);
-      const outputBox = document.getElementById(`output-${id}`);
-
-      outputBox.innerHTML = `<div class="shimmer-card" style="height: 120px;"></div>`;
-
-      const latency = Math.floor(Math.random() * 35) + 24;
-      setTimeout(() => {
-        outputBox.innerHTML = `
-          <div style="display:flex; justify-content:space-between; font-size:11.5px; color:var(--accent-main); margin-bottom:6px;" class="font-mono">
-            <span>✓ 200 OK • Respons diterima</span>
-            <span>Waktu tempuh: ${latency} ms</span>
-          </div>
-          <pre class="json-preview"><code>${JSON.stringify(ep.sampleResponse, null, 2)}</code></pre>
-        `;
-      }, 520);
+    function closeAuthModal() {
+      document.getElementById('authModal').classList.remove('open');
     }
 
-    function filterEndpoints(category, chipEl) {
-      if (activeCategory === category) return;
-      activeCategory = category;
-
-      document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-      chipEl.classList.add('active');
-
-      replayShimmerTransition();
+    function submitAuthForm(e) {
+      e.preventDefault();
+      const inputUser = document.getElementById('modalUsernameInput').value.trim();
+      if (inputUser) {
+        currentUsername = inputUser.toLowerCase();
+      }
+      isLoggedIn = true;
+      closeAuthModal();
+      renderAuthState();
     }
 
-    function replayShimmerTransition() {
-      const container = document.getElementById('endpointsContainer');
-      container.innerHTML = `
-        <div class="shimmer-card" style="height: 96px;"></div>
-        <div class="shimmer-card" style="height: 96px;"></div>
-        <div class="shimmer-card" style="height: 96px;"></div>
-      `;
-      setTimeout(() => {
-        renderEndpoints(activeCategory);
-      }, 550);
+    function saveCustomKey() {
+      const val = document.getElementById('customKeyInput').value.trim();
+      const fb = document.getElementById('customKeyFeedback');
+      if (!isLoggedIn) {
+        fb.style.color = 'var(--danger)';
+        fb.textContent = 'Gagal: Silakan login terlebih dahulu untuk mengubah API Key.';
+        return;
+      }
+      if (val.length < 5) {
+        fb.style.color = 'var(--danger)';
+        fb.textContent = 'Custom API Key minimal harus terdiri dari 5 karakter.';
+        return;
+      }
+      currentApiKey = val;
+      isKeyRevealed = true;
+      updateApiKeyDisplay();
+      fb.style.color = 'var(--success)';
+      fb.textContent = `✓ Berhasil: API Key Anda telah diperbarui menjadi "${val}"`;
+    }
+
+    function updateUsername() {
+      const newName = document.getElementById('settingUsername').value.trim();
+      if (newName && isLoggedIn) {
+        currentUsername = newName.toLowerCase();
+        renderAuthState();
+      }
     }
 
     // =========================================================================
-    // 5. MODE GELAP / TERANG & INTERAKSI FOOTER
+    // TEMA DARK / LIGHT MODE
     // =========================================================================
     function toggleTheme() {
       const root = document.documentElement;
       const btn = document.getElementById('themeBtn');
-      const nextTheme = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-      root.setAttribute('data-theme', nextTheme);
-      btn.innerHTML = nextTheme === 'dark' ? '<span>☀️</span> Mode Terang' : '<span>🌙</span> Mode Gelap';
+      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      btn.textContent = next === 'dark' ? '☀️ Terang' : '🌙 Gelap';
     }
 
-    function giveReaction(btnEl, message) {
-      document.querySelectorAll('.react-pill').forEach(b => b.classList.remove('active'));
-      btnEl.classList.add('active');
-      btnEl.textContent = `${message} • Tersimpan`;
-    }
+    // Inisialisasi tampilan awal
+    renderAuthState();
   </script>
 </body>
 </html>
