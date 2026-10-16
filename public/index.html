@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard REST API Bot WhatsApp</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="card" style="display: flex; justify-content: space-between; align-items: center;">
+    <h2>WA Bot REST API</h2>
+    <button id="themeToggle">Ubah ke Light Mode</button>
+  </div>
+
+  <div class="card">
+    <h3>Cek Status API Key</h3>
+    <input type="text" id="apiKeyInput" placeholder="Masukkan API Key..." style="padding: 8px; width: 65%;" />
+    <button onclick="checkKey()">Cek Limit</button>
+    <pre id="keyResult" style="margin-top: 1rem; white-space: pre-wrap;"></pre>
+  </div>
+
+  <div class="card">
+    <h3>Daftar Harga & Upgrade</h3>
+    <div id="pricingContainer">Memuat daftar paket...</div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
