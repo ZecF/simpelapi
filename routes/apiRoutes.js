@@ -131,5 +131,108 @@ router.get('/feature/tiktok', verifyApiKey, async (req, res) => {
     }
   });
 });
+// Tambahkan di dalam routes/apiRoutes.js
 
+// DAFTAR ENDPOINT UNTUK UI DOCS (Gaya zelapi.eu.cc)
+router.get('/docs-list', (req, res) => {
+  res.json({
+    status: true,
+    apiName: 'Zel-Style WA Bot API',
+    version: 'v1.0',
+    owner: `@${process.env.OWNER_USERNAME || 'admin_owner'}`,
+    categories: ['Downloader', 'AI', 'Tools', 'Account'],
+    endpoints: [
+      {
+        category: 'Downloader',
+        name: 'TikTok No Watermark',
+        method: 'GET',
+        path: '/api/feature/tiktok',
+        description: 'Download video & audio TikTok tanpa watermark.',
+        status: 'Active',
+        params: [
+          { name: 'url', type: 'text', required: true, placeholder: 'https://vt.tiktok.com/ZSxxxx/' },
+          { name: 'apikey', type: 'apikey', required: true, placeholder: 'API Key Anda' }
+        ]
+      },
+      {
+        category: 'Downloader',
+        name: 'Instagram Reels / Post',
+        method: 'GET',
+        path: '/api/feature/igdl',
+        description: 'Download video Reels atau foto dari Instagram.',
+        status: 'Active',
+        params: [
+          { name: 'url', type: 'text', required: true, placeholder: 'https://www.instagram.com/reel/xxxx/' },
+          { name: 'apikey', type: 'apikey', required: true, placeholder: 'API Key Anda' }
+        ]
+      },
+      {
+        category: 'AI',
+        name: 'AI Chat Assistant',
+        method: 'GET',
+        path: '/api/feature/ai-chat',
+        description: 'Tanya jawab dengan AI pintar untuk kebutuhan auto-reply bot WA.',
+        status: 'Active',
+        params: [
+          { name: 'prompt', type: 'text', required: true, placeholder: 'Jelaskan apa itu Node.js secara singkat' },
+          { name: 'apikey', type: 'apikey', required: true, placeholder: 'API Key Anda' }
+        ]
+      },
+      {
+        category: 'Tools',
+        name: 'Screenshot Website (SSWeb)',
+        method: 'GET',
+        path: '/api/feature/ssweb',
+        description: 'Mengambil tangkapan layar penuh dari URL website.',
+        status: 'Active',
+        params: [
+          { name: 'url', type: 'text', required: true, placeholder: 'https://google.com' },
+          { name: 'apikey', type: 'apikey', required: true, placeholder: 'API Key Anda' }
+        ]
+      },
+      {
+        category: 'Account',
+        name: 'Check API Key & Limit',
+        method: 'GET',
+        path: '/api/check-apikey',
+        description: 'Mengecek status role, sisa limit harian, dan masa aktif paket.',
+        status: 'Active',
+        params: [
+          { name: 'apikey', type: 'apikey', required: true, placeholder: 'API Key Anda' }
+        ]
+      }
+    ]
+  });
+});
+
+// Contoh tambahan endpoint AI & IG agar bisa langsung dites di Docs
+router.get('/feature/igdl', verifyApiKey, async (req, res) => {
+  const { url } = req.query;
+  if (!url) return res.status(400).json({ status: false, message: 'Parameter ?url= wajib diisi' });
+  res.json({
+    status: true,
+    creator: `@${process.env.OWNER_USERNAME}`,
+    result: { url, type: 'video', mediaUrl: 'https://cdn.example.com/ig-reel.mp4' }
+  });
+});
+
+router.get('/feature/ai-chat', verifyApiKey, async (req, res) => {
+  const { prompt } = req.query;
+  if (!prompt) return res.status(400).json({ status: false, message: 'Parameter ?prompt= wajib diisi' });
+  res.json({
+    status: true,
+    creator: `@${process.env.OWNER_USERNAME}`,
+    result: { prompt, reply: `Ini adalah respons simulasi AI untuk: "${prompt}"` }
+  });
+});
+
+router.get('/feature/ssweb', verifyApiKey, async (req, res) => {
+  const { url } = req.query;
+  if (!url) return res.status(400).json({ status: false, message: 'Parameter ?url= wajib diisi' });
+  res.json({
+    status: true,
+    creator: `@${process.env.OWNER_USERNAME}`,
+    result: { website: url, screenshotUrl: 'https://cdn.example.com/ssweb-preview.png' }
+  });
+});
 module.exports = router;
