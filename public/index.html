@@ -1,222 +1,1129 @@
 <!DOCTYPE html>
-<html lang="id" class="dark">
+<html lang="id" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>API Documentation - WhatsApp Bot REST API</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'system-ui', 'sans-serif'],
-            mono: ['JetBrains Mono', 'monospace']
-          }
-        }
-      }
-    };
-  </script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <title>Catatan Rilis & Dokumentasi — WA Bot REST API v2.1</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet">
+
   <style>
-    body { font-family: 'Inter', sans-serif; }
-    code, pre, .font-mono { font-family: 'JetBrains Mono', monospace; }
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
+    /* ==========================================================================
+       1. PALET WARNA HANGAT & NYAMAN DI MATA (WARM STUDIO TOKENS)
+       ========================================================================== */
+    :root[data-theme="light"] {
+      --bg-canvas: #FAF8F5;
+      --bg-surface: #FFFFFF;
+      --bg-subtle: #F2EFE9;
+      --bg-code: #1E1E1C;
+      --text-primary: #1C1917;
+      --text-secondary: #57534E;
+      --text-muted: #8A847C;
+      --border-soft: #E6E1DA;
+      --border-hover: #D4CDC3;
+      --accent-main: #0F766E;       /* Deep Warm Teal */
+      --accent-main-soft: rgba(15, 118, 110, 0.1);
+      --accent-warm: #C25E00;       /* Terracotta Amber */
+      --accent-warm-soft: rgba(194, 94, 0, 0.1);
+      --shimmer-highlight: rgba(255, 255, 255, 0.8);
+      --shadow-sm: 0 2px 8px -2px rgba(28, 25, 23, 0.04), 0 1px 3px -1px rgba(28, 25, 23, 0.03);
+      --shadow-md: 0 12px 28px -6px rgba(28, 25, 23, 0.07), 0 4px 10px -2px rgba(28, 25, 23, 0.04);
+    }
+
+    :root[data-theme="dark"] {
+      --bg-canvas: #121312;
+      --bg-surface: #1A1C1A;
+      --bg-subtle: #232623;
+      --bg-code: #0D0E0D;
+      --text-primary: #F3F4F3;
+      --text-secondary: #A3A8A3;
+      --text-muted: #6E736E;
+      --border-soft: #2B2E2B;
+      --border-hover: #3D423D;
+      --accent-main: #2DD4BF;
+      --accent-main-soft: rgba(45, 212, 191, 0.12);
+      --accent-warm: #F59E0B;
+      --accent-warm-soft: rgba(245, 158, 11, 0.12);
+      --shimmer-highlight: rgba(255, 255, 255, 0.06);
+      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.25);
+      --shadow-md: 0 16px 32px rgba(0, 0, 0, 0.45);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-canvas);
+      color: var(--text-primary);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 15px;
+      line-height: 1.72;
+      letter-spacing: -0.011em;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.35s ease, color 0.35s ease;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4, .font-heading {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      letter-spacing: -0.025em;
+    }
+
+    code, pre, .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+    }
+
+    /* ==========================================================================
+       2. ANIMASI LOADING KREATIF (ORBITAL PULSE + PROGRESS CURTAIN)
+       ========================================================================== */
+    .loader-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background-color: var(--bg-canvas);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .loader-overlay.done {
+      opacity: 0;
+      transform: translateY(-20px) scale(0.99);
+      pointer-events: none;
+    }
+
+    /* Elemen Bergerak Estetik: 3 Titik Koneksi API yang Berdenyut & Bergeser */
+    .api-nodes-loader {
+      position: relative;
+      width: 68px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 22px;
+    }
+
+    .api-nodes-loader::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 8px;
+      right: 8px;
+      height: 2px;
+      background: var(--border-soft);
+      transform: translateY(-50%);
+      z-index: 1;
+    }
+
+    .node-dot {
+      position: relative;
+      z-index: 2;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: var(--accent-main);
+      animation: nodePulse 1.2s infinite ease-in-out;
+    }
+
+    .node-dot:nth-child(2) {
+      animation-delay: 0.2s;
+      background-color: var(--accent-warm);
+    }
+
+    .node-dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes nodePulse {
+      0%, 100% { transform: translateY(0) scale(0.85); opacity: 0.5; }
+      50% { transform: translateY(-7px) scale(1.15); opacity: 1; box-shadow: 0 6px 14px var(--accent-main-soft); }
+    }
+
+    .progress-rail {
+      width: 220px;
+      height: 4px;
+      background-color: var(--bg-subtle);
+      border-radius: 99px;
+      overflow: hidden;
+      margin-bottom: 12px;
+      border: 1px solid var(--border-soft);
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent-main), var(--accent-warm));
+      border-radius: 99px;
+      transition: width 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .loader-status-text {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ==========================================================================
+       3. SKELETON SHIMMER (UNTUK TRANSISI FILTER & SIMULASI REQUEST)
+       ========================================================================== */
+    .shimmer-card {
+      position: relative;
+      overflow: hidden;
+      background-color: var(--bg-subtle);
+      border-radius: 12px;
+      border: 1px solid var(--border-soft);
+    }
+
+    .shimmer-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        105deg,
+        transparent 25%,
+        var(--shimmer-highlight) 50%,
+        transparent 75%
+      );
+      background-size: 200% 100%;
+      animation: diagonalShimmer 1.4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes diagonalShimmer {
+      0% { background-position: 100% 0; }
+      100% { background-position: -100% 0; }
+    }
+
+    /* ==========================================================================
+       4. HEADER & STICKY NAVIGATION
+       ========================================================================== */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      background-color: color-mix(in srgb, var(--bg-canvas) 85%, transparent);
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .navbar-inner {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand-cluster {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .live-indicator {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background-color: var(--accent-main);
+      box-shadow: 0 0 0 4px var(--accent-main-soft);
+    }
+
+    .brand-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .brand-tag {
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background-color: var(--bg-subtle);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-soft);
+    }
+
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-ghost {
+      background-color: var(--bg-surface);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-soft);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--border-hover);
+      background-color: var(--bg-subtle);
+      color: var(--text-primary);
+      transform: translateY(-1px);
+    }
+
+    /* ==========================================================================
+       5. LAYOUT UTAMA & EFEK REVEAL BERTAHAP
+       ========================================================================== */
+    .doc-wrapper {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 44px 24px 80px;
+    }
+
+    .stagger-section {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1), transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .stagger-section.shown {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ==========================================================================
+       6. BAGIAN INTRO & CATATAN TIM OTENTIK
+       ========================================================================== */
+    .release-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent-main);
+      background-color: var(--accent-main-soft);
+      padding: 4px 12px;
+      border-radius: 99px;
+      margin-bottom: 16px;
+    }
+
+    .hero-title {
+      font-size: clamp(26px, 4vw, 36px);
+      line-height: 1.22;
+      margin-bottom: 14px;
+    }
+
+    .hero-desc {
+      font-size: 16px;
+      color: var(--text-secondary);
+      max-width: 700px;
+      margin-bottom: 28px;
+    }
+
+    .dev-note-card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-soft);
+      border-left: 3.5px solid var(--accent-warm);
+      border-radius: 14px;
+      padding: 20px 24px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 44px;
+    }
+
+    .dev-note-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+      font-size: 13px;
+    }
+
+    .author-badge {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-weight: 600;
+    }
+
+    .author-avatar {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background-color: var(--accent-warm);
+      color: #FFFFFF;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ==========================================================================
+       7. SIMULATOR ROLE & LIMIT HARIAN (INTERAKTIF)
+       ========================================================================== */
+    .role-showcase {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-soft);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 48px;
+    }
+
+    .showcase-top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .pill-tabs {
+      position: relative;
+      display: inline-flex;
+      background-color: var(--bg-subtle);
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid var(--border-soft);
+    }
+
+    .sliding-pill {
+      position: absolute;
+      top: 4px;
+      bottom: 4px;
+      left: 4px;
+      background-color: var(--bg-surface);
+      border-radius: 7px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+      transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1), width 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+      z-index: 1;
+    }
+
+    .pill-btn {
+      position: relative;
+      z-index: 2;
+      background: none;
+      border: none;
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+
+    .pill-btn.active {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .role-details-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+    .metric-box {
+      background-color: var(--bg-canvas);
+      border: 1px solid var(--border-soft);
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+
+    .metric-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .metric-val {
+      font-size: 16px;
+      font-weight: 700;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    /* ==========================================================================
+       8. DAFTAR FITUR & ENDPOINT BARU (ACCORDION + MINI PLAYGROUND)
+       ========================================================================== */
+    .section-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .filter-group {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .filter-chip {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-soft);
+      color: var(--text-secondary);
+      padding: 5px 13px;
+      border-radius: 99px;
+      font-size: 12.5px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .filter-chip.active {
+      background-color: var(--text-primary);
+      color: var(--bg-canvas);
+      border-color: var(--text-primary);
+    }
+
+    .endpoint-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .endpoint-card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-soft);
+      border-radius: 14px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+      overflow: hidden;
+    }
+
+    .endpoint-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--border-hover);
+    }
+
+    .endpoint-card.open {
+      border-color: var(--accent-main);
+    }
+
+    .endpoint-header {
+      width: 100%;
+      background: none;
+      border: none;
+      padding: 18px 22px;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      cursor: pointer;
+      color: inherit;
+      font-family: inherit;
+    }
+
+    .ep-left {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .ep-badges {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .method-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background-color: var(--accent-main-soft);
+      color: var(--accent-main);
+    }
+
+    .method-badge.put {
+      background-color: var(--accent-warm-soft);
+      color: var(--accent-warm);
+    }
+
+    .ep-path {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .ep-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .ep-desc {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+    }
+
+    .expand-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background-color: var(--bg-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+      transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.2s ease;
+    }
+
+    .endpoint-card.open .expand-icon {
+      transform: rotate(180deg);
+      background-color: var(--accent-main-soft);
+      color: var(--accent-main);
+    }
+
+    /* Transisi Buka/Tutup Mulus dengan CSS Grid */
+    .ep-drawer {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.36s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .endpoint-card.open .ep-drawer {
+      grid-template-rows: 1fr;
+    }
+
+    .ep-drawer-inner {
+      overflow: hidden;
+    }
+
+    .ep-content {
+      padding: 0 22px 22px;
+      border-top: 1px solid var(--border-soft);
+      padding-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .ep-note {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .try-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      background-color: var(--bg-subtle);
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border-soft);
+    }
+
+    .btn-try {
+      background-color: var(--accent-main);
+      color: #FFFFFF;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 7px;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s ease, transform 0.15s ease;
+    }
+
+    .btn-try:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+    }
+
+    .json-preview {
+      background-color: var(--bg-code);
+      color: #E5E7EB;
+      padding: 14px 16px;
+      border-radius: 10px;
+      overflow-x: auto;
+      line-height: 1.55;
+      border: 1px solid var(--border-soft);
+    }
+
+    /* ==========================================================================
+       9. FOOTER & REAKSI TIM
+       ========================================================================== */
+    .doc-footer {
+      margin-top: 56px;
+      padding-top: 26px;
+      border-top: 1px solid var(--border-soft);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .reaction-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .react-pill {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-soft);
+      color: var(--text-secondary);
+      padding: 5px 12px;
+      border-radius: 99px;
+      font-size: 12.5px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .react-pill:hover {
+      border-color: var(--accent-main);
+      transform: scale(1.04);
+    }
+
+    .react-pill.active {
+      background-color: var(--accent-main-soft);
+      border-color: var(--accent-main);
+      color: var(--accent-main);
+      font-weight: 600;
+    }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-900 dark:bg-[#0b0f19] dark:text-slate-100 min-h-screen transition-colors duration-200">
+<body>
 
-  <!-- TOP NAVBAR -->
-  <header class="sticky top-0 z-30 backdrop-blur-md bg-white/80 dark:bg-[#0b0f19]/80 border-b border-slate-200 dark:border-slate-800">
-    <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold text-sm">API</div>
-        <div>
-          <h1 id="brandTitle" class="font-bold text-base leading-none">WA Bot REST API</h1>
-          <span id="brandVersion" class="text-[11px] text-slate-500 dark:text-slate-400 font-mono">v1.0 • Ready</span>
-        </div>
+  <!-- 1. ANIMASI LOADING KREATIF SAAT MEMBUKA HALAMAN -->
+  <div id="pageLoader" class="loader-overlay">
+    <div class="api-nodes-loader">
+      <div class="node-dot"></div>
+      <div class="node-dot"></div>
+      <div class="node-dot"></div>
+    </div>
+    <div class="progress-rail">
+      <div id="loaderBar" class="progress-bar-fill"></div>
+    </div>
+    <div id="loaderLog" class="loader-status-text">Menghubungkan ke cluster MongoDB...</div>
+  </div>
+
+  <!-- 2. HEADER NAVIGASI -->
+  <header class="navbar">
+    <div class="navbar-inner">
+      <div class="brand-cluster">
+        <span class="live-indicator" title="Server Heroku Aktif"></span>
+        <span class="brand-title">WA Bot REST API</span>
+        <span class="brand-tag">Rilis v2.1</span>
       </div>
-
-      <div class="flex items-center gap-2">
-        <button onclick="openModal('pricingModal')" class="text-xs font-medium px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
-          💎 Pricing
+      <div class="nav-controls">
+        <button class="btn-ghost" onclick="replayShimmerTransition()" title="Lihat ulang animasi transisi pemuatan">
+          <span>↻</span> Ulangi Animasi Muat
         </button>
-        <button onclick="openModal('requestModal')" class="text-xs font-medium px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
-          💡 Request Fitur
-        </button>
-        <button id="themeBtn" onclick="toggleTheme()" class="p-2 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs">
-          ☀️
-        </button>
-        <button id="authActionBtn" onclick="handleAuthButtonClick()" class="text-xs font-semibold px-3.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white transition">
-          Login
+        <button id="themeBtn" class="btn-ghost" onclick="toggleTheme()">
+          <span>🌙</span> Mode Gelap
         </button>
       </div>
     </div>
   </header>
 
-  <!-- MAIN CONTAINER -->
-  <main class="max-w-5xl mx-auto px-4 py-8">
+  <!-- 3. KONTEN DOKUMEN UTAMA -->
+  <main class="doc-wrapper">
 
-    <!-- QUICK STATUS & APIKEY BAR -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-      <!-- Kolom Input Global API Key -->
-      <div class="md:col-span-2 p-4 rounded-xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
-        <div class="flex items-center justify-between mb-2">
-          <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Global API Key</span>
-          <span id="keyRoleBadge" class="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">Guest</span>
+    <!-- BAGIAN INTRO & CATATAN PROYEK -->
+    <section class="stagger-section" id="secHero">
+      <div class="release-pill">
+        <span>●</span> Catatan Sinkronisasi & Dokumentasi Proyek • Oktober 2026
+      </div>
+      <h1 class="hero-title">Pembaruan Mesin Kuota Harian, SMTP Otomatis, & Endpoint Scraper v2.1</h1>
+      <p class="hero-desc">
+        Dokumen ini merangkum pembaruan arsitektur backend Node.js + MongoDB untuk layanan REST API Bot WhatsApp kita—mulai dari penanganan protokol HTTPS di Heroku hingga penambahan modul downloader tanpa watermark.
+      </p>
+
+      <!-- Catatan Tim Natural -->
+      <div class="dev-note-card">
+        <div class="dev-note-meta">
+          <div class="author-badge">
+            <div class="author-avatar">DV</div>
+            <span>Catatan Maintainer (Deployment & Database)</span>
+          </div>
+          <span class="font-mono" style="color: var(--text-muted); font-size: 12px;">Status: Berjalan Stabil di Production</span>
         </div>
-        <div class="flex gap-2">
-          <input
-            type="text"
-            id="globalApiKey"
-            placeholder="Tempel API Key di sini (otomatis terisi ke semua endpoint)..."
-            class="w-full text-xs font-mono px-3 py-2 rounded-lg bg-slate-50 dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800 focus:outline-none focus:border-indigo-500"
-            oninput="syncGlobalApiKey(this.value)"
-          />
-          <button onclick="verifyGlobalKey()" class="text-xs font-semibold px-4 py-2 rounded-lg bg-slate-900 dark:bg-indigo-600 text-white hover:opacity-90 shrink-0">
-            Cek Key
-          </button>
+        <p style="color: var(--text-secondary); font-size: 14.5px;">
+          "Mulai pembaruan ini, teman-teman yang menghubungkan script bot Baileys tidak perlu lagi khawatir limit terlambat ter-reset. Fungsi <code>syncPlanAndLimit()</code> sekarang otomatis memeriksa zona waktu <strong>Asia/Jakarta</strong> tepat saat request masuk, sekaligus menurunkan status akun Premium/VIP yang sudah melewati masa aktif 30 hari."
+        </p>
+      </div>
+    </section>
+
+    <!-- BAGIAN INTERAKTIF 1: SIMULATOR ROLE & KUOTA API KEY -->
+    <section class="stagger-section role-showcase" id="secRoleSim" style="transition-delay: 0.08s;">
+      <div class="showcase-top">
+        <div>
+          <h2 style="font-size: 18px; margin-bottom: 2px;">Simulasi Role & Masa Aktif API Key</h2>
+          <p style="font-size: 13.5px; color: var(--text-muted);">Klik pada salah satu role untuk melihat perbedaan hak akses yang diterima oleh bot.</p>
+        </div>
+
+        <!-- Sliding Pill Tabs -->
+        <div class="pill-tabs" id="roleTabs">
+          <div class="sliding-pill" id="rolePill"></div>
+          <button class="pill-btn active" onclick="switchRolePreview('user', this)">User Biasa</button>
+          <button class="pill-btn" onclick="switchRolePreview('premium', this)">Premium</button>
+          <button class="pill-btn" onclick="switchRolePreview('vip', this)">VIP / Owner</button>
         </div>
       </div>
 
-      <!-- Info Sisa Limit -->
-      <div class="p-4 rounded-xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
-        <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Status Limit Harian</span>
-        <div class="my-1">
-          <div id="limitDisplay" class="text-xl font-bold font-mono">- / -</div>
-          <p id="expiredDisplay" class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Masukkan API Key untuk cek limit</p>
+      <div class="role-details-grid" id="roleMetricsGrid">
+        <div class="metric-box">
+          <div class="metric-label">Kuota Request Harian</div>
+          <div class="metric-val" id="mLimit">50 req / hari</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-label">Masa Aktif Paket</div>
+          <div class="metric-val" id="mDuration">Permanen (Gratis)</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-label">Fitur Custom API Key</div>
+          <div class="metric-val" id="mCustomKey">Terkunci (Default Hex)</div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- SEARCH & CATEGORY FILTER PILLS -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-      <div id="categoryTabs" class="flex items-center gap-1.5 overflow-x-auto pb-1">
-        <!-- Dirender via JS -->
+    <!-- BAGIAN INTERAKTIF 2: DAFTAR ENDPOINT & CATATAN UPDATE -->
+    <section class="stagger-section" id="secEndpoints" style="transition-delay: 0.16s;">
+      <div class="section-head">
+        <div>
+          <h2 style="font-size: 20px; margin-bottom: 2px;">Daftar Endpoint & Pembaruan Sistem</h2>
+          <p style="font-size: 13.5px; color: var(--text-muted);">Klik kartu di bawah untuk membuka detail parameter dan menguji simulasi respons JSON.</p>
+        </div>
+
+        <div class="filter-group">
+          <button class="filter-chip active" onclick="filterEndpoints('all', this)">Semua Modul (4)</button>
+          <button class="filter-chip" onclick="filterEndpoints('scraper', this)">Fitur Bot WA</button>
+          <button class="filter-chip" onclick="filterEndpoints('account', this)">Autentikasi & Akun</button>
+        </div>
       </div>
 
-      <div class="relative w-full sm:w-64">
-        <input
-          type="text"
-          id="searchEndpoint"
-          oninput="renderEndpoints()"
-          placeholder="Cari endpoint (mis. tiktok, ai)..."
-          class="w-full text-xs px-3.5 py-2 rounded-lg bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 focus:outline-none focus:border-indigo-500"
-        />
+      <div id="endpointsContainer" class="endpoint-list">
+        <!-- Dirender secara dinamis oleh JavaScript -->
       </div>
-    </div>
+    </section>
 
-    <!-- DAFTAR ENDPOINT (ACCORDION GAYA ZELAPI) -->
-    <div id="endpointsContainer" class="space-y-3">
-      <!-- Dirender via JS -->
-    </div>
+    <!-- 4. FOOTER & FEEDBACK -->
+    <footer class="doc-footer stagger-section" id="secFooter" style="transition-delay: 0.22s;">
+      <div>
+        Dokumentasi Internal WA Bot REST API • Ditenagai Express, Mongoose, & Nodemailer
+      </div>
+      <div class="reaction-bar">
+        <span>Apakah dokumentasi rilis ini membantu?</span>
+        <button class="react-pill" onclick="giveReaction(this, '🚀 Siap Integrasi ke Bot!')">🚀 Siap Integrasi</button>
+        <button class="react-pill" onclick="giveReaction(this, '💡 Ada Usulan Endpoint')">💡 Usul Endpoint</button>
+      </div>
+    </footer>
 
   </main>
 
-  <!-- MODAL: LOGIN / REGISTER / FORGOT -->
-  <div id="authModal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 rounded-2xl max-w-md w-full p-6">
-      <div class="flex justify-between items-center mb-4">
-        <h3 id="authModalTitle" class="font-bold text-base">Login Akun</h3>
-        <button onclick="closeModal('authModal')" class="text-slate-400 hover:text-slate-200 text-sm">✕</button>
-      </div>
+  <script>
+    // =========================================================================
+    // 1. DATA KONTEKS PROYEK WA BOT REST API (OTENTIK & NATURAL)
+    // =========================================================================
+    const rolePresets = {
+      user: {
+        limit: '50 req / hari',
+        duration: 'Permanen (Gratis)',
+        customKey: 'Terkunci (key_8f92a...)'
+      },
+      premium: {
+        limit: '1.000 req / hari',
+        duration: '30 Hari (Otomatis Sinkron)',
+        customKey: 'Aktif (Bebas Kustomisasi)'
+      },
+      vip: {
+        limit: 'Unlimited Request',
+        duration: '30 Hari / Prioritas Server',
+        customKey: 'Aktif + Bypass Rate Limit'
+      }
+    };
 
-      <div class="flex gap-2 mb-4 text-xs">
-        <button onclick="switchAuthTab('login')" id="tabLogin" class="flex-1 py-1.5 rounded-lg bg-indigo-600 text-white font-medium">Login</button>
-        <button onclick="switchAuthTab('register')" id="tabRegister" class="flex-1 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 font-medium">Register</button>
-        <button onclick="switchAuthTab('forgot')" id="tabForgot" class="flex-1 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 font-medium">Reset</button>
-      </div>
+    const endpointsData = [
+      {
+        id: 'ep-tiktok',
+        category: 'scraper',
+        method: 'GET',
+        path: '/api/feature/tiktok',
+        title: 'TikTok Downloader Tanpa Watermark',
+        desc: 'Mengekstrak video MP4 kualitas HD dan musik MP3 langsung untuk dikirim oleh bot WhatsApp.',
+        note: 'Sudah dilengkapi validasi middleware verifyApiKey. Setiap panggilan sukses oleh user biasa atau premium akan otomatis memotong kuota harian sebanyak 1 poin.',
+        sampleParam: '?url=https://vt.tiktok.com/ZS89xYz/&apikey= berkah_bot_2026',
+        sampleResponse: {
+          status: true,
+          creator: "@admin_owner",
+          remainingLimit: 994,
+          result: {
+            title: "Tutorial Setup Node.js di Termux",
+            duration: "01:14",
+            videoNoWatermark: "https://cdn.wabot-api.id/dl/tt-99281.mp4",
+            audio: "https://cdn.wabot-api.id/dl/tt-99281.mp3"
+          }
+        },
+        defaultOpen: true
+      },
+      {
+        id: 'ep-check',
+        category: 'account',
+        method: 'GET',
+        path: '/api/check-apikey',
+        title: 'Cek Status API Key, Sisa Limit, & Masa Aktif',
+        desc: 'Digunakan oleh command .cekkey atau .profile langsung dari dalam chat WhatsApp.',
+        note: 'Endpoint ini tidak memotong kuota harian pengguna. Sangat cocok dipasang pada menu utama bot agar pengguna tahu kapan paket Premium 30 hari mereka berakhir.',
+        sampleParam: '?apikey=berkah_bot_2026',
+        sampleResponse: {
+          status: true,
+          result: {
+            username: "raka_dev",
+            role: "PREMIUM",
+            limitUsed: 6,
+            limitMax: 1000,
+            limitRemaining: 994,
+            customApiKeyAllowed: true,
+            expiredAt: "2026-11-16T00:00:00.000Z"
+          }
+        },
+        defaultOpen: false
+      },
+      {
+        id: 'ep-customkey',
+        category: 'account',
+        method: 'PUT',
+        path: '/api/user/custom-apikey',
+        title: 'Ubah Custom API Key (Khusus Premium & VIP)',
+        desc: 'Mengizinkan pelanggan berbayar mengganti string API key sesuai nama bot mereka.',
+        note: 'Dilindungi oleh middleware authorize("premium", "vip", "owner"). Memvalidasi karakter alfanumerik 5-32 karakter dan memastikan key belum dipakai user lain di MongoDB.',
+        sampleParam: 'Header: Authorization: Bearer <jwt_token>',
+        sampleResponse: {
+          status: true,
+          message: "Custom API Key berhasil disimpan",
+          apiKey: "elaina_bot_vip"
+        },
+        defaultOpen: false
+      },
+      {
+        id: 'ep-smtp',
+        category: 'account',
+        method: 'POST',
+        path: '/api/auth/register',
+        title: 'Registrasi Akun & Deteksi Domain SMTP Otomatis',
+        desc: 'Mengirimkan email verifikasi via Nodemailer dengan deteksi x-forwarded-proto untuk Heroku.',
+        note: 'Memperbaiki kendala link localhost saat di-deploy ke Heroku. Fungsi getBaseUrl(req) otomatis mengenali protokol HTTPS aplikasi tanpa perlu mengubah kode saat pindah server.',
+        sampleParam: 'Body: { "username": "bot_baru", "email": "dev@mail.com" }',
+        sampleResponse: {
+          status: true,
+          message: "Registrasi berhasil! Silakan cek inbox/spam email Anda untuk verifikasi akun."
+        },
+        defaultOpen: false
+      }
+    ];
 
-      <form id="authForm" onsubmit="submitAuth(event)" class="space-y-3 text-xs">
-        <div id="fieldUsername" class="hidden">
-          <label class="block mb-1 text-slate-400">Username</label>
-          <input type="text" id="authUsername" class="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800" placeholder="username_anda" />
-        </div>
-        <div id="fieldEmailOrUser">
-          <label id="labelEmailOrUser" class="block mb-1 text-slate-400">Email atau Username</label>
-          <input type="text" id="authEmailOrUser" class="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800" placeholder="email@domain.com" required />
-        </div>
-        <div id="fieldPassword">
-          <label class="block mb-1 text-slate-400">Password</label>
-          <input type="password" id="authPassword" class="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800" placeholder="••••••••" />
-        </div>
-        <div id="authFeedback" class="text-xs hidden p-2.5 rounded-lg"></div>
-        <button type="submit" class="w-full py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold">
-          Lanjutkan
-        </button>
-      </form>
-    </div>
-  </div>
+    let activeCategory = 'all';
 
-  <!-- MODAL: PROFIL & CUSTOM API KEY -->
-  <div id="profileModal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 rounded-2xl max-w-md w-full p-6 text-xs space-y-4">
-      <div class="flex justify-between items-center">
-        <h3 class="font-bold text-base">Profil & Pengaturan API Key</h3>
-        <button onclick="closeModal('profileModal')" class="text-slate-400 hover:text-slate-200 text-sm">✕</button>
-      </div>
+    // =========================================================================
+    // 2. LOGIKA LOADING PEMBUKA YANG KREATIF & HALUS
+    // =========================================================================
+    window.addEventListener('DOMContentLoaded', () => {
+      const bar = document.getElementById('loaderBar');
+      const log = document.getElementById('loaderLog');
+      const overlay = document.getElementById('pageLoader');
 
-      <div class="space-y-2">
-        <label class="block text-slate-400">Username</label>
-        <input type="text" id="profUsername" class="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800" />
-        <label class="block text-slate-400">Nama Lengkap</label>
-        <input type="text" id="profFullName" class="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800" />
-        <label class="block text-slate-400">Bio</label>
-        <input type="text" id="profBio" class="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800" />
-        <button onclick="saveProfile()" class="w-full py-2 rounded-lg bg-indigo-600 text-white font-semibold mt-1">Simpan Profil</button>
-      </div>
+      const steps = [
+        { pct: 30, text: 'Menghubungkan ke cluster MongoDB...' },
+        { pct: 65, text: 'Memvalidasi rute SMTP & skema limit harian...' },
+        { pct: 100, text: 'Menyiapkan dokumentasi v2.1 (Siap)' }
+      ];
 
-      <hr class="border-slate-200 dark:border-slate-800" />
+      let stepIdx = 0;
+      const interval = setInterval(() => {
+        if (stepIdx < steps.length) {
+          bar.style.width = steps[stepIdx].pct + '%';
+          log.textContent = steps[stepIdx].text;
+          stepIdx++;
+        } else {
+          clearInterval(interval);
+          setTimeout(() => {
+            overlay.classList.add('done');
+            document.querySelectorAll('.stagger-section').forEach(el => el.classList.add('shown'));
+            renderEndpoints(activeCategory);
+            moveRolePill(document.querySelector('.pill-btn.active'));
+          }, 220);
+        }
+      }, 280);
+    });
 
-      <!-- Custom API Key Khusus Premium/VIP -->
-      <div class="space-y-2">
-        <div class="flex justify-between">
-          <label class="text-slate-400 font-semibold">Custom API Key</label>
-          <span class="text-[10px] px-2 py-0.5 rounded bg-amber-500/10 text-amber-400">Khusus Premium / VIP</span>
-        </div>
-        <div class="flex gap-2">
-          <input type="text" id="customKeyInput" placeholder="Masukkan custom key baru..." class="w-full font-mono px-3 py-2 rounded-lg bg-slate-50 dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800" />
-          <button onclick="saveCustomApiKey()" class="px-3 py-2 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-semibold shrink-0">Ubah Key</button>
-        </div>
-      </div>
+    // =========================================================================
+    // 3. INTERAKSI SIMULATOR ROLE (SLIDING PILL + FADE TRANSITION)
+    // =========================================================================
+    function switchRolePreview(roleKey, btnEl) {
+      document.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
+      btnEl.classList.add('active');
+      moveRolePill(btnEl);
 
-      <div id="profFeedback" class="hidden p-2 rounded-lg"></div>
+      const grid = document.getElementById('roleMetricsGrid');
+      grid.style.opacity = '0';
+      grid.style.transform = 'translateY(5px)';
 
-      <button onclick="logoutUser()" class="w-full py-2 rounded-lg border border-red-500/40 text-red-400 hover:bg-red-500/10 font-semibold">
-        Logout
-      </button>
-    </div>
-  </div>
+      setTimeout(() => {
+        const data = rolePresets[roleKey];
+        document.getElementById('mLimit').textContent = data.limit;
+        document.getElementById('mDuration').textContent = data.duration;
+        document.getElementById('mCustomKey').textContent = data.customKey;
 
-  <!-- MODAL: PRICING LIST -->
-  <div id="pricingModal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 rounded-2xl max-w-2xl w-full p-6 text-xs">
-      <div class="flex justify-between items-center mb-4">
-        <h3 class="font-bold text-base">Daftar Paket & Upgrade</h3>
-        <button onclick="closeModal('pricingModal')" class="text-slate-400 hover:text-slate-200 text-sm">✕</button>
-      </div>
-      <div id="pricingModalContent" class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4"></div>
-      <div id="pricingOwnerBox" class="p-3.5 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-300"></div>
-    </div>
-  </div>
+        grid.style.opacity = '1';
+        grid.style.transform = 'translateY(0)';
+      }, 160);
+    }
 
-  <!-- MODAL: REQUEST FITUR -->
-  <div id="requestModal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 rounded-2xl max-w-md w-full p-6 text-xs space-y-3">
-      <div class="flex justify-between items-center">
-        <h3 class="font-bold text-base">Request Fitur Baru</h3>
-        <button onclick="closeModal('requestModal')" class="text-slate-400 hover:text-slate-200 text-sm">✕</button>
-      </div>
-      <p class="text-slate-400">Butuh scraper atau endpoint baru untuk bot WA Anda? Kirimkan detailnya ke Owner (wajib login).</p>
-      <input type="text" id="reqFeatureName" placeholder="Nama Fitur (contoh: Spotify Downloader)" class="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800" />
-      <textarea id="reqFeatureDesc" rows="3" placeholder="Contoh URL target atau deskripsi output JSON..." class="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-800"></textarea>
-      <div id="reqFeedback" class="hidden p-2 rounded-lg"></div>
-      <button onclick="submitFeatureRequest()" class="w-full py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold">Kirim Request</button>
-    </div>
-  </div>
+    function moveRolePill(activeBtn) {
+      const pill = document.getElementById('rolePill');
+      if (!activeBtn || !pill) return;
+      pill.style.width = `${activeBtn.offsetWidth}px`;
+      pill.style.transform = `translateX(${activeBtn.offsetLeft - 4}px)`;
+    }
 
-  <script src="script.js"></script>
+    window.addEventListener('resize', () => {
+      moveRolePill(document.querySelector('.pill-btn.active'));
+    });
+
+    // =========================================================================
+    // 4. RENDER DAFTAR ENDPOINT & SIMULASI REQUEST DENGAN SKELETON SHIMMER
+    // =========================================================================
+    function renderEndpoints(category) {
+      const container = document.getElementById('endpointsContainer');
+      const items = category === 'all'
+        ? endpointsData
+        : endpointsData.filter(e => e.category === category);
+
+      container.innerHTML = items.map((ep, idx) => `
+        <article class="endpoint-card ${ep.defaultOpen ? 'open' : ''}" id="card-${ep.id}" style="animation: cardSlideUp 0.35s cubic-bezier(0.22, 1, 0.36, 1) ${idx * 0.06}s both;">
+          <button class="endpoint-header" onclick="toggleEndpointCard('${ep.id}')">
+            <div class="ep-left">
+              <div class="ep-badges">
+                <span class="method-badge ${ep.method === 'PUT' || ep.method === 'POST' ? 'put' : ''}">${ep.method}</span>
+                <span class="ep-path">${ep.path}</span>
+              </div>
+              <div class="ep-title font-heading">${ep.title}</div>
+              <p class="ep-desc">${ep.desc}</p>
+            </div>
+            <div class="expand-icon">↓</div>
+          </button>
+
+          <div class="ep-drawer">
+            <div class="ep-drawer-inner">
+              <div class="ep-content">
+                <p class="ep-note">${ep.note}</p>
+                <div class="try-bar">
+                  <code style="color: var(--text-secondary);">${ep.path}${ep.sampleParam}</code>
+                  <button class="btn-try" onclick="simulateEndpointCall('${ep.id}')">
+                    ▶ Simulasikan Request
+                  </button>
+                </div>
+                <div id="output-${ep.id}">
+                  <pre class="json-preview"><code>${JSON.stringify(ep.sampleResponse, null, 2)}</code></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    // Keyframe animasi masuk kartu
+    const animStyle = document.createElement('style');
+    animStyle.textContent = `
+      @keyframes cardSlideUp {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    `;
+    document.head.appendChild(animStyle);
+
+    function toggleEndpointCard(id) {
+      const card = document.getElementById(`card-${id}`);
+      card.classList.toggle('open');
+    }
+
+    // Animasi Shimmer saat tombol "Simulasikan Request" diklik
+    function simulateEndpointCall(id) {
+      const ep = endpointsData.find(item => item.id === id);
+      const outputBox = document.getElementById(`output-${id}`);
+
+      outputBox.innerHTML = `<div class="shimmer-card" style="height: 120px;"></div>`;
+
+      const latency = Math.floor(Math.random() * 35) + 24;
+      setTimeout(() => {
+        outputBox.innerHTML = `
+          <div style="display:flex; justify-content:space-between; font-size:11.5px; color:var(--accent-main); margin-bottom:6px;" class="font-mono">
+            <span>✓ 200 OK • Respons diterima</span>
+            <span>Waktu tempuh: ${latency} ms</span>
+          </div>
+          <pre class="json-preview"><code>${JSON.stringify(ep.sampleResponse, null, 2)}</code></pre>
+        `;
+      }, 520);
+    }
+
+    function filterEndpoints(category, chipEl) {
+      if (activeCategory === category) return;
+      activeCategory = category;
+
+      document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+      chipEl.classList.add('active');
+
+      replayShimmerTransition();
+    }
+
+    function replayShimmerTransition() {
+      const container = document.getElementById('endpointsContainer');
+      container.innerHTML = `
+        <div class="shimmer-card" style="height: 96px;"></div>
+        <div class="shimmer-card" style="height: 96px;"></div>
+        <div class="shimmer-card" style="height: 96px;"></div>
+      `;
+      setTimeout(() => {
+        renderEndpoints(activeCategory);
+      }, 550);
+    }
+
+    // =========================================================================
+    // 5. MODE GELAP / TERANG & INTERAKSI FOOTER
+    // =========================================================================
+    function toggleTheme() {
+      const root = document.documentElement;
+      const btn = document.getElementById('themeBtn');
+      const nextTheme = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+      root.setAttribute('data-theme', nextTheme);
+      btn.innerHTML = nextTheme === 'dark' ? '<span>☀️</span> Mode Terang' : '<span>🌙</span> Mode Gelap';
+    }
+
+    function giveReaction(btnEl, message) {
+      document.querySelectorAll('.react-pill').forEach(b => b.classList.remove('active'));
+      btnEl.classList.add('active');
+      btnEl.textContent = `${message} • Tersimpan`;
+    }
+  </script>
 </body>
 </html>
