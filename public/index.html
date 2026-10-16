@@ -1,57 +1,26 @@
 <!DOCTYPE html>
-<html lang="id" data-theme="dark">
+<html lang="id">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Developer Dashboard — Manajemen Akun & API Key</title>
+  <title>Developer Dashboard — API Key Manager</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
   <style>
-    /* ==========================================================================
-       1. SISTEM WARNA & TIPOGRAFI MODERN
-       ========================================================================== */
-    :root[data-theme="light"] {
-      --bg-body: #F8FAFC;
-      --bg-surface: #FFFFFF;
-      --bg-subtle: #F1F5F9;
-      --bg-elevated: #E2E8F0;
-      --text-main: #0F172A;
-      --text-secondary: #475569;
-      --text-muted: #64748B;
-      --border-color: #E2E8F0;
-      --accent: #2563EB;
-      --accent-hover: #1D4ED8;
-      --accent-soft: rgba(37, 99, 235, 0.1);
-      --success: #059669;
-      --success-soft: rgba(5, 150, 105, 0.12);
-      --warning: #D97706;
-      --warning-soft: rgba(217, 119, 6, 0.12);
-      --danger: #DC2626;
-      --danger-soft: rgba(220, 38, 38, 0.1);
-      --shadow: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
-    }
-
-    :root[data-theme="dark"] {
-      --bg-body: #0B0F17;
-      --bg-surface: #111827;
-      --bg-subtle: #1E293B;
-      --bg-elevated: #334155;
+    :root {
+      --bg-surface: rgba(17, 24, 39, 0.78);
+      --bg-subtle: rgba(30, 41, 59, 0.6);
       --text-main: #F8FAFC;
       --text-secondary: #94A3B8;
       --text-muted: #64748B;
-      --border-color: #1E293B;
+      --border-color: rgba(59, 130, 246, 0.3);
       --accent: #3B82F6;
       --accent-hover: #2563EB;
-      --accent-soft: rgba(59, 130, 246, 0.14);
       --success: #10B981;
-      --success-soft: rgba(16, 185, 129, 0.14);
       --warning: #F59E0B;
-      --warning-soft: rgba(245, 158, 11, 0.14);
       --danger: #EF4444;
-      --danger-soft: rgba(239, 68, 68, 0.14);
-      --shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
     }
 
     * {
@@ -61,13 +30,28 @@
     }
 
     body {
-      background-color: var(--bg-body);
+      /* Background gambar custom dari user dengan overlay gelap transparan */
+      background: linear-gradient(rgba(11, 15, 23, 0.85), rgba(11, 15, 23, 0.92)), 
+                  url('data:image/jpeg;base64,...') no-repeat center center fixed;
+      background-size: cover;
       color: var(--text-main);
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
       line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-      transition: background-color 0.25s ease, color 0.25s ease;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Menggunakan URL gambar langsung sebagai background */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: url('d2f28cd41e76840d4128999a6c05a887.jpg');
+      background-size: cover;
+      background-position: center;
+      filter: blur(4px) brightness(0.4);
+      z-index: -1;
     }
 
     code, .font-mono {
@@ -75,15 +59,65 @@
     }
 
     /* ==========================================================================
-       2. BAGIAN PALING ATAS: TOP AUTHENTICATION & API KEY BAR
+       ANIMASI LOADING PEMBUKA
+       ========================================================================== */
+    .loader-overlay {
+      position: fixed;
+      inset: 0;
+      background-color: #0b0f17;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .loader-overlay.done {
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(1.02);
+    }
+
+    .loader-spinner {
+      width: 48px;
+      height: 48px;
+      border: 3px solid rgba(59, 130, 246, 0.2);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 16px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ==========================================================================
+       EFEK GARIS MENYALA BERGERAK (NEON GLOWING BORDER)
+       ========================================================================== */
+    @keyframes borderGlow {
+      0% { border-color: rgba(59, 130, 246, 0.3); box-shadow: 0 0 5px rgba(59, 130, 246, 0.1); }
+      50% { border-color: rgba(59, 130, 246, 0.8); box-shadow: 0 0 15px rgba(59, 130, 246, 0.4), inset 0 0 10px rgba(59, 130, 246, 0.2); }
+      100% { border-color: rgba(59, 130, 246, 0.3); box-shadow: 0 0 5px rgba(59, 130, 246, 0.1); }
+    }
+
+    .glowing-box {
+      border: 1px solid rgba(59, 130, 246, 0.4);
+      animation: borderGlow 3s infinite ease-in-out;
+    }
+
+    /* ==========================================================================
+       TOP AUTH BAR
        ========================================================================== */
     .top-auth-bar {
-      background-color: var(--bg-surface);
-      border-bottom: 1px solid var(--border-color);
+      background-color: rgba(17, 24, 39, 0.85);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(59, 130, 246, 0.4);
       position: sticky;
       top: 0;
       z-index: 50;
-      box-shadow: var(--shadow);
+      animation: borderGlow 4s infinite ease-in-out;
     }
 
     .top-auth-container {
@@ -108,50 +142,29 @@
       width: 9px;
       height: 9px;
       border-radius: 50%;
-      display: inline-block;
     }
-
-    .status-dot.guest {
-      background-color: var(--warning);
-      box-shadow: 0 0 0 4px var(--warning-soft);
-    }
-
-    .status-dot.logged-in {
-      background-color: var(--success);
-      box-shadow: 0 0 0 4px var(--success-soft);
-    }
+    .status-dot.guest { background-color: var(--warning); box-shadow: 0 0 8px var(--warning); }
+    .status-dot.logged-in { background-color: var(--success); box-shadow: 0 0 8px var(--success); }
 
     .welcome-text {
       font-weight: 600;
       font-size: 14.5px;
-      color: var(--text-main);
     }
 
-    /* Kotak API Key di Top Bar */
     .top-apikey-group {
       display: inline-flex;
       align-items: center;
-      background-color: var(--bg-body);
-      border: 1px solid var(--border-color);
+      background-color: rgba(11, 15, 23, 0.7);
       border-radius: 8px;
       padding: 4px 6px 4px 12px;
       gap: 8px;
     }
 
-    .top-apikey-label {
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      color: var(--text-muted);
-    }
-
     .top-apikey-value {
       font-family: 'JetBrains Mono', monospace;
       font-size: 13px;
-      color: var(--accent);
+      color: #60A5FA;
       font-weight: 500;
-      user-select: all;
     }
 
     .auth-status-right {
@@ -162,7 +175,7 @@
     }
 
     /* ==========================================================================
-       3. TOMBOL & ELEMEN INTERAKTIF
+       BUTTONS
        ========================================================================== */
     .btn {
       border: 1px solid transparent;
@@ -170,63 +183,47 @@
       padding: 7px 14px;
       font-size: 13px;
       font-weight: 600;
-      font-family: inherit;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      transition: all 0.18s ease;
+      transition: all 0.2s ease;
     }
 
     .btn-primary {
       background-color: var(--accent);
       color: #FFFFFF;
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
     }
-
-    .btn-primary:hover {
-      background-color: var(--accent-hover);
-    }
+    .btn-primary:hover { background-color: var(--accent-hover); box-shadow: 0 0 15px rgba(59, 130, 246, 0.7); }
 
     .btn-secondary {
-      background-color: var(--bg-subtle);
+      background-color: rgba(30, 41, 59, 0.8);
       color: var(--text-main);
-      border-color: var(--border-color);
+      border-color: rgba(59, 130, 246, 0.3);
     }
-
-    .btn-secondary:hover {
-      background-color: var(--bg-elevated);
-    }
+    .btn-secondary:hover { background-color: rgba(51, 65, 85, 0.9); }
 
     .btn-danger {
-      background-color: var(--danger-soft);
-      color: var(--danger);
-      border-color: transparent;
+      background-color: rgba(239, 68, 68, 0.2);
+      color: #F87171;
+      border-color: rgba(239, 68, 68, 0.4);
     }
-
-    .btn-danger:hover {
-      background-color: var(--danger);
-      color: #FFFFFF;
-    }
+    .btn-danger:hover { background-color: var(--danger); color: #FFF; }
 
     .btn-icon-small {
-      background: var(--bg-subtle);
-      border: 1px solid var(--border-color);
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid rgba(59, 130, 246, 0.3);
       color: var(--text-secondary);
       padding: 4px 8px;
       border-radius: 6px;
       font-size: 11.5px;
-      font-weight: 500;
       cursor: pointer;
-      transition: all 0.15s ease;
     }
-
-    .btn-icon-small:hover {
-      color: var(--text-main);
-      border-color: var(--text-muted);
-    }
+    .btn-icon-small:hover { color: #FFF; border-color: var(--accent); }
 
     /* ==========================================================================
-       4. LAYOUT DASHBOARD & SIDEBAR NAVIGASI
+       DASHBOARD LAYOUT
        ========================================================================== */
     .dashboard-shell {
       max-width: 1160px;
@@ -239,18 +236,14 @@
     }
 
     @media (max-width: 860px) {
-      .dashboard-shell {
-        grid-template-columns: 1fr;
-      }
+      .dashboard-shell { grid-template-columns: 1fr; }
     }
 
-    /* Sidebar Navigasi */
     .sidebar-nav {
       background-color: var(--bg-surface);
-      border: 1px solid var(--border-color);
+      backdrop-filter: blur(12px);
       border-radius: 12px;
       padding: 14px;
-      box-shadow: var(--shadow);
     }
 
     .nav-section-label {
@@ -285,30 +278,17 @@
       justify-content: space-between;
       transition: all 0.15s ease;
     }
-
-    .nav-item:hover {
-      background-color: var(--bg-subtle);
-      color: var(--text-main);
-    }
-
-    .nav-item.active {
-      background-color: var(--accent-soft);
-      color: var(--accent);
-      font-weight: 600;
-    }
+    .nav-item:hover { background-color: rgba(59, 130, 246, 0.15); color: var(--text-main); }
+    .nav-item.active { background-color: rgba(59, 130, 246, 0.25); color: #60A5FA; font-weight: 600; }
 
     .sidebar-account-indicator {
       margin-top: 16px;
       padding: 12px;
       border-radius: 8px;
-      background-color: var(--bg-body);
-      border: 1px solid var(--border-color);
+      background-color: rgba(11, 15, 23, 0.6);
       font-size: 12px;
     }
 
-    /* ==========================================================================
-       5. KOMPONEN KONTEN UTAMA & INDIKATOR KEPEMILIKAN AKUN
-       ========================================================================== */
     .main-stage {
       display: flex;
       flex-direction: column;
@@ -317,10 +297,9 @@
 
     .card {
       background-color: var(--bg-surface);
-      border: 1px solid var(--border-color);
+      backdrop-filter: blur(12px);
       border-radius: 12px;
       padding: 22px 24px;
-      box-shadow: var(--shadow);
     }
 
     .card-header {
@@ -335,7 +314,6 @@
     .card-title {
       font-size: 16px;
       font-weight: 700;
-      color: var(--text-main);
     }
 
     .card-subtitle {
@@ -351,18 +329,9 @@
       border-radius: 99px;
       font-family: 'JetBrains Mono', monospace;
     }
+    .badge-guest { background-color: rgba(245, 158, 11, 0.2); color: #FBBF24; }
+    .badge-verified { background-color: rgba(16, 185, 129, 0.2); color: #34D399; }
 
-    .badge-guest {
-      background-color: var(--warning-soft);
-      color: var(--warning);
-    }
-
-    .badge-verified {
-      background-color: var(--success-soft);
-      color: var(--success);
-    }
-
-    /* Grid Status kepemilikan akun (Belum Punya Akun vs Sudah Punya Akun) */
     .onboarding-split {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -371,8 +340,7 @@
     }
 
     .option-box {
-      background-color: var(--bg-body);
-      border: 1px solid var(--border-color);
+      background-color: rgba(11, 15, 23, 0.6);
       border-radius: 10px;
       padding: 18px;
       display: flex;
@@ -380,18 +348,9 @@
       justify-content: space-between;
       gap: 14px;
     }
+    .option-box h4 { font-size: 14.5px; margin-bottom: 6px; }
+    .option-box p { font-size: 13px; color: var(--text-secondary); }
 
-    .option-box h4 {
-      font-size: 14.5px;
-      margin-bottom: 6px;
-    }
-
-    .option-box p {
-      font-size: 13px;
-      color: var(--text-secondary);
-    }
-
-    /* Metrik Grid untuk User yang Sudah Login */
     .metrics-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
@@ -399,8 +358,7 @@
     }
 
     .metric-tile {
-      background-color: var(--bg-body);
-      border: 1px solid var(--border-color);
+      background-color: rgba(11, 15, 23, 0.6);
       border-radius: 10px;
       padding: 16px;
     }
@@ -415,13 +373,12 @@
       font-size: 20px;
       font-weight: 700;
       font-family: 'JetBrains Mono', monospace;
-      color: var(--text-main);
     }
 
     .progress-bar-wrap {
       width: 100%;
       height: 6px;
-      background-color: var(--bg-subtle);
+      background-color: rgba(30, 41, 59, 0.8);
       border-radius: 99px;
       overflow: hidden;
       margin-top: 10px;
@@ -432,9 +389,9 @@
       width: 14%;
       background-color: var(--accent);
       border-radius: 99px;
+      box-shadow: 0 0 8px var(--accent);
     }
 
-    /* Form Input Standar Developer */
     .form-row {
       display: flex;
       flex-wrap: wrap;
@@ -445,376 +402,222 @@
     .input-field {
       flex: 1;
       min-width: 220px;
-      background-color: var(--bg-body);
-      border: 1px solid var(--border-color);
+      background-color: rgba(11, 15, 23, 0.7);
+      border: 1px solid rgba(59, 130, 246, 0.3);
       color: var(--text-main);
       padding: 9px 12px;
       border-radius: 8px;
       font-size: 13px;
       font-family: inherit;
     }
+    .input-field:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 8px rgba(59, 130, 246, 0.4); }
 
-    .input-field:focus {
-      outline: none;
-      border-color: var(--accent);
-    }
-
-    /* Modal Login / Register */
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.65);
-      backdrop-filter: blur(4px);
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(6px);
       display: none;
       align-items: center;
       justify-content: center;
       z-index: 100;
       padding: 16px;
     }
-
-    .modal-backdrop.open {
-      display: flex;
-    }
+    .modal-backdrop.open { display: flex; }
 
     .modal-card {
-      background-color: var(--bg-surface);
-      border: 1px solid var(--border-color);
+      background-color: rgba(17, 24, 39, 0.95);
       border-radius: 14px;
       width: 100%;
       max-width: 400px;
       padding: 24px;
-      box-shadow: var(--shadow);
     }
 
-    .hidden {
-      display: none !important;
-    }
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
 
-  <!-- ========================================================================
-       1. BAGIAN PALING ATAS: BAR STATUS LOGIN & API KEY
-       ======================================================================== -->
+  <!-- ANIMASI LOADING SAAT MASUK -->
+  <div id="pageLoader" class="loader-overlay">
+    <div class="loader-spinner"></div>
+    <div style="font-family: 'JetBrains Mono'; font-size: 13px; color: #60A5FA; letter-spacing: 1px;">MEMUAT DASHBOARD...</div>
+  </div>
+
+  <!-- TOP AUTH BAR -->
   <header class="top-auth-bar">
     <div class="top-auth-container">
-
-      <!-- TAMPILAN JIKA BELUM LOGIN / REGISTER -->
       <div id="topGuestView" class="auth-status-left">
         <span class="status-dot guest"></span>
         <span class="welcome-text">Status: Belum Login</span>
-        <span style="font-size: 13px; color: var(--text-secondary);">
-          Silakan masuk atau daftar akun untuk mendapatkan API Key Anda.
-        </span>
+        <span style="font-size: 13px; color: var(--text-secondary);">Silakan masuk atau daftar akun.</span>
       </div>
 
-      <!-- TAMPILAN JIKA SUDAH LOGIN / REGISTER -->
       <div id="topUserView" class="auth-status-left hidden">
         <span class="status-dot logged-in"></span>
-        <span class="welcome-text">Selamat datang, <span id="displayUsername">raka_dev</span></span>
-
-        <!-- Komponen API Key User di Bagian Atas -->
-        <div class="top-apikey-group">
-          <span class="top-apikey-label">API Key</span>
+        <span class="welcome-text">Selamat datang, <span id="displayUsername" style="color: #60A5FA;">raka_dev</span></span>
+        <div class="top-apikey-group glowing-box">
+          <span style="font-size: 10px; color: var(--text-muted); font-weight: 700;">API KEY</span>
           <span id="topApiKeyText" class="top-apikey-value">••••••••••••••••••••</span>
           <button class="btn-icon-small" onclick="toggleRevealKey()" id="revealBtn">Tampilkan</button>
           <button class="btn-icon-small" onclick="copyApiKey()" id="copyBtn">Salin</button>
         </div>
       </div>
 
-      <!-- TOMBOL AKSI KANAN ATAS -->
       <div class="auth-status-right">
-        <!-- Tombol bantu untuk menguji tampilan Belum Login vs Sudah Login -->
-        <button class="btn btn-secondary" onclick="toggleDemoAuthState()" title="Sakelar untuk menguji tampilan">
-          ⇄ Ganti Simulasi Status
-        </button>
-
-        <button class="btn btn-secondary" onclick="toggleTheme()" id="themeBtn">
-          ☀️ Terang
-        </button>
-
-        <!-- Tombol Login / Register (Muncul saat Belum Login) -->
-        <button id="btnLoginRegister" class="btn btn-primary" onclick="openAuthModal('login')">
-          Login / Register
-        </button>
-
-        <!-- Tombol Logout (Muncul saat Sudah Login) -->
-        <button id="btnLogout" class="btn btn-danger hidden" onclick="handleLogout()">
-          Logout
-        </button>
+        <button class="btn btn-secondary glowing-box" onclick="toggleDemoAuthState()">⇄ Simulasi Status</button>
+        <button id="btnLoginRegister" class="btn btn-primary" onclick="openAuthModal('login')">Login / Register</button>
+        <button id="btnLogout" class="btn btn-danger hidden" onclick="handleLogout()">Logout</button>
       </div>
-
     </div>
   </header>
 
-  <!-- ========================================================================
-       2. STRUKTUR UTAMA DASHBOARD (NAVIGASI SIDEBAR + AREA KONTEN)
-       ======================================================================== -->
+  <!-- DASHBOARD SHELL -->
   <div class="dashboard-shell">
-
-    <!-- SIDEBAR NAVIGASI JELAS -->
-    <aside class="sidebar-nav">
+    <aside class="sidebar-nav glowing-box">
       <div class="nav-section-label">Menu Portal Developer</div>
       <ul class="nav-list">
-        <li>
-          <button class="nav-item active" onclick="switchSection('overview', this)">
-            <span>Ringkasan Akun</span>
-            <span>→</span>
-          </button>
-        </li>
-        <li>
-          <button class="nav-item" onclick="switchSection('credentials', this)">
-            <span>Manajemen API Key</span>
-            <span>→</span>
-          </button>
-        </li>
-        <li>
-          <button class="nav-item" onclick="switchSection('quota', this)">
-            <span>Kuota & Paket</span>
-            <span>→</span>
-          </button>
-        </li>
-        <li>
-          <button class="nav-item" onclick="switchSection('settings', this)">
-            <span>Pengaturan Profil</span>
-            <span>→</span>
-          </button>
-        </li>
+        <li><button class="nav-item active" onclick="switchSection('overview', this)"><span>Ringkasan Akun</span><span>→</span></button></li>
+        <li><button class="nav-item" onclick="switchSection('credentials', this)"><span>Manajemen API Key</span><span>→</span></button></li>
+        <li><button class="nav-item" onclick="switchSection('quota', this)"><span>Kuota & Paket</span><span>→</span></button></li>
+        <li><button class="nav-item" onclick="switchSection('settings', this)"><span>Pengaturan Profil</span><span>→</span></button></li>
       </ul>
-
-      <!-- Komponen Indikator Kepemilikan Akun di Sidebar -->
       <div class="sidebar-account-indicator">
-        <div style="font-weight: 600; margin-bottom: 4px;" id="sideAccountStatusTitle">
-          Belum Terhubung ke Akun
-        </div>
-        <p style="color: var(--text-secondary); line-height: 1.45;" id="sideAccountStatusDesc">
-          Anda sedang menjelajah sebagai tamu. Masuk untuk mengelola kredensial.
-        </p>
+        <div style="font-weight: 600; margin-bottom: 4px;" id="sideAccountStatusTitle">Belum Terhubung</div>
+        <p style="color: var(--text-secondary);" id="sideAccountStatusDesc">Masuk untuk mengelola kredensial.</p>
       </div>
     </aside>
 
-    <!-- AREA KONTEN DINAMIS -->
     <main class="main-stage">
-
-      <!-- KOMPONEN UTAMA: PENUNJUK APAKAH USER SUDAH MEMILIKI AKUN ATAU BELUM -->
-      <section class="card" id="accountOwnershipCard">
-        <!-- Kondisi A: Ketika User Belum Login / Belum Memiliki Akun -->
+      <section class="card glowing-box" id="accountOwnershipCard">
         <div id="guestAccountPanel">
           <div class="card-header">
             <div>
               <h2 class="card-title">Status Kepemilikan Akun & Akses Kredensial</h2>
-              <p class="card-subtitle">Pilih opsi di bawah sesuai dengan status kepemilikan akun developer Anda.</p>
+              <p class="card-subtitle">Pilih opsi di bawah sesuai dengan status akun developer Anda.</p>
             </div>
-            <span class="badge badge-guest">Sesi Tamu (Belum Login)</span>
+            <span class="badge badge-guest">Sesi Tamu</span>
           </div>
-
           <div class="onboarding-split">
-            <div class="option-box">
+            <div class="option-box glowing-box">
               <div>
-                <h4>Belum Memiliki Akun Developer?</h4>
-                <p>Buat akun baru secara gratis untuk menghasilkan API Key unik dan mendapatkan kuota request harian otomatis.</p>
+                <h4>Belum Memiliki Akun?</h4>
+                <p>Buat akun baru secara gratis untuk mendapatkan API Key unik dan kuota harian.</p>
               </div>
-              <button class="btn btn-primary" onclick="openAuthModal('register')">
-                Daftar Akun Baru
-              </button>
+              <button class="btn btn-primary" onclick="openAuthModal('register')">Daftar Akun Baru</button>
             </div>
-
-            <div class="option-box">
+            <div class="option-box glowing-box">
               <div>
-                <h4>Sudah Memiliki Akun Terdaftar?</h4>
-                <p>Masuk menggunakan username atau email Anda untuk melihat API Key, memantau sisa limit harian, dan mengatur profil.</p>
+                <h4>Sudah Memiliki Akun?</h4>
+                <p>Masuk menggunakan username atau email untuk melihat API Key dan sisa limit.</p>
               </div>
-              <button class="btn btn-secondary" onclick="openAuthModal('login')">
-                Masuk ke Akun Saya
-              </button>
+              <button class="btn btn-secondary" onclick="openAuthModal('login')">Masuk ke Akun</button>
             </div>
           </div>
         </div>
 
-        <!-- Kondisi B: Ketika User Sudah Login / Memiliki Akun Aktif -->
         <div id="verifiedAccountPanel" class="hidden">
           <div class="card-header">
             <div>
               <h2 class="card-title">Ringkasan Akun & Kredensial Aktif</h2>
-              <p class="card-subtitle">Akun Anda telah terverifikasi dan siap digunakan untuk autentikasi request HTTP.</p>
+              <p class="card-subtitle">Akun terverifikasi dan siap digunakan.</p>
             </div>
-            <span class="badge badge-verified">✓ Akun Terverifikasi (Role: PREMIUM)</span>
+            <span class="badge badge-verified">✓ Terverifikasi (PREMIUM)</span>
           </div>
-
           <div class="metrics-grid">
-            <div class="metric-tile">
-              <div class="metric-label">Penggunaan Kuota Hari Ini</div>
+            <div class="metric-tile glowing-box">
+              <div class="metric-label">Penggunaan Hari Ini</div>
               <div class="metric-number">142 / 1.000</div>
-              <div class="progress-bar-wrap">
-                <div class="progress-bar-inner"></div>
-              </div>
+              <div class="progress-bar-wrap"><div class="progress-bar-inner"></div></div>
             </div>
-
-            <div class="metric-tile">
-              <div class="metric-label">Sisa Request Harian</div>
-              <div class="metric-number">858</div>
-              <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 6px;">
-                Reset otomatis pukul 00:00 WIB
-              </div>
+            <div class="metric-tile glowing-box">
+              <div class="metric-label">Sisa Request</div>
+              <div class="metric-number" style="color: #34D399;">858</div>
             </div>
-
-            <div class="metric-tile">
+            <div class="metric-tile glowing-box">
               <div class="metric-label">Masa Aktif Paket</div>
               <div class="metric-number">26 Hari</div>
-              <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 6px;">
-                Berlaku hingga 12 Nov 2026
-              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- PANEL NAVIGASI 1: RINGKASAN & OTORISASI STANDAR -->
-      <section class="card nav-section-panel" id="panel-overview">
-        <div class="card-header">
-          <div>
-            <h3 class="card-title">Metode Otorisasi Request</h3>
-            <p class="card-subtitle">Gunakan salah satu metode pengiriman API Key berikut pada setiap request ke server.</p>
-          </div>
-        </div>
-
+      <section class="card glowing-box nav-section-panel" id="panel-overview">
+        <div class="card-header"><h3 class="card-title">Metode Otorisasi Request</h3></div>
         <div class="onboarding-split">
           <div class="option-box">
-            <div>
-              <h4>Opsi 1: Header HTTP (Direkomendasikan)</h4>
-              <p style="margin-bottom: 10px;">Sertakan kredensial Anda di dalam header request agar tidak terlihat langsung di riwayat URL.</p>
-              <code style="display: block; padding: 10px; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 6px; color: var(--accent);">
-                x-api-key: YOUR_API_KEY
-              </code>
-            </div>
+            <h4>Header HTTP</h4>
+            <code style="padding: 8px; background: rgba(0,0,0,0.3); border-radius: 6px; color: #60A5FA; display:block; margin-top:8px;">x-api-key: YOUR_API_KEY</code>
           </div>
-
           <div class="option-box">
-            <div>
-              <h4>Opsi 2: Query Parameter</h4>
-              <p style="margin-bottom: 10px;">Cocok untuk pengujian cepat atau integrasi langsung melalui pemanggilan URL sederhana.</p>
-              <code style="display: block; padding: 10px; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 6px; color: var(--accent);">
-                ?apikey=YOUR_API_KEY
-              </code>
-            </div>
+            <h4>Query Parameter</h4>
+            <code style="padding: 8px; background: rgba(0,0,0,0.3); border-radius: 6px; color: #60A5FA; display:block; margin-top:8px;">?apikey=YOUR_API_KEY</code>
           </div>
         </div>
       </section>
 
-      <!-- PANEL NAVIGASI 2: MANAJEMEN & CUSTOM API KEY -->
-      <section class="card nav-section-panel hidden" id="panel-credentials">
-        <div class="card-header">
-          <div>
-            <h3 class="card-title">Pengaturan Kredensial & Custom API Key</h3>
-            <p class="card-subtitle">Kelola kode akses Anda. Pengguna berstatus Premium dan VIP dapat menentukan kombinasi API Key sendiri.</p>
-          </div>
-        </div>
-
+      <section class="card glowing-box nav-section-panel hidden" id="panel-credentials">
+        <div class="card-header"><h3 class="card-title">Pengaturan Custom API Key</h3></div>
         <div class="form-row">
-          <input type="text" id="customKeyInput" class="input-field font-mono" placeholder="Masukkan Custom API Key baru (5-32 karakter alfanumerik)..." />
-          <button class="btn btn-primary" onclick="saveCustomKey()">Simpan API Key</button>
+          <input type="text" id="customKeyInput" class="input-field font-mono" placeholder="Kombinasi API key baru..." />
+          <button class="btn btn-primary" onclick="saveCustomKey()">Simpan</button>
         </div>
-        <p id="customKeyFeedback" style="font-size: 12.5px; color: var(--text-muted); margin-top: 10px;">
-          Catatan: Mengganti API Key akan langsung menonaktifkan kode akses lama Anda.
-        </p>
       </section>
 
-      <!-- PANEL NAVIGASI 3: KUOTA & PAKET -->
-      <section class="card nav-section-panel hidden" id="panel-quota">
-        <div class="card-header">
-          <div>
-            <h3 class="card-title">Perbandingan Paket & Batas Kuota Harian</h3>
-            <p class="card-subtitle">Seluruh paket berbayar memiliki masa aktif 30 hari dan otomatis disinkronkan setiap hari.</p>
-          </div>
-        </div>
-
+      <section class="card glowing-box nav-section-panel hidden" id="panel-quota">
+        <div class="card-header"><h3 class="card-title">Batas Kuota Paket</h3></div>
         <div class="metrics-grid">
-          <div class="metric-tile">
-            <div class="metric-label">User Biasa (Free)</div>
-            <div class="metric-number">50 / hari</div>
-            <p style="font-size: 12px; color: var(--text-secondary); margin-top: 6px;">API Key acak bawaan sistem, tanpa batas waktu masa aktif.</p>
-          </div>
-          <div class="metric-tile">
-            <div class="metric-label">Premium (30 Hari)</div>
-            <div class="metric-number">1.000 / hari</div>
-            <p style="font-size: 12px; color: var(--text-secondary); margin-top: 6px;">Mendukung fitur Custom API Key dan kuota menengah.</p>
-          </div>
-          <div class="metric-tile">
-            <div class="metric-label">VIP (30 Hari)</div>
-            <div class="metric-number">Unlimited</div>
-            <p style="font-size: 12px; color: var(--text-secondary); margin-top: 6px;">Tanpa batas kuota harian dan mendukung Custom API Key.</p>
-          </div>
+          <div class="metric-tile"><h4>User Biasa</h4><div class="metric-number" style="font-size:15px; margin-top:6px;">50 / hari</div></div>
+          <div class="metric-tile"><h4>Premium</h4><div class="metric-number" style="font-size:15px; margin-top:6px;">1.000 / hari</div></div>
+          <div class="metric-tile"><h4>VIP</h4><div class="metric-number" style="font-size:15px; margin-top:6px;">Unlimited</div></div>
         </div>
       </section>
 
-      <!-- PANEL NAVIGASI 4: PENGATURAN PROFIL -->
-      <section class="card nav-section-panel hidden" id="panel-settings">
-        <div class="card-header">
-          <div>
-            <h3 class="card-title">Pengaturan Profil Developer</h3>
-            <p class="card-subtitle">Perbarui identitas username dan informasi kontak akun Anda.</p>
-          </div>
-        </div>
-
+      <section class="card glowing-box nav-section-panel hidden" id="panel-settings">
+        <div class="card-header"><h3 class="card-title">Pengaturan Profil</h3></div>
         <div class="form-row">
-          <input type="text" id="settingUsername" class="input-field" value="raka_dev" placeholder="Username" />
-          <input type="email" class="input-field" value="raka@developer.id" placeholder="Alamat Email" disabled />
-          <button class="btn btn-primary" onclick="updateUsername()">Perbarui Profil</button>
+          <input type="text" id="settingUsername" class="input-field" value="raka_dev" />
+          <button class="btn btn-primary" onclick="updateUsername()">Perbarui</button>
         </div>
       </section>
-
     </main>
   </div>
 
-  <!-- ========================================================================
-       3. MODAL LOGIN / REGISTER
-       ======================================================================== -->
+  <!-- MODAL -->
   <div id="authModal" class="modal-backdrop">
-    <div class="modal-card">
+    <div class="modal-card glowing-box">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-        <h3 id="modalTitle" style="font-size: 16px; font-weight: 700;">Masuk ke Dashboard</h3>
+        <h3 id="modalTitle" style="font-size: 16px; font-weight: 700;">Masuk</h3>
         <button class="btn-icon-small" onclick="closeAuthModal()">✕</button>
       </div>
-
       <form onsubmit="submitAuthForm(event)" style="display: flex; flex-direction: column; gap: 12px;">
-        <div>
-          <label style="font-size: 12px; color: var(--text-secondary); display: block; margin-bottom: 4px;">Username</label>
-          <input type="text" id="modalUsernameInput" class="input-field" style="width: 100%;" placeholder="contoh: raka_dev" required />
-        </div>
-        <div id="modalEmailGroup" class="hidden">
-          <label style="font-size: 12px; color: var(--text-secondary); display: block; margin-bottom: 4px;">Alamat Email (Verifikasi SMTP)</label>
-          <input type="email" class="input-field" style="width: 100%;" placeholder="nama@domain.com" />
-        </div>
-        <div>
-          <label style="font-size: 12px; color: var(--text-secondary); display: block; margin-bottom: 4px;">Password</label>
-          <input type="password" class="input-field" style="width: 100%;" placeholder="••••••••" required />
-        </div>
-        <button type="submit" class="btn btn-primary" style="justify-content: center; margin-top: 6px; padding: 10px;">
-          Lanjutkan
-        </button>
+        <input type="text" id="modalUsernameInput" class="input-field" placeholder="Username" required />
+        <input type="password" class="input-field" placeholder="Password" required />
+        <button type="submit" class="btn btn-primary" style="justify-content: center; padding: 10px;">Lanjutkan</button>
       </form>
     </div>
   </div>
 
   <script>
-    // =========================================================================
-    // STATE MANAJEMEN DASHBOARD
-    // =========================================================================
+    // Loading screen handler
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('pageLoader').classList.add('done');
+      }, 750);
+    });
+
     let isLoggedIn = false;
     let isKeyRevealed = false;
     let currentUsername = 'raka_dev';
     let currentApiKey = 'key_live_98a72f419c8e301b';
 
-    // Sinkronisasi seluruh elemen berdasarkan status login (Belum Login vs Sudah Login)
     function renderAuthState() {
       const topGuest = document.getElementById('topGuestView');
       const topUser = document.getElementById('topUserView');
       const btnLoginReg = document.getElementById('btnLoginRegister');
       const btnLogout = document.getElementById('btnLogout');
-
       const guestPanel = document.getElementById('guestAccountPanel');
       const verifiedPanel = document.getElementById('verifiedAccountPanel');
-
       const sideTitle = document.getElementById('sideAccountStatusTitle');
       const sideDesc = document.getElementById('sideAccountStatusDesc');
 
@@ -823,31 +626,25 @@
         topUser.classList.remove('hidden');
         btnLoginReg.classList.add('hidden');
         btnLogout.classList.remove('hidden');
-
         guestPanel.classList.add('hidden');
         verifiedPanel.classList.remove('hidden');
-
         document.getElementById('displayUsername').textContent = currentUsername;
         document.getElementById('settingUsername').value = currentUsername;
         updateApiKeyDisplay();
-
-        sideTitle.textContent = `Akun Aktif (@${currentUsername})`;
-        sideDesc.textContent = 'Status terautentikasi. Kredensial API Key siap digunakan.';
+        sideTitle.textContent = `@${currentUsername}`;
+        sideDesc.textContent = 'Status terautentikasi.';
       } else {
         topGuest.classList.remove('hidden');
         topUser.classList.add('hidden');
         btnLoginReg.classList.remove('hidden');
         btnLogout.classList.add('hidden');
-
         guestPanel.classList.remove('hidden');
         verifiedPanel.classList.add('hidden');
-
-        sideTitle.textContent = 'Belum Terhubung ke Akun';
-        sideDesc.textContent = 'Anda sedang menjelajah sebagai tamu. Masuk untuk mengelola kredensial.';
+        sideTitle.textContent = 'Belum Terhubung';
+        sideDesc.textContent = 'Masuk untuk mengelola kredensial.';
       }
     }
 
-    // Fungsi Tampilkan / Sembunyikan API Key di Top Bar
     function updateApiKeyDisplay() {
       const keyEl = document.getElementById('topApiKeyText');
       const revealBtn = document.getElementById('revealBtn');
@@ -867,14 +664,11 @@
 
     function copyApiKey() {
       navigator.clipboard.writeText(currentApiKey);
-      const copyBtn = document.getElementById('copyBtn');
-      copyBtn.textContent = '✓ Tersalin';
-      setTimeout(() => {
-        copyBtn.textContent = 'Salin';
-      }, 1400);
+      const btn = document.getElementById('copyBtn');
+      btn.textContent = '✓ Tersalin';
+      setTimeout(() => btn.textContent = 'Salin', 1400);
     }
 
-    // Fungsi Simulasi Cepat (Sakelar Belum Login <-> Sudah Login)
     function toggleDemoAuthState() {
       isLoggedIn = !isLoggedIn;
       renderAuthState();
@@ -886,33 +680,16 @@
       renderAuthState();
     }
 
-    // =========================================================================
-    // NAVIGASI ANTAR SEKSI DASHBOARD
-    // =========================================================================
     function switchSection(sectionId, btnEl) {
-      document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
       btnEl.classList.add('active');
-
-      document.querySelectorAll('.nav-section-panel').forEach(panel => panel.classList.add('hidden'));
+      document.querySelectorAll('.nav-section-panel').forEach(p => p.classList.add('hidden'));
       document.getElementById(`panel-${sectionId}`).classList.remove('hidden');
     }
 
-    // =========================================================================
-    // MODAL LOGIN / REGISTER & PENGATURAN AKUN
-    // =========================================================================
     function openAuthModal(mode) {
-      const modal = document.getElementById('authModal');
-      const title = document.getElementById('modalTitle');
-      const emailGroup = document.getElementById('modalEmailGroup');
-
-      if (mode === 'register') {
-        title.textContent = 'Daftar Akun Developer Baru';
-        emailGroup.classList.remove('hidden');
-      } else {
-        title.textContent = 'Masuk ke Dashboard API';
-        emailGroup.classList.add('hidden');
-      }
-      modal.classList.add('open');
+      document.getElementById('authModal').classList.add('open');
+      document.getElementById('modalTitle').textContent = mode === 'register' ? 'Daftar Akun Baru' : 'Masuk Dashboard';
     }
 
     function closeAuthModal() {
@@ -921,10 +698,8 @@
 
     function submitAuthForm(e) {
       e.preventDefault();
-      const inputUser = document.getElementById('modalUsernameInput').value.trim();
-      if (inputUser) {
-        currentUsername = inputUser.toLowerCase();
-      }
+      const val = document.getElementById('modalUsernameInput').value.trim();
+      if (val) currentUsername = val.toLowerCase();
       isLoggedIn = true;
       closeAuthModal();
       renderAuthState();
@@ -932,44 +707,25 @@
 
     function saveCustomKey() {
       const val = document.getElementById('customKeyInput').value.trim();
-      const fb = document.getElementById('customKeyFeedback');
-      if (!isLoggedIn) {
-        fb.style.color = 'var(--danger)';
-        fb.textContent = 'Gagal: Silakan login terlebih dahulu untuk mengubah API Key.';
-        return;
+      if (val.length >= 5) {
+        currentApiKey = val;
+        isKeyRevealed = true;
+        updateApiKeyDisplay();
+        alert('API Key berhasil diperbarui!');
+      } else {
+        alert('Minimal 5 karakter.');
       }
-      if (val.length < 5) {
-        fb.style.color = 'var(--danger)';
-        fb.textContent = 'Custom API Key minimal harus terdiri dari 5 karakter.';
-        return;
-      }
-      currentApiKey = val;
-      isKeyRevealed = true;
-      updateApiKeyDisplay();
-      fb.style.color = 'var(--success)';
-      fb.textContent = `✓ Berhasil: API Key Anda telah diperbarui menjadi "${val}"`;
     }
 
     function updateUsername() {
       const newName = document.getElementById('settingUsername').value.trim();
-      if (newName && isLoggedIn) {
+      if (newName) {
         currentUsername = newName.toLowerCase();
         renderAuthState();
+        alert('Profil diperbarui!');
       }
     }
 
-    // =========================================================================
-    // TEMA DARK / LIGHT MODE
-    // =========================================================================
-    function toggleTheme() {
-      const root = document.documentElement;
-      const btn = document.getElementById('themeBtn');
-      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-      root.setAttribute('data-theme', next);
-      btn.textContent = next === 'dark' ? '☀️ Terang' : '🌙 Gelap';
-    }
-
-    // Inisialisasi tampilan awal
     renderAuthState();
   </script>
 </body>
